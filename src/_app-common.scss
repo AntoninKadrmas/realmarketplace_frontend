@@ -1,10 +1,18 @@
 @import '@nativescript/theme/core';
 @import '@nativescript/theme/default';
-
+@import "theme/color";
 // Place any CSS rules you want to apply on both iOS and Android here.
 // This is where the vast majority of your CSS code goes.
 
 // Font icon class
+@font-face {
+  font-family: 'Rubik 700';
+  src: url('./fonts/Rubik-Bold.ttf');
+}
+@font-face {
+  font-family: 'Rubik 300';
+  src: url('./fonts/Rubik-Light.ttf');
+}
 .fab {
   font-family: 'Font Awesome 5 Brands', 'fa-brands-400';
   font-weight: 400;
@@ -19,28 +27,15 @@
   font-family: 'Font Awesome 5 Free', 'fa-regular-400';
   font-weight: 400;
 }
-
-// Custom tabstrip item class
-.navigation__item {
-  &:active,
-  &:active Label {
-    @include colorize($contrasted-color: complementary background 20% 0%);
-  }
+.primary_font{
+  font-family: 'Rubik 700',sans-serif!important;
+  color: $text_primary;
+  font-size:18px;
+}
+.secondary_font{
+  font-family: 'Rubik 300', sans-serif !important;
+  color: $text_secondary;
+  font-size:xx-small;
 }
 
-// Common page class
-.page__content {
-  &-icon,
-  &-placeholder {
-    color: const(grey);
-    font-size: 20;
-    vertical-align: center;
-    horizontal-align: center;
-  }
 
-  &-icon {
-    font-size: 72;
-    vertical-align: top;
-    margin-top: 20%;
-  }
-}

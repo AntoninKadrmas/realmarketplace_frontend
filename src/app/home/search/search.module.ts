@@ -1,19 +1,22 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core'
 import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular'
 
-import { HomeRoutingModule } from './home-routing.module'
-import { HomeComponent } from './home.component'
+import {SearchComponent} from "./search.component";
+import {ItemComponent} from "../item/item.component";
 
 @NgModule({
   imports: [
     NativeScriptCommonModule,
-    HomeRoutingModule,
+    NativeScriptRouterModule.forChild([{
+      path:'',
+      component:SearchComponent,
+    }]),
     NativeScriptRouterModule
   ],
   declarations: [
-    HomeComponent
+    SearchComponent,
+    ItemComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
-
 })
-export class HomeModule {}
+export class SearchModule {}

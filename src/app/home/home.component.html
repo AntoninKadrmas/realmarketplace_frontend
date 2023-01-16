@@ -1,13 +1,18 @@
-<ActionBar>
-  <Label text="Home"></Label>
+<ActionBar [title]="'title'">
+  <NavigationButton>
+  </NavigationButton>
 </ActionBar>
+<TabView androidTabsPosition="bottom" [selectedIndex]="1">
+  <Label text="home"></Label>
+  <GridLayout *tabItem="{ title: 'favorite' }">
+    <page-router-outlet name="favorite_outlet"></page-router-outlet>
+  </GridLayout>
 
-<GridLayout>
-  <ListView [items]="items">
-    <ng-template let-item="item">
-      <StackLayout [nsRouterLink]="['../item', item.id]">
-        <Label [text]="item.name"></Label>
-      </StackLayout>
-    </ng-template>
-  </ListView>
-</GridLayout>
+  <GridLayout *tabItem="{ title: 'search' }">
+    <page-router-outlet name="search_outlet"></page-router-outlet>
+  </GridLayout>
+
+  <GridLayout *tabItem="{ title: 'new' }">
+    <page-router-outlet name="new_outlet"></page-router-outlet>
+  </GridLayout>
+</TabView>

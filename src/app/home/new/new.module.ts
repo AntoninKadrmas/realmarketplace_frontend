@@ -1,19 +1,21 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core'
 import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular'
 
-import { HomeRoutingModule } from './home-routing.module'
-import { HomeComponent } from './home.component'
+import {NewComponent} from "./new.component";
+
 
 @NgModule({
   imports: [
     NativeScriptCommonModule,
-    HomeRoutingModule,
+    NativeScriptRouterModule.forChild([{
+      path:'',
+      component:NewComponent,
+    }]),
     NativeScriptRouterModule
   ],
   declarations: [
-    HomeComponent
+    NewComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
-
 })
-export class HomeModule {}
+export class NewModule {}

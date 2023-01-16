@@ -1,0 +1,31 @@
+@import "../../../theme/color.sass";
+
+.main{
+    height:450px;
+    border-width: 5px;
+    border-color: #626261;
+}
+.text{
+    border-width: 2px;
+    border-color: blue;
+}
+StackLayout{
+    width: 250px;
+    border-color: green;
+    border-width: 2px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    justify-content: center;
+    align-items: center;
+}
+Label{
+    border-color: red;
+    border-width: 2px;
+}
+.price{
+    background-color: $primary;
+    border-color: $primary;
+    color: white;
+    padding: 5px;
+}
