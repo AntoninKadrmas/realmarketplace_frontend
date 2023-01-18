@@ -1,4 +1,12 @@
-<StackLayout>
-    <Label [text]="'search'"></Label>
-    <ns-item></ns-item>
+<StackLayout class="main">
+    <ListView
+            [items]="list_books"
+            separatorColor="transparent"
+            (itemTap)="onItemTap($event)">
+        <ng-template let-item="item">
+            <StackLayout>
+                <ns-item [bookObject]="item"></ns-item>
+            </StackLayout>
+        </ng-template>
+    </ListView>s
 </StackLayout>

@@ -1,23 +1,20 @@
 @import "../../../theme/color.sass";
 
 .main{
-    height:450px;
-    border-width: 5px;
-    border-color: #626261;
-}
-.text{
+    height:min-content;
+    border-color: red;
     border-width: 2px;
-    border-color: blue;
 }
 StackLayout{
-    width: 250px;
-    border-color: green;
+    border-color: red;
     border-width: 2px;
+    width: 250px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     justify-content: center;
     align-items: center;
+    background-color: white;
 }
 Label{
     border-color: red;
@@ -27,5 +24,5 @@ Label{
     background-color: $primary;
     border-color: $primary;
     color: white;
-    padding: 5px;
+    font-size: 17.5px;
 }

@@ -1,15 +1,16 @@
 
-<GridLayout columns="1*,3*" class="main p-5">
-    <StackLayout row="0" col="0" class="m-5 rounded"
+<GridLayout columns="2*,7*" class="main p-x-5 m-x-15">
+    <StackLayout row="0" col="0" class="m-l-5 rounded box_shadow_small"
                  backgroundImage="~/theme/default.png"></StackLayout>
-    <FlexboxLayout row="0" col="1"flexDirection="column" class="text m-5 p-10" flexGrow="1" justifyContent="space-between">
+    <FlexboxLayout row="0" col="1"flexDirection="column" class="text m-x-5 p-10" flexGrow="1" justifyContent="space-between">
         <FlexboxLayout flexDirection="column" alignItems="flex-start">
-            <Label [text]="'Jemyyno'" class="primary_font"></Label>
-            <Label [text]="'Ator'" class="secondary_font"></Label>
-            <Label [text]="'Stav'" class="secondary_font"></Label>
+            <Label [text]="bookObject.name" class="primary_font"></Label>
+            <Label [text]="bookObject.author" class="secondary_font"></Label>
+            <Label [text]="bookObject.gener" class="secondary_font"></Label>
         </FlexboxLayout>
-        <FlexboxLayout justifyContent="flex-end">
-            <Label [text]="'Cena'" class="price"></Label>
+        <FlexboxLayout justifyContent="space-between" alignItems="center" class="m-t-5">
+            <Label [text]="bookObject.condition" class="secondary_font price rounded"></Label>
+            <Label [text]="bookObject.price" class="price p-x-10 rounded"></Label>
         </FlexboxLayout>
     </FlexboxLayout>
 </GridLayout>
