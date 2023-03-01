@@ -15,9 +15,12 @@
     "@angular/router": "~15.0.0",
     "@nativescript/angular": "~15.0.0",
     "@nativescript/core": "~8.4.0",
+    "@nativescript/imagepicker": "^1.0.9",
     "@nativescript/theme": "~3.0.2",
-    "nativescript-ui-listview": "^14.2.4",
+    "@nstudio/nativescript-rad-imagepicker": "^2.0.5",
+    "nativescript-rad-imagepicker-with-loc": "^2.0.7",
     "rxjs": "~7.5.0",
+    "tns-core-modules": "^6.5.27",
     "zone.js": "~0.11.5"
   },
   "devDependencies": {

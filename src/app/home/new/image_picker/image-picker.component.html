@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<StackLayout>
+    <ScrollView
+        orientation="horizontal">
+            <FlexboxLayout
+                    class="m-2 row"
+                    flexDirection="row">
+                    <FlexboxLayout
+                            class="selectButton rounded m-4"
+                            (tap)="onSelectMultipleTap()"
+                            justifyContent="center"
+                            alignItems="center"
+                    >
+                        <Label
+                                text="Pick"
+                        ></Label>
+                    </FlexboxLayout>
+                    <Image *ngFor="let image of imageAssets"
+                           class="m-4 rounded"
+                            [width]="thumbSize"
+                            [height]="thumbSize"
+                            [src]="image"
+                            stretch="aspectFill"
+                    ></Image>
+            </FlexboxLayout>
+    </ScrollView>
+</StackLayout>

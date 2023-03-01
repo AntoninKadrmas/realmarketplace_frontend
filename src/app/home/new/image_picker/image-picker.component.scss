@@ -1,0 +1,13 @@
+@import "src/theme/size";
+.selectButton{
+  height: $img_select_size;
+  width:$img_select_size;
+  border-width: 5px;
+  border-color: black;
+
+}
+.row{
+  border-width: 5px;
+  border-color: red;
+}
+
