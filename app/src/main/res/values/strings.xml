@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Omega1</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="favorite">Favorite</string>
+    <string name="search">Search</string>
+    <string name="create">Create</string>
+</resources>
