@@ -1,0 +1,444 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"></permission>\r\n    <permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"></permission>\r\n    <uses-permission android:name=\"android.permission.INTERNET\"></uses-permission>\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"></uses-permission>\r\n    <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"></uses-permission>\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.Omega1\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\"\r\n            android:label=\"@string/app_name\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/app/src/main/AndroidManifest.xml	(date 1678388730193)
+@@ -19,6 +19,8 @@
+         <activity
+             android:name=".MainActivity"
+             android:exported="true"
++            android:configChanges="orientation|screenSize"
++            android:theme="@style/Theme.Material3.DynamicColors.DayNight"
+             android:label="@string/app_name">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+Index: app/src/main/res/menu/bottom_nav_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<menu xmlns:android=\"http://schemas.android.com/apk/res/android\">\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_favorite\"\r\n        android:icon=\"@drawable/ic_baseline_favorite_24\"\r\n        android:title=\"@string/favorite\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_search\"\r\n        android:icon=\"@drawable/ic_baseline_search_24\"\r\n        android:title=\"@string/search\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_create\"\r\n        android:icon=\"@drawable/ic_baseline_add_24\"\r\n        android:title=\"@string/create\" />\r\n\r\n</menu>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/bottom_nav_menu.xml b/app/src/main/res/menu/bottom_nav_menu.xml
+--- a/app/src/main/res/menu/bottom_nav_menu.xml	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/app/src/main/res/menu/bottom_nav_menu.xml	(date 1678465372697)
+@@ -1,19 +1,26 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<menu xmlns:android="http://schemas.android.com/apk/res/android">
++<navigation xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/mobile_navigation"
++    android:label="@string/search"
++    app:startDestination="@+id/navigation_search">
+ 
+-    <item
+-        android:id="@+id/navigation_favorite"
+-        android:icon="@drawable/ic_baseline_favorite_24"
+-        android:title="@string/favorite" />
+-
+-    <item
++    <fragment
+         android:id="@+id/navigation_search"
+-        android:icon="@drawable/ic_baseline_search_24"
+-        android:title="@string/search" />
++        android:name="com.example.omega1.ui.search.SearchFragment"
++        android:label="@string/search"
++        tools:layout="@layout/fragment_search" />
+ 
+-    <item
++    <fragment
++        android:id="@+id/navigation_favorite"
++        android:name="com.example.omega1.ui.favorite.FavoriteFragment"
++        android:label="@string/favorite"
++        tools:layout="@layout/fragment_favorite" />
++
++    <fragment
+         android:id="@+id/navigation_create"
+-        android:icon="@drawable/ic_baseline_add_24"
+-        android:title="@string/create" />
+-
+-</menu>
+\ No newline at end of file
++        android:name="com.example.omega1.ui.create.CreateFragment"
++        android:label="@string/create"
++        tools:layout="@layout/fragment_create" />
++</navigation>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n    id 'org.jetbrains.kotlin.android'\r\n    id 'kotlin-android'\r\n    id 'kotlin-android-extensions'\r\n}\r\n\r\nandroid {\r\n    namespace 'com.example.omega1'\r\n    compileSdk 33\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.omega1\"\r\n        minSdk 21\r\n        targetSdk 33\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = '1.8'\r\n    }\r\n    buildFeatures {\r\n        viewBinding true\r\n    }\r\n}\r\n\r\ndependencies {\r\n    implementation 'androidx.core:core-ktx:1.7.0'\r\n    implementation 'androidx.appcompat:appcompat:1.6.1'\r\n    implementation 'com.google.android.material:material:1.8.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'\r\n    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'\r\n    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'\r\n    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'\r\n    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.5'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'\r\n\r\n    implementation 'com.github.bumptech.glide:glide:4.15.0'\r\n    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/app/build.gradle	(date 1678465158204)
+@@ -34,6 +34,7 @@
+     }
+     buildFeatures {
+         viewBinding true
++//        dataBinding true
+     }
+ }
+ 
+@@ -50,7 +51,7 @@
+     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+ 
++//        implementation 'com.github.AnilFurkanOkcun:UWMediaPicker-Android:1.2.1'
+     implementation 'com.github.bumptech.glide:glide:4.15.0'
+     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+-
+ }
+\ No newline at end of file
+Index: .idea/codeStyles/codeStyleConfig.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml
+new file mode 100644
+--- /dev/null	(date 1678382207601)
++++ b/.idea/codeStyles/codeStyleConfig.xml	(date 1678382207601)
+@@ -0,0 +1,5 @@
++<component name="ProjectCodeStyleConfiguration">
++  <state>
++    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
++  </state>
++</component>
+\ No newline at end of file
+Index: .idea/codeStyles/Project.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/Project.xml b/.idea/codeStyles/Project.xml
+new file mode 100644
+--- /dev/null	(date 1678382207590)
++++ b/.idea/codeStyles/Project.xml	(date 1678382207590)
+@@ -0,0 +1,123 @@
++<component name="ProjectCodeStyleConfiguration">
++  <code_scheme name="Project" version="173">
++    <JetCodeStyleSettings>
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </JetCodeStyleSettings>
++    <codeStyleSettings language="XML">
++      <option name="FORCE_REARRANGE_MODE" value="1" />
++      <indentOptions>
++        <option name="CONTINUATION_INDENT_SIZE" value="4" />
++      </indentOptions>
++      <arrangement>
++        <rules>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>xmlns:android</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>xmlns:.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*:id</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*:name</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>name</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>style</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>ANDROID_ATTRIBUTE_ORDER</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>.*</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++        </rules>
++      </arrangement>
++    </codeStyleSettings>
++    <codeStyleSettings language="kotlin">
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </codeStyleSettings>
++  </code_scheme>
++</component>
+\ No newline at end of file
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\n\r\nplugins {\r\n    id 'com.android.application' version '7.3.1' apply false\r\n    id 'com.android.library' version '7.3.1' apply false\r\n    id 'org.jetbrains.kotlin.android' version '1.7.20' apply false\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/build.gradle	(date 1678382190628)
+@@ -1,7 +1,7 @@
+ // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ 
+ plugins {
+-    id 'com.android.application' version '7.3.1' apply false
+-    id 'com.android.library' version '7.3.1' apply false
++    id 'com.android.application' version '7.4.2' apply false
++    id 'com.android.library' version '7.4.2' apply false
+     id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/fragment_create.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".ui.create.CreateFragment\">\r\n\r\n    <Button\r\n        android:id=\"@+id/selectImage\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Button\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.498\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintVertical_bias=\"0.174\" />\r\n\r\n    <ImageView\r\n        android:id=\"@+id/myImageView\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.498\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/selectImage\"\r\n        app:layout_constraintVertical_bias=\"0.217\"\r\n        tools:src=\"@tools:sample/avatars\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_create.xml b/app/src/main/res/layout/fragment_create.xml
+--- a/app/src/main/res/layout/fragment_create.xml	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/app/src/main/res/layout/fragment_create.xml	(date 1678389695338)
+@@ -7,27 +7,42 @@
+     tools:context=".ui.create.CreateFragment">
+ 
+     <Button
+-        android:id="@+id/selectImage"
++        android:id="@+id/options_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:text="Button"
+-        app:layout_constraintBottom_toBottomOf="parent"
++        android:text="options_button"
++        android:layout_marginBottom="0.2in"
++        app:layout_constraintBottom_toTopOf="@+id/open_picker_button"
+         app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintHorizontal_bias="0.498"
++        app:layout_constraintHorizontal_bias="0.5"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+-        app:layout_constraintVertical_bias="0.174" />
++        app:layout_constraintVertical_bias="0.073"
++        app:layout_constraintVertical_chainStyle="packed"
++        />
+ 
+-    <ImageView
+-        android:id="@+id/myImageView"
++    <Button
++        android:id="@+id/open_picker_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:text="open_picker_button"
++        android:layout_marginBottom="0.2in"
++        app:layout_constraintBottom_toTopOf="@+id/open_sheet_button"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.5"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/options_button" />
++
++    <Button
++        android:id="@+id/open_sheet_button"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="open_sheet_button"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintHorizontal_bias="0.498"
++        app:layout_constraintHorizontal_bias="0.5"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toBottomOf="@+id/selectImage"
+-        app:layout_constraintVertical_bias="0.217"
+-        tools:src="@tools:sample/avatars" />
++        app:layout_constraintTop_toBottomOf="@+id/open_picker_button"
++        app:layout_constraintVertical_bias="0.193" />
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+new file mode 100644
+--- /dev/null	(date 1678382207595)
++++ b/.idea/deploymentTargetDropDown.xml	(date 1678382207595)
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="deploymentTargetDropDown">
++    <targetSelectedWithDropDown>
++      <Target>
++        <type value="QUICK_BOOT_TARGET" />
++        <deviceKey>
++          <Key>
++            <type value="VIRTUAL_DEVICE_PATH" />
++            <value value="C:\Users\tkadr\.android\avd\Pixel_6_API_30.avd" />
++          </Key>
++        </deviceKey>
++      </Target>
++    </targetSelectedWithDropDown>
++    <timeTargetWasSelectedWithDropDown value="2023-03-09T17:00:45.221168900Z" />
++  </component>
++</project>
+\ No newline at end of file
+Index: app/src/main/java/com/example/omega1/ui/create/CreateFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.omega1.ui.create\r\n\r\nimport android.R\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.ImageView\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.lifecycle.ViewModelProvider\r\nimport com.bumptech.glide.Glide\r\nimport com.bumptech.glide.load.engine.DiskCacheStrategy\r\nimport com.example.omega1.databinding.FragmentCreateBinding\r\nimport kotlinx.android.synthetic.main.fragment_create.*\r\n\r\n\r\nclass CreateFragment : Fragment() {\r\n\r\n    private var _binding: FragmentCreateBinding? = null\r\n    private val binding get() = _binding!!\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View {\r\n\r\n        val notificationsViewModel =\r\n            ViewModelProvider(this).get(CreateViewModel::class.java)\r\n        _binding = FragmentCreateBinding.inflate(inflater, container, false)\r\n        val imageView: ImageView = binding.myImageView\r\n        val root: View = binding.root\r\n        binding.selectImage.setOnClickListener(){\r\n            val url=\"https://picsum.photos/300\"\r\n            Glide.with(this)\r\n                .load(url)\r\n                .fitCenter()\r\n                .diskCacheStrategy(DiskCacheStrategy.NONE)\r\n                .into(imageView)\r\n        }\r\n        return root\r\n    }\r\n\r\n    override fun onDestroyView() {\r\n        super.onDestroyView()\r\n        _binding = null\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/omega1/ui/create/CreateFragment.kt b/app/src/main/java/com/example/omega1/ui/create/CreateFragment.kt
+--- a/app/src/main/java/com/example/omega1/ui/create/CreateFragment.kt	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/app/src/main/java/com/example/omega1/ui/create/CreateFragment.kt	(date 1678465373901)
+@@ -1,15 +1,11 @@
+ package com.example.omega1.ui.create
+ 
+-import android.R
+ import android.os.Bundle
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+-import android.widget.ImageView
+ import androidx.fragment.app.Fragment
+ import androidx.lifecycle.ViewModelProvider
+-import com.bumptech.glide.Glide
+-import com.bumptech.glide.load.engine.DiskCacheStrategy
+ import com.example.omega1.databinding.FragmentCreateBinding
+ import kotlinx.android.synthetic.main.fragment_create.*
+ 
+@@ -27,15 +23,28 @@
+         val notificationsViewModel =
+             ViewModelProvider(this).get(CreateViewModel::class.java)
+         _binding = FragmentCreateBinding.inflate(inflater, container, false)
+-        val imageView: ImageView = binding.myImageView
+         val root: View = binding.root
+-        binding.selectImage.setOnClickListener(){
++        binding.openPickerButton.setOnClickListener(){
+             val url="https://picsum.photos/300"
+-            Glide.with(this)
+-                .load(url)
+-                .fitCenter()
+-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+-                .into(imageView)
++//            Glide.with(this)
++//                .load(url)
++//                .fitCenter()
++//                .diskCacheStrategy(DiskCacheStrategy.NONE)
++//                .into(imageView)
++//            UwMediaPicker
++//                .with(this)						// Activity or Fragment
++//                .setRequestCode(0)				// Give request code, default is 0
++//                .setGalleryMode(UwMediaPicker.GalleryMode.ImageGallery) // GalleryMode: ImageGallery/VideoGallery/ImageAndVideoGallery, default is ImageGallery
++//                .setGridColumnCount(4)                                  // Grid column count, default is 3
++//                .setMaxSelectableMediaCount(10)                         // Maximum selectable media count, default is null which means infinite
++//                .setLightStatusBar(true)                                // Is llight status bar enable, default is true
++//                .enableImageCompression(true)				// Is image compression enable, default is false
++//                .setCompressionMaxWidth(1280F)				// Compressed image's max width px, default is 1280
++//                .setCompressionMaxHeight(720F)				// Compressed image's max height px, default is 720
++//                .setCompressFormat(Bitmap.CompressFormat.JPEG)		// Compressed image's format, default is JPEG
++//                .setCompressionQuality(85)				// Image compression quality, default is 85
++//                .open()
++
+         }
+         return root
+     }
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Mon Mar 06 19:29:01 CET 2023\r\ndistributionBase=GRADLE_USER_HOME\r\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-7.4-bin.zip\r\ndistributionPath=wrapper/dists\r\nzipStorePath=wrapper/dists\r\nzipStoreBase=GRADLE_USER_HOME\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/gradle/wrapper/gradle-wrapper.properties b/gradle/wrapper/gradle-wrapper.properties
+--- a/gradle/wrapper/gradle-wrapper.properties	(revision e46b17d3f2d80a0eafee7b2bda1f7182c4e1dcf4)
++++ b/gradle/wrapper/gradle-wrapper.properties	(date 1678382207580)
+@@ -1,6 +1,6 @@
+ #Mon Mar 06 19:29:01 CET 2023
+ distributionBase=GRADLE_USER_HOME
+-distributionUrl=https\://services.gradle.org/distributions/gradle-7.4-bin.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-7.5-bin.zip
+ distributionPath=wrapper/dists
+ zipStorePath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
