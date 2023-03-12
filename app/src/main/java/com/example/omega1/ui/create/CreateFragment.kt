@@ -10,17 +10,25 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentCreateBinding
 import com.example.omega1.ui.create.image.ImageAdapter
+import com.example.omega1.ui.create.rest.EnumService
+import com.example.omega1.ui.create.rest.PriceType
+import com.example.omega1.ui.create.rest.RetrofitInstance
 import kotlinx.android.synthetic.main.create_image.view.*
+import retrofit2.Response
 import java.io.File
 
 
 class CreateFragment : Fragment() {
 
     private lateinit var imageAdapter: ImageAdapter
+    private lateinit var retroServiceEnum:EnumService
     private val maxImage = 5
     private var actualImage = 0
     private var pickMultipleMedia =
@@ -35,9 +43,8 @@ class CreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-//        val createView =
-//            ViewModelProvider(this).get(CreateViewModel::class.java)
+        retroServiceEnum = RetrofitInstance.getRetroFitInstance().create(EnumService::class.java)
+        loadPriceEnum()
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         imageAdapter = ImageAdapter(mutableListOf(), clickDelete = {
             removeUri:Uri->imageClickDelete(removeUri)
@@ -46,7 +53,7 @@ class CreateFragment : Fragment() {
         })
         binding.recyclerView.adapter = imageAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(FragmentActivity(),LinearLayoutManager.HORIZONTAL,false)
-        imageAdapter.addNewImage(Uri.parse("android.resource://com.example.omega1/mipmap/camera_white"))
+        imageAdapter.addNewImage(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
         return binding.root
     }
     override fun onDestroyView() {
@@ -86,6 +93,21 @@ class CreateFragment : Fragment() {
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
-
+    }
+    private fun loadPriceEnum(){
+        val responseLiveData:LiveData<Response<PriceType>> = liveData {
+            val response:Response<PriceType> = retroServiceEnum.getPrice()
+            Log.i("REST_API",response.toString())
+            emit(response)
+        }
+        responseLiveData.observe(FragmentActivity(), Observer {
+            val something:PriceType? = it.body()
+            if(something==null){Log.i("REST_API","null")}
+            else{
+                for(x in something){
+                    Log.i("REST_API",x.toString())
+                }
+            }
+        })
     }
 }
