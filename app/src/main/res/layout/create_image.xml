@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_view"
+        android:layout_width="@dimen/create_image_dimension"
+        android:layout_height="@dimen/create_image_dimension"
+        android:layout_margin="5dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="2sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:shapeAppearanceOverlay="@style/RoundedSquare10"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/delete_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_circle"
+        android:drawableRight="@drawable/baseline_delete_24"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:padding="9dp"
+        app:layout_constraintEnd_toEndOf="@+id/image_view"
+        app:layout_constraintTop_toTopOf="@+id/image_view" />
+
+    <TextView
+        android:id="@+id/cover_image"
+        android:layout_width="@dimen/create_image_dimension"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_cover_image"
+        android:paddingVertical="4sp"
+        android:textColor="@color/white"
+        android:text="Cover Image"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view"
+        app:layout_constraintEnd_toEndOf="@+id/image_view"
+        app:layout_constraintStart_toStartOf="@+id/image_view" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
