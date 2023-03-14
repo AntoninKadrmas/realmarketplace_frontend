@@ -8,28 +8,24 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.omega1.databinding.FragmentFavoriteBinding
+import com.example.omega1.databinding.FragmentSearchBinding
+import com.example.omega1.ui.other.EyeFeature
 
 class SearchFragment : Fragment() {
 
-    private var _binding: FragmentFavoriteBinding? = null
+    private var _binding: FragmentSearchBinding? = null
 
     private val binding get() = _binding!!
-
+    companion object {
+        fun newInstance() = SearchFragment()
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(SearchViewModel::class.java)
-
-        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        val textView: TextView = binding.textFavorite
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

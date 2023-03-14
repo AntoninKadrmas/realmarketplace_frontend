@@ -51,92 +51,93 @@
             app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
     </LinearLayout>
 
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edit_advert_name_layout"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
-        android:orientation="vertical"
+        android:hint="Advert Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_info_layout"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="221dp">
+        app:layout_constraintTop_toBottomOf="@+id/image_info_layout">
 
-        <TextView
-            android:id="@+id/text_view_advert_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:text="Advert Name"
-            android:textStyle="bold" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_advert_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Advert name"
             android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edit_advert_description_layout"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
-        android:orientation="vertical"
+        android:hint="Advert description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_advert_name_layout">
 
-        <TextView
-            android:id="@+id/text_view_description_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:text="Advert Description"
-            android:textStyle="bold" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_advert_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Advert description"
             android:inputType="textMultiLine" />
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
-        android:layout_marginHorizontal="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_advert_description_layout">
 
-        <EditText
-            android:id="@+id/editTextTextPersonName2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/price_layout"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:hint="Price">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/price_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:hint="Price Options"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
 

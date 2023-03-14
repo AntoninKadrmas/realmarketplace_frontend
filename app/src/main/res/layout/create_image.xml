@@ -42,6 +42,8 @@
         android:paddingVertical="4sp"
         android:textColor="@color/white"
         android:text="Cover Image"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/image_view"
         app:layout_constraintEnd_toEndOf="@+id/image_view"

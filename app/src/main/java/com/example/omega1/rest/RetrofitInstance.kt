@@ -1,4 +1,4 @@
-package com.example.omega1.ui.create.rest
+package com.example.omega1.rest
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -18,7 +18,7 @@ class RetrofitInstance {
                 .readTimeout(30,TimeUnit.SECONDS)
                 .writeTimeout(25,TimeUnit.SECONDS)
         }.build()
-        const val BASE_URL = "http://44.213.213.63:3000/"
+        const val BASE_URL = "https://www.realmarketplace.shop"
         fun getRetroFitInstance():Retrofit{
             return Retrofit
                 .Builder()

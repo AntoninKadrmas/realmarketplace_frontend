@@ -5,46 +5,69 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentCreateBinding
 import com.example.omega1.ui.create.image.ImageAdapter
-import com.example.omega1.ui.create.rest.EnumService
-import com.example.omega1.ui.create.rest.PriceType
-import com.example.omega1.ui.create.rest.RetrofitInstance
+import com.example.omega1.rest.EnumService
+import com.example.omega1.rest.EnumViewData
+import com.example.omega1.rest.RetrofitInstance
+import com.example.omega1.ui.other.EyeFeature
 import kotlinx.android.synthetic.main.create_image.view.*
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
+import java.io.IOException
 
 
 class CreateFragment : Fragment() {
 
     private lateinit var imageAdapter: ImageAdapter
-    private lateinit var retroServiceEnum:EnumService
     private val maxImage = 5
     private var actualImage = 0
+    private val enumViewDataModel: EnumViewData by activityViewModels()
+    private var _binding: FragmentCreateBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var priceOptions: Array<String>
+
     private var pickMultipleMedia =
         registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(maxImage-actualImage)) { uris ->
             handleOutput(uris)
         }
-    private var _binding: FragmentCreateBinding? = null
-    private val binding get() = _binding!!
-
+    companion object {
+        fun newInstance() = CreateFragment()
+    }
+    override fun onResume() {
+        super.onResume()
+        if(this::priceOptions.isInitialized)updatePriceDropDown()
+    }
+    private fun updatePriceDropDown(){
+        val priceArrayAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_price_option,priceOptions)
+        binding.autoCompleteTextView.setText(priceOptions[0])
+        binding.autoCompleteTextView.setAdapter(priceArrayAdapter)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        retroServiceEnum = RetrofitInstance.getRetroFitInstance().create(EnumService::class.java)
-        loadPriceEnum()
+        priceOptions = enumViewDataModel.priceEnum.value!!
+        enumViewDataModel.priceEnum.observe(FragmentActivity(), Observer {
+            priceOptions=it
+            updatePriceDropDown()
+        })
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         imageAdapter = ImageAdapter(mutableListOf(), clickDelete = {
             removeUri:Uri->imageClickDelete(removeUri)
@@ -93,21 +116,5 @@ class CreateFragment : Fragment() {
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
-    }
-    private fun loadPriceEnum(){
-        val responseLiveData:LiveData<Response<PriceType>> = liveData {
-            val response:Response<PriceType> = retroServiceEnum.getPrice()
-            Log.i("REST_API",response.toString())
-            emit(response)
-        }
-        responseLiveData.observe(FragmentActivity(), Observer {
-            val something:PriceType? = it.body()
-            if(something==null){Log.i("REST_API","null")}
-            else{
-                for(x in something){
-                    Log.i("REST_API",x.toString())
-                }
-            }
-        })
     }
 }
