@@ -13,12 +13,10 @@ data class UserModel(
     val validated: Validated
 )
 data class UserModelLogin(
-    val cardId: String,
+    val email: String,
     val password: String,
 )
 data class UserTokenAuth(
     @SerializedName("token")
-    val token:String,
-    @SerializedName("expirationTime")
-    val expirationTime:String
+    val token:String
 )

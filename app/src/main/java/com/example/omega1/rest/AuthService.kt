@@ -14,7 +14,7 @@ interface AuthService {
     @POST(value="/user/register")
     suspend fun registerUser(@Body user:UserModel):Response<Any>
     @GET(value="/user/login")
-    suspend fun loginUser(@Query("cardId") cardId:String,@Query("password") password:String):Response<Any>
+    suspend fun loginUser(@Query("email") email:String,@Query("password") password:String):Response<Any>
 }
 
 data class ReturnTypeError(

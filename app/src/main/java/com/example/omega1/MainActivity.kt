@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -41,11 +40,9 @@ class MainActivity : AppCompatActivity() {
     private fun cleanUserToken(){
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
         val userAuthTokenString = R.string.user_auth_token.toString()
-        val userExpirationTimeString = R.string.user_expiration_time.toString()
         val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
         mainKeyValue.edit().apply(){
             putString(userAuthTokenString,null)
-            putString(userExpirationTimeString,null)
             apply()
         }
     }

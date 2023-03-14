@@ -36,11 +36,9 @@ class AuthActivity : AppCompatActivity() {
         viewModel.finishActivity.observe(this, Observer {
             val mainKeyValueString = R.string.real_market_place_key_value.toString()
             val userAuthTokenString = R.string.user_auth_token.toString()
-            val userExpirationTimeString = R.string.user_expiration_time.toString()
             val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
             mainKeyValue.edit().apply(){
                 putString(userAuthTokenString,it.token)
-                putString(userExpirationTimeString,it.expirationTime)
                 apply()
             }
             finish()

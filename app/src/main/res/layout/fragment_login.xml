@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch To Registration"
-            app:layout_constraintBottom_toTopOf="@+id/id_layout"
+            app:layout_constraintBottom_toTopOf="@+id/email_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,14 +32,12 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/id_layout"
+            android:id="@+id/email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="0.3in"
             app:helperText="@string/required"
             app:helperTextTextColor="@color/error"
-            app:counterEnabled="true"
-            app:counterMaxLength="10"
             android:orientation="vertical"
             android:layout_marginBottom="0.3in"
             app:layout_constraintBottom_toTopOf="@+id/password_layout"
@@ -47,16 +45,16 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switch_to_signin"
-            android:hint="National ID number"
+            android:hint="Email Address"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/id_input"
+            android:id="@+id/email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="numberSigned"
+            android:inputType="textEmailAddress"
             android:textSize="25sp"
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -75,7 +73,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/id_layout"
+            app:layout_constraintTop_toBottomOf="@+id/email_layout"
             android:hint="Password"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             >

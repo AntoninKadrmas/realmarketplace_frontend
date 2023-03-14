@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="0.3in"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/email_layout"
+            app:layout_constraintBottom_toTopOf="@+id/phone_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
        app:layout_constraintStart_toStartOf="parent"
@@ -109,34 +109,6 @@
         <com.google.android.material.textfield.TextInputLayout
             app:helperText="@string/required"
             app:helperTextTextColor="@color/error"
-            android:layout_marginBottom="0.3in"
-            android:id="@+id/email_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="0.3in"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/phone_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/id_layout"
-            tools:layout_editor_absoluteX="50dp"
-            android:hint="Email Address"
-            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:textSize="25sp"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            app:helperText="@string/required"
-            app:helperTextTextColor="@color/error"
             app:counterEnabled="true"
             app:counterMaxLength="9"
             android:layout_marginBottom="0.3in"
@@ -145,11 +117,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="0.3in"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/email_layout"
-            app:layout_constraintBottom_toTopOf="@+id/password_first_layout"
+            app:layout_constraintBottom_toTopOf="@+id/email_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/id_layout"
             tools:layout_editor_absoluteX="50dp"
             android:hint="Phone Number"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
@@ -164,6 +136,34 @@
                 android:inputType="phone"
                 />
         </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            android:layout_marginBottom="0.3in"
+            android:id="@+id/email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="0.3in"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/phone_layout"
+            app:layout_constraintBottom_toTopOf="@+id/password_first_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="50dp"
+            android:hint="Email Address"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
    <com.google.android.material.textfield.TextInputLayout
            app:helperText="@string/required"
            app:helperTextTextColor="@color/error"
@@ -175,7 +175,7 @@
             android:layout_marginHorizontal="0.3in"
             android:orientation="vertical"
            app:layout_constraintBottom_toTopOf="@+id/password_second_layout"
-           app:layout_constraintTop_toBottomOf="@+id/phone_layout"
+           app:layout_constraintTop_toBottomOf="@+id/email_layout"
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintHorizontal_bias="0.5"
            app:layout_constraintStart_toStartOf="parent"

@@ -1,6 +1,7 @@
 package com.example.omega1.ui.auth
 
 import android.os.Bundle
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentLoginBinding
-import com.example.omega1.rest.AuthController
 import com.example.omega1.model.UserModelLogin
 
 
@@ -23,7 +23,7 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if(binding.idInput.text?.isEmpty() != true)binding.idLayout.helperText = validIdNumber()
+        if(binding.emailInput.text?.isEmpty() != true)binding.emailLayout.helperText = validEmail()
         if(binding.passwordInput.text?.isEmpty()!=true)binding.passwordLayout.helperText = validPassword()
     }
 
@@ -38,21 +38,21 @@ class LoginFragment : Fragment() {
         }
         binding.loginButton.setOnClickListener(){
             binding.passwordInput.clearFocus()
-            binding.idInput.clearFocus()
+            binding.emailInput.clearFocus()
             submitForm()
         }
-        if(binding.idInput.error !=null)binding.idLayout.helperText = validIdNumber()
+        if(binding.emailInput.error !=null)binding.emailLayout.helperText = validEmail()
         if(binding.passwordInput.error !=null)binding.passwordLayout.helperText = validPassword()
-        focusIdNumber()
+        focusEmail()
         focusPassword()
         return root
     }
     private fun submitForm(){
-        val validIdNumber = binding.idLayout.helperText==null
+        val validIdNumber = binding.emailLayout.helperText==null
         val validPassword = binding.passwordLayout.helperText==null
         if(validPassword&&validIdNumber){
             val userModel:UserModelLogin = UserModelLogin(
-                cardId= binding.idInput.text.toString(),
+                email= binding.emailInput.text.toString(),
                 password= binding.passwordInput.text.toString(),
             )
             context?.let { viewModel.login(userModel, it) }
@@ -60,21 +60,20 @@ class LoginFragment : Fragment() {
             Toast.makeText(context,"Some of the input fields are still invalid!",Toast.LENGTH_LONG).show()
         }
     }
-    private fun focusIdNumber(){
-        binding.idInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.idInput.text?.isNotEmpty() == true) {
-                binding.idLayout.helperText = validIdNumber()
-            }else if(!focused && binding.idLayout.helperText!=resources.getString(R.string.required))binding.idLayout.helperText = resources.getString(R.string.required)
+    private fun focusEmail(){
+        binding.emailInput.setOnFocusChangeListener(){ _, focused ->
+            if (!focused && binding.emailInput.text?.isNotEmpty()==true) {
+                binding.emailLayout.helperText = validEmail()
+            }else if(!focused && binding.emailLayout.helperText!=resources.getString(R.string.required))binding.emailLayout.helperText = resources.getString(R.string.required)
         }
     }
-    private fun validIdNumber():String?{
-        val idNumber = binding.idInput.text.toString()
-        val regex = Regex("^[0-9]{6}[0-9]{3,4}\$")
-        if(!regex.matches(idNumber)||(idNumber.toInt()%11!=0||(idNumber.length<9||idNumber.length>10))){
-            binding.idInput.error ="You have to enter there your National ID number from your id card. It should be 9 or 10 digits."
-            return "Invalid ID number"
+    private fun validEmail():String?{
+        val email = binding.emailInput.text.toString()
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            binding.emailInput.error ="Email address has to be in the format: sometext@sometex.sometext"
+            return "Invalid email address"
         }
-        binding.idInput.error = null
+        binding.emailInput.error = null
         return null
     }
     private fun focusPassword(){

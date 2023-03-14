@@ -75,7 +75,7 @@ class MainViewModel : ViewModel() {
     fun login(userModel: UserModelLogin, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
-                retroServiceEnum.loginUser(userModel.cardId,userModel.password)
+                retroServiceEnum.loginUser(userModel.email,userModel.password)
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
