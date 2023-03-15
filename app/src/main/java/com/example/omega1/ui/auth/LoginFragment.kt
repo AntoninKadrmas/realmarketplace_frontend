@@ -38,7 +38,9 @@ class LoginFragment : Fragment() {
         }
         binding.loginButton.setOnClickListener(){
             binding.passwordInput.clearFocus()
+            binding.emailLayout.helperText = validEmail()
             binding.emailInput.clearFocus()
+            binding.passwordLayout.helperText = validPassword()
             submitForm()
         }
         if(binding.emailInput.error !=null)binding.emailLayout.helperText = validEmail()

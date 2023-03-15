@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
@@ -55,8 +56,8 @@ class CreateFragment : Fragment() {
     }
     private fun updatePriceDropDown(){
         val priceArrayAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_price_option,priceOptions)
-        binding.autoCompleteTextView.setText(priceOptions[0])
-        binding.autoCompleteTextView.setAdapter(priceArrayAdapter)
+        binding.priceOptionInput.setText(priceOptions[0])
+        binding.priceOptionInput.setAdapter(priceArrayAdapter)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +77,15 @@ class CreateFragment : Fragment() {
         })
         binding.recyclerView.adapter = imageAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(FragmentActivity(),LinearLayoutManager.HORIZONTAL,false)
+        binding.priceOptionInput.setOnItemClickListener(){parent,view,position,id->
+            if(position==0){
+                binding.priceInput.isEnabled=true
+                binding.priceInput.setText(null)
+            }else{
+                binding.priceInput.isEnabled=false
+                binding.priceInput.setText(priceOptions[position])
+            }
+        }
         imageAdapter.addNewImage(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
         return binding.root
     }

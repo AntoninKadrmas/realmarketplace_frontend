@@ -2,6 +2,7 @@ package com.example.omega1
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,7 +36,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
-        timeOutClear.removeCallbacksAndMessages(null);
+        timeOutClear.removeCallbacksAndMessages(null)
+
     }
     private fun cleanUserToken(){
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         mainKeyValue.edit().apply(){
             putString(userAuthTokenString,null)
             apply()
-        }
+    ""    }
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -52,8 +54,10 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStop() {
         super.onStop()
-        timeOutClear.postDelayed({cleanUserToken()},
-            R.integer.time_out_clean_5_min.toLong()
+        timeOutClear.postDelayed({
+            cleanUserToken()
+            },
+            300000//5 minutes
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         retroServiceEnum = RetrofitInstance.getRetroFitInstance().create(EnumService::class.java)
         loadPriceEnum()
         loadConditionEnum()
+        //cleanUserToken() //odkomn=entovat do provozu
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         listOfFragments = listOf(
@@ -172,5 +177,8 @@ class MainActivity : AppCompatActivity() {
             if(variable.toLowerCase().contains("price")) enumViewDataModel.updatePriceEnum(oldString.split(';').toTypedArray())
             else if(variable.toLowerCase().contains("condition")) enumViewDataModel.updateConditionEnum(oldString.split(';').toTypedArray())
         }
+    }
+    fun onTaskRemoved(rootIntent: Intent?) {
+
     }
 }
