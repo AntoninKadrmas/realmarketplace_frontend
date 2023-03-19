@@ -152,6 +152,7 @@ class CreateFragment : Fragment() {
                 imagesUrls =ArrayList<String>()
             )
             val token = authViewModel.userToken.value.toString()
+            val imagesUri =
             context?.let { createViewModel.createAdvert(advertModel,token, it) }
         }else{
             Toast.makeText(context,"Some of the input fields are still invalid!",Toast.LENGTH_LONG).show()

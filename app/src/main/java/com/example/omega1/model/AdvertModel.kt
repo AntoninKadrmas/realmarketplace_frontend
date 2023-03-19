@@ -1,6 +1,7 @@
 package com.example.omega1.model
 
 import android.text.Editable
+import com.google.gson.annotations.SerializedName
 
 data class AdvertModel(
     val lightUserId:String,
@@ -15,4 +16,8 @@ data class AdvertModel(
     val place:String,
     val mainImage:String,
     val imagesUrls:ArrayList<String>,
+)
+data class AdvertId(
+    @SerializedName("_id")
+    val _id:String
 )
