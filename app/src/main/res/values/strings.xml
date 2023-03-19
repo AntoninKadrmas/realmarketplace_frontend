@@ -22,4 +22,7 @@
     <string name="user_auth_token">UserAuthToken</string>
     <string name="user_expiration_time">UserExpirationTime</string>
     <string name="real_market_place_key_value">RealMarketPLaceKeyValue</string>
+    <string name="saved_enum_genre">SavedEnumGenre</string>
+    <string name="genre_type_fiction">Fiction</string>
+    <string name="genre_type_non_fiction">Non Fiction</string>
 </resources>

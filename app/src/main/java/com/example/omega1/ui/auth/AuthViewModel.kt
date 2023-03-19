@@ -1,6 +1,5 @@
 package com.example.omega1.ui.auth
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -20,23 +19,22 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
-class MainViewModel : ViewModel() {
+class AuthViewModel : ViewModel() {
     private val mutableSelectedItem = MutableLiveData<Int>()
     val selectedItem: LiveData<Int> get() = mutableSelectedItem
-    private val mutableFinishActivity = MutableLiveData<UserTokenAuth>()
-    val finishActivity: LiveData<UserTokenAuth> get() = mutableFinishActivity
+    private val mutableUserToken = MutableLiveData<UserTokenAuth>()
+    val userToken: LiveData<UserTokenAuth> get() = mutableUserToken
     fun selectItem(item: Int) {
         mutableSelectedItem.value = item
     }
-    fun finish(item: UserTokenAuth) {
-        mutableFinishActivity.value = item
+    fun updateUserToken(item: UserTokenAuth) {
+        mutableUserToken.value = item
     }
-    private var retroServiceEnum: AuthService = RetrofitInstance.getRetroFitInstance().create(AuthService::class.java)
-    @SuppressLint("ResourceType")
+    private var retroServiceAuth: AuthService = RetrofitInstance.getRetroFitInstance().create(AuthService::class.java)
     fun register(userModel: UserModel, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
-                retroServiceEnum.registerUser(userModel)
+                retroServiceAuth.registerUser(userModel)
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
@@ -52,7 +50,7 @@ class MainViewModel : ViewModel() {
                 val body: UserTokenAuth? = Gson().fromJson(Gson().toJson(response.body()), UserTokenAuth::class.java)
                 withContext(Dispatchers.Main) {
                     if (body != null) {
-                        finish(body)
+                        updateUserToken(body)
                     }
                 }
             }else{
@@ -75,7 +73,7 @@ class MainViewModel : ViewModel() {
     fun login(userModel: UserModelLogin, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
-                retroServiceEnum.loginUser(userModel.email,userModel.password)
+                retroServiceAuth.loginUser(userModel.email,userModel.password)
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
@@ -91,7 +89,7 @@ class MainViewModel : ViewModel() {
                 val body: UserTokenAuth? = Gson().fromJson(Gson().toJson(response.body()), UserTokenAuth::class.java)
                 withContext(Dispatchers.Main) {
                     if (body != null) {
-                        finish(body)
+                        updateUserToken(body)
                     }
                 }
             }else{

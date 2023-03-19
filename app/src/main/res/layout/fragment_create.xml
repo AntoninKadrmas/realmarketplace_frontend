@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".ui.create.CreateFragment">
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -58,13 +62,17 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:hint="Advert Name"
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        app:counterMaxLength="50"
+        app:counterEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_info_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_advert_name"
+            android:id="@+id/edit_advert_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -78,13 +86,17 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:hint="Advert description"
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        app:counterMaxLength="2000"
+        app:counterEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_advert_name_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_advert_description"
+            android:id="@+id/edit_advert_description_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -98,7 +110,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
-        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -110,8 +121,12 @@
             android:id="@+id/price_layout"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
             android:layout_height="wrap_content"
+            app:counterMaxLength="10"
+            app:counterEnabled="true"
+            android:layout_weight="3"
             android:hint="Price">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -122,23 +137,95 @@
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/price_option_layout"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:hint="Price Options"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/price_option_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/condition_layout"
+        android:layout_width="match_parent"
+        android:hint="Condition"
+        android:layout_marginHorizontal="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_height="wrap_content"
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/condition_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/select_genre_layout"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        app:helperText="@string/required"
+
+        app:helperTextTextColor="@color/error"
+        tools:layout_editor_absoluteY="570dp"
+        android:layout_marginHorizontal="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/condition_layout"
+        android:hint="Genre"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_genre_input"
+            android:allowClickWhenDisabled="true"
+            android:enabled="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_genre_layout">
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/price_option_layout"
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:hint="Price Options"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/price_option_input"
+            android:layout_height="wrap_content"
+            android:layout_weight="0">
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:inputType="none"/>
+                android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
-
+        <Button
+            android:id="@+id/create_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Create Advert" />
     </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

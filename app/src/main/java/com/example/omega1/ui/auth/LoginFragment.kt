@@ -17,16 +17,17 @@ class LoginFragment : Fragment() {
     companion object {
         fun newInstance() = LoginFragment()
     }
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: AuthViewModel by activityViewModels()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     override fun onResume() {
         super.onResume()
-
-        if(binding.emailInput.text?.isEmpty() != true)binding.emailLayout.helperText = validEmail()
-        if(binding.passwordInput.text?.isEmpty()!=true)binding.passwordLayout.helperText = validPassword()
+        checkAll()
     }
-
+    private fun checkAll(){
+        if(binding.emailInput.text?.isEmpty() == false)binding.emailLayout.helperText = validEmail()
+        if(binding.passwordInput.text?.isEmpty() == false)binding.passwordLayout.helperText = validPassword()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,9 +39,8 @@ class LoginFragment : Fragment() {
         }
         binding.loginButton.setOnClickListener(){
             binding.passwordInput.clearFocus()
-            binding.emailLayout.helperText = validEmail()
             binding.emailInput.clearFocus()
-            binding.passwordLayout.helperText = validPassword()
+            checkAll()
             submitForm()
         }
         if(binding.emailInput.error !=null)binding.emailLayout.helperText = validEmail()

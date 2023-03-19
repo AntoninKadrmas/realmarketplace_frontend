@@ -8,14 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 
 import com.example.omega1.ui.auth.LoginFragment
-import com.example.omega1.ui.auth.MainViewModel
+import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.auth.RegisterFragment
 import com.example.omega1.databinding.ActivityAuthBinding
 
 
 class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
-    private val viewModel:MainViewModel by viewModels()
+    private val viewModel:AuthViewModel by viewModels()
 
     private var actual = 0
     private lateinit var listOfFragments:List<Fragment>
@@ -33,7 +33,7 @@ class AuthActivity : AppCompatActivity() {
             actual = value
             rotateFragment()
         })
-        viewModel.finishActivity.observe(this, Observer {
+        viewModel.userToken.observe(this, Observer {
             val mainKeyValueString = R.string.real_market_place_key_value.toString()
             val userAuthTokenString = R.string.user_auth_token.toString()
             val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)

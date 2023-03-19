@@ -11,9 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.omega1.databinding.ActivityMainBinding
+import com.example.omega1.model.UserTokenAuth
 import com.example.omega1.rest.EnumService
 import com.example.omega1.rest.EnumViewData
+import com.example.omega1.rest.GenreItem
 import com.example.omega1.rest.RetrofitInstance
+import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.CreateFragment
 import com.example.omega1.ui.favorite.FavoriteFragment
 import com.example.omega1.ui.other.EyeFeature
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navView: BottomNavigationView
     private lateinit var timeOutClear:Handler
     private val enumViewDataModel:EnumViewData by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -63,8 +67,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retroServiceEnum = RetrofitInstance.getRetroFitInstance().create(EnumService::class.java)
-        loadPriceEnum()
         loadConditionEnum()
+        loadPriceEnum()
+        loadGenreEnum()
         //cleanUserToken() //odkomn=entovat do provozu
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -82,8 +87,15 @@ class MainActivity : AppCompatActivity() {
             val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
             when(item.itemId){
                 R.id.navigation_favorite->{
-                    if(mainKeyValue.getString(userAuthTokenString,"")=="")showFragment(3)
-                    else showFragment(0)
+                    val token = mainKeyValue.getString(userAuthTokenString,"")
+                    if(token=="")showFragment(3)
+                    else {
+                        val newToken = UserTokenAuth(
+                            token = token.toString()
+                        )
+                        authViewModel.updateUserToken(newToken)
+                        showFragment(0)
+                    }
                     true
                 }
                 R.id.navigation_search->{
@@ -91,8 +103,15 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_create->{
-                    if(mainKeyValue.getString(userAuthTokenString,"")=="")showFragment(3)
-                    else showFragment(2)
+                    val token = mainKeyValue.getString(userAuthTokenString,"")
+                    if(token=="")showFragment(3)
+                    else {
+                        val newToken = UserTokenAuth(
+                            token = token.toString()
+                        )
+                        authViewModel.updateUserToken(newToken)
+                        showFragment(2)
+                    }
                     true
                 }
                 else->{false}
@@ -123,14 +142,13 @@ class MainActivity : AppCompatActivity() {
             if(response.isSuccessful && response.body()!=null){
                 val stringEnumPrice = response.body()!!.joinToString(";")
                 val oldString = mainKeyValue.getString(loadTextEnum,";")
-                if(oldString==stringEnumPrice)enumViewDataModel.updatePriceEnum(oldString.split(';').toTypedArray())
-                else{
+                if(oldString==stringEnumPrice){
                     mainKeyValue.edit().apply {
                         putString(loadTextEnum,stringEnumPrice)
                         apply()
                     }
-                    enumViewDataModel.updatePriceEnum(response.body()!!.toTypedArray())
                 }
+                enumViewDataModel.updatePriceEnum(response.body()!!.toTypedArray())
             }else{
                 setDefaultPreviousValue(loadTextEnum)
             }
@@ -155,14 +173,48 @@ class MainActivity : AppCompatActivity() {
             if(response.isSuccessful && response.body()!=null){
                 val stringEnumPrice = response.body()!!.joinToString(";")
                 val oldString = mainKeyValue.getString(loadTextEnum,";")
-                if(oldString==stringEnumPrice)enumViewDataModel.updateConditionEnum(oldString.split(';').toTypedArray())
-                else{
+                if(oldString!=stringEnumPrice) {
                     mainKeyValue.edit().apply {
                         putString(loadTextEnum,stringEnumPrice)
                         apply()
                     }
-                    enumViewDataModel.updateConditionEnum(response.body()!!.toTypedArray())
                 }
+                enumViewDataModel.updateConditionEnum(response.body()!!.toTypedArray())
+            }else{
+                setDefaultPreviousValue(loadTextEnum)
+            }
+            return@launch
+        }
+    }
+    @SuppressLint("ResourceType")
+    private fun loadGenreEnum(){
+        val mainKeyValueString = R.string.real_market_place_key_value.toString()
+        val loadTextEnum = getString(R.string.saved_enum_genre)
+        val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
+        lifecycleScope.launch {
+            val response = try{
+                retroServiceEnum.getGenres()
+            }catch (e:IOException){
+                setDefaultPreviousValue(loadTextEnum)
+                return@launch
+            }catch (e:HttpException){
+                setDefaultPreviousValue(loadTextEnum)
+                return@launch
+            }
+            if(response.isSuccessful && response.body()!=null){
+                val oldString = mainKeyValue.getString(loadTextEnum,";")
+                val list = ArrayList<String>()
+                for(item in response.body()!!){
+                    list.add("${item.name}|${item.type}")
+                }
+                val stringEnumPrice = list.joinToString(";")
+                if(oldString!=stringEnumPrice){
+                    mainKeyValue.edit().apply {
+                        putString(loadTextEnum,stringEnumPrice)
+                        apply()
+                    }
+                }
+                enumViewDataModel.updateGenreEnum(response.body()!!)
             }else{
                 setDefaultPreviousValue(loadTextEnum)
             }
@@ -176,9 +228,15 @@ class MainActivity : AppCompatActivity() {
         if (oldString != null) {
             if(variable.toLowerCase().contains("price")) enumViewDataModel.updatePriceEnum(oldString.split(';').toTypedArray())
             else if(variable.toLowerCase().contains("condition")) enumViewDataModel.updateConditionEnum(oldString.split(';').toTypedArray())
-        }
-    }
-    fun onTaskRemoved(rootIntent: Intent?) {
+            else if(variable.toLowerCase().contains("genre")){
+                val list = ArrayList<GenreItem>()
+                for(item in oldString.split(';').toTypedArray()){
+                    val temp = item.split('|')
+                    list.add(GenreItem(temp[0],temp[1]))
+                }
+                enumViewDataModel.updateGenreEnum(list)
+            }
 
+        }
     }
 }

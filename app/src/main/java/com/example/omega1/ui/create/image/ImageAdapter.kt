@@ -1,6 +1,5 @@
 package com.example.omega1.ui.create.image
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omega1.R
-import kotlinx.android.synthetic.main.create_image.view.*
+import kotlinx.android.synthetic.main.adapter_create_image.view.*
 
 class ImageAdapter(
     private var images:MutableList<Uri>,
@@ -38,7 +37,7 @@ class ImageAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapterHolder {
         return ImageAdapterHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.create_image,
+                R.layout.adapter_create_image,
                 parent,
                 false
             )

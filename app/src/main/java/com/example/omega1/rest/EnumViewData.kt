@@ -7,22 +7,16 @@ import kotlin.math.log
 
 class EnumViewData:ViewModel() {
     private val mutablePriceEnum = MutableLiveData<Array<String>>()
-    private val mutableGenreFictionEnum = MutableLiveData<Array<String>>()
-    private val mutableNonGenreFictionEnum = MutableLiveData<Array<String>>()
+    private val mutableGenreEnum = MutableLiveData<ArrayList<GenreItem>>()
     private val mutableConditionEnum = MutableLiveData<Array<String>>()
     val priceEnum: LiveData<Array<String>> get() = mutablePriceEnum
-    val genreFictionEnum: LiveData<Array<String>> get() = mutableGenreFictionEnum
-    val genreNonFictionEnum: LiveData<Array<String>> get() = mutableNonGenreFictionEnum
+    val genreGenreEnum: LiveData<ArrayList<GenreItem>> get() = mutableGenreEnum
     val conditionEnum: LiveData<Array<String>> get() = mutableConditionEnum
     fun updatePriceEnum(item: Array<String>) {
-        println(item)
         mutablePriceEnum.value = item
     }
-    fun updateGenreFictionEnum(item: Array<String>) {
-        mutableGenreFictionEnum.value = item
-    }
-    fun updateNonGenreFictionEnum(item: Array<String>) {
-        mutableNonGenreFictionEnum.value = item
+    fun updateGenreEnum(item: ArrayList<GenreItem>) {
+        mutableGenreEnum.value = item
     }
     fun updateConditionEnum(item: Array<String>) {
         mutableConditionEnum.value = item

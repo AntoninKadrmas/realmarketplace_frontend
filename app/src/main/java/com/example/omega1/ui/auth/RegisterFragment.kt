@@ -18,11 +18,14 @@ class RegisterFragment : Fragment() {
     companion object {
         fun newInstance() = RegisterFragment()
     }
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: AuthViewModel by activityViewModels()
     private var _binding: FragmentSigninBinding? = null
     private val binding get() = _binding!!
     override fun onResume() {
         super.onResume()
+        checkAll()
+    }
+    private fun checkAll(){
         if (binding.passwordSecondInput.text?.isEmpty() == false) binding.passwordSecondLayout.helperText = validPasswordSecond()
         if (binding.passwordFirstInput.text?.isEmpty() == false) binding.passwordFirstLayout.helperText = validPasswordFirst()
         if (binding.firstNameInput.text?.isEmpty() == false) binding.firstNameLayout.helperText = validFirstName()
@@ -48,6 +51,7 @@ class RegisterFragment : Fragment() {
             binding.emailInput.clearFocus()
             binding.phoneInput.clearFocus()
             binding.idInput.clearFocus()
+            checkAll()
             submitForm()
         }
         focusPasswordSecond()
@@ -67,8 +71,7 @@ class RegisterFragment : Fragment() {
         val validEmail = binding.emailLayout.helperText==null
         val validPhone = binding.phoneLayout.helperText==null
         val validIdNumber = binding.idLayout.helperText==null
-        if(
-            validPasswordFirst&&
+        if(validPasswordFirst&&
             validPasswordSecond&&
             validIdNumber&&
             validFirstName&&
@@ -213,8 +216,7 @@ class RegisterFragment : Fragment() {
         val checkDigitCharacter = passwordText.matches(".*[0-9]+.*".toRegex())
         val checkSpecialCharacter = passwordText.matches(".*[^A-Za-z0-9\\s]+.*".toRegex())
         val checkSamePassword = binding.passwordFirstInput.text.toString()==passwordText
-        if(
-            !checkLength||
+        if(!checkLength||
             !checkLowerCharacter||
             !checkUpperCharacter||
             !checkDigitCharacter||
