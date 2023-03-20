@@ -1,6 +1,6 @@
 package com.example.omega1.ui.create
+
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
@@ -20,15 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
 import com.example.omega1.SelectGenre
 import com.example.omega1.databinding.FragmentCreateBinding
+import com.example.omega1.foreign.usefullTools
 import com.example.omega1.model.AdvertModel
-import com.example.omega1.ui.create.image.ImageAdapter
 import com.example.omega1.rest.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
+import com.example.omega1.ui.create.image.ImageAdapter
+import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
-
-
+import kotlinx.coroutines.*
+import java.io.File
 class CreateFragment : Fragment() {
-
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var priceOptions: Array<String>
     private lateinit var condition: Array<String>
@@ -39,7 +39,6 @@ class CreateFragment : Fragment() {
     private val enumViewDataModel: EnumViewData by activityViewModels()
     private var _binding: FragmentCreateBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var pickMultipleMedia :ActivityResultLauncher<PickVisualMediaRequest>
     companion object {
         fun newInstance() = CreateFragment()
@@ -47,9 +46,9 @@ class CreateFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if(this::priceOptions.isInitialized&&this::condition.isInitialized)updatePriceDropDown()
-        if(createViewModel.images.value!=null&&binding.imageCounter.text=="0/$maxImage"){
-            actualImage=createViewModel.images.value!!.size
-            for(uri in createViewModel.images.value!!){
+        if(createViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/$maxImage"){
+            actualImage=createViewModel.imagesFile.value!!.size
+            for(uri in createViewModel.imagesFile.value!!){
                 imageAdapter.addNewImage(uri)
             }
             binding.imageCounter.text = "$actualImage/$maxImage"
@@ -77,15 +76,15 @@ class CreateFragment : Fragment() {
     ): View {
         pickMultipleMedia=
             registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(maxImage)) { uris ->
-                handleOutput(uris)
+                    handleOutput(uris)
             }
         priceOptions = enumViewDataModel.priceEnum.value!!
         condition = enumViewDataModel.conditionEnum.value!!
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         imageAdapter = ImageAdapter(mutableListOf(), clickDelete = {
-            removeUri:Uri->imageClickDelete(removeUri)
+            removeUri:File->imageClickDelete(removeUri)
         },clickAdd={
-            addUri:Uri->imageClickAdd(addUri)
+            addUri:File->imageClickAdd(addUri)
         })
         binding.recyclerView.adapter = imageAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(FragmentActivity(),LinearLayoutManager.HORIZONTAL,false)
@@ -119,7 +118,8 @@ class CreateFragment : Fragment() {
             checkAll()
             submitForm()
         }
-        imageAdapter.addNewImage(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
+        println(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path)
+        imageAdapter.addNewImage(File(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path))
         focusCondition()
         focusAdvertDescription()
         focusPrice()
@@ -159,37 +159,40 @@ class CreateFragment : Fragment() {
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 val name: String? = data?.getStringExtra("name")
                 val type: String? = data?.getStringExtra("type")
                 if (name?.isNotEmpty()==true && type?.isNotEmpty()==true){
                     binding.selectGenreInput.setText("$name/$type")
-
                 }
                 else{
                     binding.selectGenreInput.text = null
                 }
                 binding.selectGenreLayout.helperText=validGenre()
             }
+
         }
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private fun imageClickDelete(uri:Uri){
+    private fun imageClickDelete(file:File){
         actualImage--
-        val indexOfImage = imageAdapter.positionOfImage(uri)
-        imageAdapter.removeNewImage(uri)
+        val indexOfImage = imageAdapter.positionOfImage(file)
+        imageAdapter.removeNewImage(file)
         imageAdapter.notifyItemRemoved(indexOfImage)
-        binding.imageCounter.setText("$actualImage/$maxImage")
-        createViewModel.removeOld(uri)
+        binding.imageCounter.text = "$actualImage/$maxImage"
+        createViewModel.removeOldFileByPos(indexOfImage-1)
+        println("$indexOfImage $actualImage")
         if(indexOfImage==1&&actualImage>0)(binding.recyclerView.findViewHolderForLayoutPosition(2) as ImageAdapter.ImageAdapterHolder).itemView.cover_image.visibility = View.VISIBLE
     }
-    private fun imageClickAdd(uri:Uri){
+    private fun imageClickAdd(uri:File){
         pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
+
     private fun handleOutput(uris:List<Uri>){
         if (uris.isNotEmpty()) {
             var actualMaximum:Int = maxImage-actualImage
@@ -197,15 +200,25 @@ class CreateFragment : Fragment() {
             else Toast.makeText(context,"You can use just 5 photos",Toast.LENGTH_SHORT).show()
             actualImage += if(uris.size<=actualMaximum) uris.size else actualMaximum
             actualMaximum--
-            val imageList= ArrayList<Uri>()
-            for(value in 0..actualMaximum){
-                imageAdapter.addNewImage(uris[value])
-                imageList.add(uris[value])
-            }
-            if(++actualMaximum>0){
-                createViewModel.appendNew(imageList)
-                imageAdapter.notifyDataSetChanged()
-                binding.imageCounter.setText("$actualImage/$maxImage")
+            val fileArray = ArrayList<File>()
+            val extensionList = listOf(".png",".jpg",".svg",".jpeg")
+            CoroutineScope(Dispatchers.Main).launch {
+                for(value in 0..actualMaximum){
+                    var file = context?.let { usefullTools.getFileFromUri(uris[value], it) }
+                    val extension = file?.absolutePath?.lastIndexOf(".")
+                        ?.let { file?.absolutePath?.substring(it) }
+                    file = context?.let { Compressor.compress(it, file!!) }!!
+                    if(extensionList.contains(extension)){
+                            imageAdapter.addNewImage(file!!)
+                            fileArray.add(file!!)
+                    }
+                    else Toast.makeText(context,"Allowed file extensions are ${extensionList.joinToString(", ")}.$value. extension is $extension",Toast.LENGTH_SHORT).show()
+                }
+                if(fileArray.size>0){
+                    binding.imageCounter.text = "$actualImage/$maxImage"
+                    createViewModel.appendNewFile(fileArray)
+                    imageAdapter.notifyDataSetChanged()
+                }
             }
         } else {
         }

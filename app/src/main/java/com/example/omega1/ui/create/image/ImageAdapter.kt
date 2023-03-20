@@ -1,6 +1,6 @@
 package com.example.omega1.ui.create.image
 
-import android.net.Uri
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +8,18 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omega1.R
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
+import java.io.File
+
 
 class ImageAdapter(
-    private var images:MutableList<Uri>,
-    private var clickDelete: (Uri) -> Unit,
-    private var clickAdd: (Uri) -> Unit
+    private var images:MutableList<File>,
+    private var clickDelete: (File) -> Unit,
+    private var clickAdd: (File) -> Unit
 ): RecyclerView.Adapter<ImageAdapter.ImageAdapterHolder>() {
     class ImageAdapterHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
-        fun bind(curImage: Uri, clickDelete: (Uri) -> Unit, clickAdd: (Uri) -> Unit, position: Int) {
-            itemView.image_view.setImageURI(curImage)
+        fun bind(curImage: File, clickDelete: (File) -> Unit, clickAdd: (File) -> Unit, position: Int) {
+            val myBitmap = BitmapFactory.decodeFile(curImage.absolutePath)
+            itemView.image_view.setImageBitmap(myBitmap)
             itemView.image_view.scaleType = ImageView.ScaleType.CENTER_CROP
             if(position ==0){
                 itemView.delete_text.visibility = View.GONE
@@ -49,13 +52,13 @@ class ImageAdapter(
     override fun onBindViewHolder(holder: ImageAdapterHolder, position: Int) {
         holder.bind(images[position],clickDelete,clickAdd,position)
     }
-    fun addNewImage(image:Uri){
+    fun addNewImage(image:File){
         images.add(image)
     }
-    fun removeNewImage(image:Uri){
+    fun removeNewImage(image:File){
         images.remove(image)
     }
-    fun positionOfImage(image:Uri):Int{
+    fun positionOfImage(image:File):Int{
         return images.indexOf(image)
     }
 }
