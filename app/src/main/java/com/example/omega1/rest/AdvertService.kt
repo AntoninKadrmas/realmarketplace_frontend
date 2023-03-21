@@ -10,9 +10,7 @@ import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface AdvertService {
-    @POST(value="/advert/create")
-    suspend fun createAdvert(@Body advertModel:AdvertModel,@Query("token") token:String): Response<Any>
     @Multipart
-    @POST(value = "/image/public")
-    suspend fun uploadAdvertImage(@Part uploaded_file:MultipartBody.Part):Response<Any>
+    @POST(value="/advert/create")
+    suspend fun createAdvert(@Part body:ArrayList<MultipartBody.Part>,@Query("token") token:String): Response<Any>
 }

@@ -8,8 +8,6 @@ import retrofit2.http.Body
 import retrofit2.http.Query
 import com.google.gson.annotations.SerializedName
 
-
-
 interface AuthService {
     @POST(value="/user/register")
     suspend fun registerUser(@Body user:UserModel):Response<Any>

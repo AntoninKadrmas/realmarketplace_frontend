@@ -28,6 +28,7 @@ import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
 import kotlinx.coroutines.*
 import java.io.File
+
 class CreateFragment : Fragment() {
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var priceOptions: Array<String>
@@ -172,7 +173,6 @@ class CreateFragment : Fragment() {
                 }
                 binding.selectGenreLayout.helperText=validGenre()
             }
-
         }
     }
     override fun onDestroyView() {
@@ -198,7 +198,6 @@ class CreateFragment : Fragment() {
             var actualMaximum:Int = maxImage-actualImage
             if(uris.size<=actualMaximum)actualMaximum = uris.size
             else Toast.makeText(context,"You can use just 5 photos",Toast.LENGTH_SHORT).show()
-            actualImage += if(uris.size<=actualMaximum) uris.size else actualMaximum
             actualMaximum--
             val fileArray = ArrayList<File>()
             val extensionList = listOf(".png",".jpg",".svg",".jpeg")
@@ -209,13 +208,14 @@ class CreateFragment : Fragment() {
                         ?.let { file?.absolutePath?.substring(it) }
                     file = context?.let { Compressor.compress(it, file!!) }!!
                     if(extensionList.contains(extension)){
+                            actualImage++
+                            binding.imageCounter.text = "$actualImage/$maxImage"
                             imageAdapter.addNewImage(file!!)
                             fileArray.add(file!!)
                     }
                     else Toast.makeText(context,"Allowed file extensions are ${extensionList.joinToString(", ")}.$value. extension is $extension",Toast.LENGTH_SHORT).show()
                 }
                 if(fileArray.size>0){
-                    binding.imageCounter.text = "$actualImage/$maxImage"
                     createViewModel.appendNewFile(fileArray)
                     imageAdapter.notifyDataSetChanged()
                 }
