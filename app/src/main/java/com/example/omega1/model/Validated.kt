@@ -1,9 +1,7 @@
 package com.example.omega1.model
 
 data class Validated(
-    val validIdAndFace: Boolean,
-    val validIdBack: Boolean,
-    val validIdFront: Boolean,
-    val validSecondIdFront: Boolean,
-    val validSecondIdBack: Boolean
+    val validID:Boolean,
+    val validEmail:Boolean,
+    val validSMS:Boolean,
 )

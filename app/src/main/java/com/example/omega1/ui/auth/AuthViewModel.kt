@@ -73,7 +73,7 @@ class AuthViewModel : ViewModel() {
     fun login(userModel: UserModelLogin, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
-                retroServiceAuth.loginUser(userModel.email,userModel.password)
+                retroServiceAuth.loginUser(okhttp3.Credentials.basic("username", userModel.password))
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()

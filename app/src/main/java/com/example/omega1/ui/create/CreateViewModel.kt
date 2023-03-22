@@ -10,9 +10,9 @@ import com.example.omega1.model.AdvertModel
 import com.example.omega1.rest.AdvertService
 import com.example.omega1.rest.RetrofitInstance
 import com.example.omega1.rest.ReturnTypeError
+import com.example.omega1.rest.ReturnTypeSuccess
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -23,20 +23,22 @@ import java.io.IOException
 
 class CreateViewModel : ViewModel() {
     private var mutableImagesFile = MutableLiveData<ArrayList<File>>()
+    val clean = MutableLiveData<Any>()
     val imagesFile: LiveData<ArrayList<File>> get() = mutableImagesFile
     fun appendNewFile(new_list: ArrayList<File>) {
         var list = ArrayList<File>()
-        if (mutableImagesFile.value != null){
+        if (mutableImagesFile.value != null) {
             list = mutableImagesFile.value!!
         }
-        for(item in new_list){
+        for (item in new_list) {
             list.add(item)
         }
         mutableImagesFile.value = list
     }
-    fun removeOldFileByPos(position:Int) {
+
+    fun removeOldFileByPos(position: Int) {
         val list = ArrayList<File>()
-        var count=0;
+        var count = 0;
         if (mutableImagesFile.value != null)
             for (file in mutableImagesFile.value!!) {
                 if (count != position) list.add(file)
@@ -44,18 +46,26 @@ class CreateViewModel : ViewModel() {
             }
         mutableImagesFile.value = list
     }
+    fun clearFiles( ){
+        mutableImagesFile.value=ArrayList<File>()
+    }
     private var retroServiceAdvert: AdvertService = RetrofitInstance.getRetroFitInstance().create(
         AdvertService::class.java
     )
+
     fun createAdvert(advertModel: AdvertModel, userToken: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val bodyList = ArrayList<MultipartBody.Part>()
             if (!imagesFile.value.isNullOrEmpty()) {
-                for(file in imagesFile.value!!){
+                for (file in imagesFile.value!!) {
                     val requestFile: RequestBody =
                         RequestBody.create(
-                            "image/${file?.absolutePath.toString().substring(file?.absolutePath.toString().lastIndexOf(".")+1)}"
-                                .toMediaTypeOrNull(), file!!)
+                            "image/${
+                                file?.absolutePath.toString()
+                                    .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
+                            }"
+                                .toMediaTypeOrNull(), file!!
+                        )
                     val body = MultipartBody.Part.createFormData(
                         "uploaded_file",
                         file?.name,
@@ -64,15 +74,40 @@ class CreateViewModel : ViewModel() {
                     bodyList.add(body)
                 }
             }
-            val requestBody: RequestBody = RequestBody.create("text/json".toMediaTypeOrNull(),Gson().toJson(advertModel).toString())
-            bodyList.add(MultipartBody.Part.createFormData(
-                "advert_info",
-                "advert_info",
-                requestBody
-            ))
-            val response = try{
+            val response = try {
                 println(bodyList)
-                retroServiceAdvert.createAdvert(bodyList, userToken)
+                retroServiceAdvert.createAdvert(
+                    bodyList,
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.title.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.description.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.genreName.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.genreType.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.price.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.priceOption.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
+                        advertModel.condition.toString()
+                    ),
+                    userToken
+                )
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
@@ -85,9 +120,12 @@ class CreateViewModel : ViewModel() {
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
-                val body: AdvertId? =
-                    Gson().fromJson(Gson().toJson(response.body()), AdvertId::class.java)
-
+                val body: ReturnTypeSuccess? =
+                    Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccess::class.java)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
+                    clean.value=true
+                }
             } else {
                 val errorBody = response.errorBody()
                 try {
@@ -106,43 +144,4 @@ class CreateViewModel : ViewModel() {
             return@launch
         }
     }
-//    private fun uploadImage(filePart: MultipartBody.Part, context: Context) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val response = try {
-//                retroServiceAdvert.uploadAdvertImage(filePart)
-//            } catch (e: IOException) {
-//                withContext(Dispatchers.Main) {
-//                    println(e)
-//                    Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-//                }
-//                return@launch
-//            } catch (e: HttpException) {
-//                withContext(Dispatchers.Main) {
-//                    println(e)
-//                    Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-//                }
-//                return@launch
-//            }
-//            if (response.isSuccessful && response.body() != null) {
-//                val body: AdvertId? =
-//                    Gson().fromJson(Gson().toJson(response.body()), AdvertId::class.java)
-////                println(body)
-//            } else {
-//                val errorBody = response.errorBody()
-//                try {
-//                    val errorResponse: ReturnTypeError? =
-//                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-//                    withContext(Dispatchers.Main) {
-//                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-//                    }
-//                } catch (e: Exception) {
-//                    withContext(Dispatchers.Main) {
-//                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                }
-//            }
-//            return@launch
-//        }
-//    }
 }

@@ -7,15 +7,21 @@ import retrofit2.http.GET
 import retrofit2.http.Body
 import retrofit2.http.Query
 import com.google.gson.annotations.SerializedName
+import retrofit2.http.Header
 
 interface AuthService {
     @POST(value="/user/register")
     suspend fun registerUser(@Body user:UserModel):Response<Any>
-    @GET(value="/user/login")
-    suspend fun loginUser(@Query("email") email:String,@Query("password") password:String):Response<Any>
+    @POST(value="/user/login")
+    suspend fun loginUser(
+        @Header("Authorization") credential:String):Response<Any>
 }
 
 data class ReturnTypeError(
     @SerializedName("error")
     val error:String
-    )
+)
+data class ReturnTypeSuccess(
+    @SerializedName("error")
+    val success:String
+)

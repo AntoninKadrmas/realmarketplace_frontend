@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentSigninBinding
-import com.example.omega1.rest.*
 import com.example.omega1.model.UserModel
 import com.example.omega1.model.Validated
 
@@ -32,7 +31,6 @@ class RegisterFragment : Fragment() {
         if (binding.lastNameInput.text?.isEmpty() == false) binding.lastNameLayout.helperText = validLastName()
         if (binding.emailInput.text?.isEmpty() == false) binding.emailLayout.helperText = validEmail()
         if (binding.phoneInput.text?.isEmpty() == false) binding.phoneLayout.helperText = validPhone()
-        if (binding.idInput.text?.isEmpty() == false) binding.idLayout.helperText = validIdNumber()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +48,6 @@ class RegisterFragment : Fragment() {
             binding.lastNameInput.clearFocus()
             binding.emailInput.clearFocus()
             binding.phoneInput.clearFocus()
-            binding.idInput.clearFocus()
             checkAll()
             submitForm()
         }
@@ -60,7 +57,6 @@ class RegisterFragment : Fragment() {
         focusLastName()
         focusEmail()
         focusPhone()
-        focusIdNumber()
         return root
     }
     private fun submitForm(){
@@ -70,10 +66,8 @@ class RegisterFragment : Fragment() {
         val validLastName = binding.lastNameLayout.helperText==null
         val validEmail = binding.emailLayout.helperText==null
         val validPhone = binding.phoneLayout.helperText==null
-        val validIdNumber = binding.idLayout.helperText==null
         if(validPasswordFirst&&
             validPasswordSecond&&
-            validIdNumber&&
             validFirstName&&
             validLastName&&
             validEmail&&
@@ -83,10 +77,9 @@ class RegisterFragment : Fragment() {
                 email= binding.emailInput.text.toString(),
                 first_name= binding.emailInput.text.toString(),
                 last_name= binding.lastNameInput.text.toString(),
-                cardId= binding.idInput.text.toString(),
                 password= binding.passwordFirstInput.text.toString(),
                 phone= binding.phoneInput.text.toString(),
-                validated= Validated(false,false,false,false,false)
+                validated= Validated(false,false,false)
             )
             context?.let { viewModel.register(newUser, it) }
         }else{
@@ -155,23 +148,6 @@ class RegisterFragment : Fragment() {
             return "Invalid phone number"
         }
         binding.phoneInput.error = null
-        return null
-    }
-    private fun focusIdNumber(){
-        binding.idInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.idInput.text?.isNotEmpty()==true) {
-                binding.idLayout.helperText = validIdNumber()
-            }else if(!focused && binding.idLayout.helperText!=resources.getString(R.string.required))binding.idLayout.helperText = resources.getString(R.string.required)
-        }
-    }
-    private fun validIdNumber():String?{
-        val idNumber = binding.idInput.text.toString()
-        val regex = Regex("^[0-9]{6}[0-9]{3,4}\$")
-        if(!regex.matches(idNumber)||(idNumber.toInt()%11!=0||(idNumber.length<9||idNumber.length>10))){
-            binding.idInput.error ="You have to enter there your National ID number from your id card. It should be 9 or 10 digits."
-            return "Invalid ID number"
-        }
-        binding.idInput.error = null
         return null
     }
     private fun focusPasswordFirst(){
