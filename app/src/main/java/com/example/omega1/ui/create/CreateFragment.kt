@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
@@ -59,15 +60,9 @@ class CreateFragment : Fragment() {
             }
             binding.imageCounter.text = "$actualImage/$maxImage"
         }
-        checkAll()
+        createVerification.checkAll()
     }
-    private fun checkAll(){
-        if(binding.editAdvertNameInput.text?.isEmpty() == false)binding.editAdvertNameLayout.helperText=createVerification.validAdvertName()
-        if(binding.editAdvertDescriptionInput.text?.isEmpty() == false)binding.editAdvertDescriptionLayout.helperText=createVerification.validAdvertDescription()
-        if(binding.priceInput.text?.isEmpty() == false)binding.priceLayout.helperText=createVerification.validPrice()
-        if(binding.conditionInput.text?.isEmpty() == false)binding.conditionLayout.helperText=createVerification.validCondition()
-        if(binding.selectGenreInput.text?.isEmpty() == false)binding.selectGenreLayout.helperText=createVerification.validGenre()
-    }
+
     private fun updatePriceDropDown(){
         val priceArrayAdapter = ArrayAdapter(requireContext(),R.layout.adapter_drop_down_price_option,priceOptions)
         val conditionArrayAdapter = ArrayAdapter(requireContext(),R.layout.adapter_drop_down_price_option,condition)
@@ -122,18 +117,16 @@ class CreateFragment : Fragment() {
             binding.editAdvertDescriptionInput.clearFocus()
             binding.priceInput.clearFocus()
             binding.conditionInput.clearFocus()
-            checkAll()
+            createVerification.checkAll()
             submitForm()
         }
-        createViewModel.clean.observe(FragmentActivity(), Observer {
-            clearAllData()
-        })
-        println(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path)
+        println(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
         imageAdapter.addNewImage(File(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path))
         createVerification.focusCondition()
         createVerification.focusAdvertDescription()
         createVerification.focusPrice()
         createVerification.focusAdvertName()
+        createVerification.focusAdvertAuthor()
         return binding.root
     }
     private fun submitForm(){
@@ -142,14 +135,17 @@ class CreateFragment : Fragment() {
         val validAdvertPrice = binding.priceLayout.helperText==null
         val validAdvertCondition = binding.conditionLayout.helperText==null
         val validAdvertGenre = binding.selectGenreLayout.helperText==null
+        val validAdvertAuthor = binding.editAdvertAuthorLayout.helperText==null
         if( validAdvertName&&
             validAdvertDescription&&
             validAdvertPrice&&
             validAdvertCondition&&
-            validAdvertGenre){
+            validAdvertGenre&&
+            validAdvertAuthor){
             val advertModel = AdvertModel(
                 userId ="",
                 title =binding.editAdvertNameInput.text.toString(),
+                author=binding.editAdvertAuthorInput.text.toString(),
                 description =binding.editAdvertDescriptionInput.text.toString(),
                 createdIn ="",
                 condition =binding.conditionInput.text.toString(),
@@ -159,11 +155,15 @@ class CreateFragment : Fragment() {
                 genreType =binding.selectGenreInput.text.toString().split("/")[1],
                 place ="",
                 mainImage ="",
-                imagesUrls =ArrayList<String>()
+                imagesUrls =ArrayList()
             )
             val token = authViewModel.userToken.value.toString()
-            val imagesUri =
-            context?.let { createViewModel.createAdvert(advertModel,token, it) }
+            val successful:Boolean =
+                context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
+            if(successful){
+                clearAllData()
+                createViewModel.clean.value=false
+            }
         }else{
             Toast.makeText(context,"Some of the input fields are still invalid!",Toast.LENGTH_LONG).show()
         }
@@ -242,13 +242,14 @@ class CreateFragment : Fragment() {
         } else {
         }
     }
-    fun clearAllData(){
+    private fun clearAllData(){
         binding.editAdvertNameInput.text = null
         binding.editAdvertDescriptionInput.text= null
         binding.priceOptionInput.setText(priceOptions[0])
         binding.priceInput.text=null
         binding.conditionInput.text=null
         binding.selectGenreInput.text=null
+        binding.editAdvertAuthorInput.text=null
         if(createViewModel.imagesFile.value!=null){
             for(uri in createViewModel.imagesFile.value!!){
                 imageAdapter.removeNewImage(uri)
@@ -256,6 +257,6 @@ class CreateFragment : Fragment() {
             imageAdapter.notifyDataSetChanged()
         }
         createViewModel.clearFiles()
-        checkAll()
+        createVerification.checkAll()
     }
 }

@@ -1,6 +1,7 @@
 package com.example.omega1.ui.create
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,7 +24,7 @@ import java.io.IOException
 
 class CreateViewModel : ViewModel() {
     private var mutableImagesFile = MutableLiveData<ArrayList<File>>()
-    val clean = MutableLiveData<Any>()
+    val clean = MutableLiveData<Boolean>()
     val imagesFile: LiveData<ArrayList<File>> get() = mutableImagesFile
     fun appendNewFile(new_list: ArrayList<File>) {
         var list = ArrayList<File>()
@@ -53,7 +54,7 @@ class CreateViewModel : ViewModel() {
         AdvertService::class.java
     )
 
-    fun createAdvert(advertModel: AdvertModel, userToken: String, context: Context) {
+    fun createAdvert(advertModel: AdvertModel, userToken: String, context: Context):Boolean {
         CoroutineScope(Dispatchers.IO).launch {
             val bodyList = ArrayList<MultipartBody.Part>()
             if (!imagesFile.value.isNullOrEmpty()) {
@@ -111,17 +112,20 @@ class CreateViewModel : ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    clean.value=false
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    clean.value=false
                 }
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val body: ReturnTypeSuccess? =
                     Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccess::class.java)
+                Log.i("TAG_ADVERT",body.toString())
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
                     clean.value=true
@@ -133,15 +137,19 @@ class CreateViewModel : ViewModel() {
                         Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
+                        clean.value=false
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
                             .show()
+                        clean.value=false
                     }
                 }
             }
             return@launch
         }
+        if(clean.value==null)return false
+        return clean.value!!
     }
 }

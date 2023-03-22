@@ -22,6 +22,6 @@ data class ReturnTypeError(
     val error:String
 )
 data class ReturnTypeSuccess(
-    @SerializedName("error")
+    @SerializedName("success")
     val success:String
 )
