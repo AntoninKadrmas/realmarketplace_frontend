@@ -85,6 +85,10 @@ class CreateViewModel : ViewModel() {
                     ),
                     RequestBody.create(
                         "text/plain".toMediaTypeOrNull(),
+                        advertModel.author.toString()
+                    ),
+                    RequestBody.create(
+                        "text/plain".toMediaTypeOrNull(),
                         advertModel.description.toString()
                     ),
                     RequestBody.create(

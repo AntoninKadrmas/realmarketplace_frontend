@@ -16,9 +16,10 @@ class AdvertAdapter(private var advertList:ArrayList<AdvertModel>):RecyclerView.
     class AdvertViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         fun bind(curAdvert:AdvertModel,position:Int){
             itemView.image_view.scaleType = ImageView.ScaleType.CENTER_CROP
-            Picasso.get().load("https://www.realmarketplace.shop"+curAdvert.mainImage).into(itemView.image_view)
+            Picasso.get().load("https://www.realmarketplace.shop/advert"+curAdvert.mainImage).into(itemView.image_view)
             itemView.advert_title_text.text = curAdvert.title
             itemView.advert_description_text.text = curAdvert.description
+            itemView.advert_author_text.text = curAdvert.author
             itemView.advert_genre_text.text = "${curAdvert.genreName}/${curAdvert.genreType}"
             itemView.advert_condition_text.text = curAdvert.condition
             itemView.advert_price_text.text = curAdvert.price

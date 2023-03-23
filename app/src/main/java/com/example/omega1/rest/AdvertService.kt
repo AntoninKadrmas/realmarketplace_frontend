@@ -19,6 +19,7 @@ interface AdvertService {
     suspend fun createAdvert(
         @Part body:ArrayList<MultipartBody.Part>,
         @Part("title")  advertTitle:RequestBody,
+        @Part("author")  advertAuthor:RequestBody,
         @Part("description")  advertDescription:RequestBody,
         @Part("genreName")  advertGenreName:RequestBody,
         @Part("genreType")  advertGenreType:RequestBody,

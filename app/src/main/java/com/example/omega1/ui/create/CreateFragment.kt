@@ -92,11 +92,12 @@ class CreateFragment : Fragment() {
             if(position==0){
                 binding.priceInput.isEnabled=true
                 binding.priceLayout.isCounterEnabled=true
+                binding.priceLayout.counterMaxLength = 10
                 binding.priceLayout.helperText=resources.getString(R.string.required)
                 binding.priceInput.text = null
             }else{
                 binding.priceInput.isEnabled=false
-                binding.priceLayout.isCounterEnabled=false
+                binding.priceLayout.counterMaxLength = priceOptions[position].length
                 binding.priceLayout.helperText=null
                 binding.priceInput.setText(priceOptions[position])
             }
@@ -160,6 +161,7 @@ class CreateFragment : Fragment() {
                 mainImage ="",
                 imagesUrls =ArrayList()
             )
+            println(advertModel)
             val token = authViewModel.userToken.value.toString()
             context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
         }else{
