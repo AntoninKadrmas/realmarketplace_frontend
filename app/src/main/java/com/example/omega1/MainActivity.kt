@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         enumViewDataModel.loadConditionEnum()
         enumViewDataModel.loadPriceEnum()
         enumViewDataModel.loadGenreEnum()
-        cleanUserToken() //odkomn=entovat do provozu
+//        cleanUserToken() //odkomn=entovat do provozu
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         listOfFragments = listOf(

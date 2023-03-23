@@ -1,6 +1,7 @@
 package com.example.omega1.ui.create.image
 
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class ImageAdapter(
             itemView.image_view.setImageBitmap(myBitmap)
             itemView.image_view.scaleType = ImageView.ScaleType.CENTER_CROP
             if(position ==0){
+                itemView.image_view.setImageURI(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
                 itemView.delete_text.visibility = View.GONE
                 itemView.cover_image.visibility = View.GONE
                 itemView.image_view.setOnClickListener(){

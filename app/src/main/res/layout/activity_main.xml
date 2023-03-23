@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            app:menu="@menu/top_tool_bar"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <!-- "Mark Favorite", should appear as action button if possible -->
+
+        </androidx.appcompat.widget.Toolbar>
         <FrameLayout
             android:id="@+id/nav_host_fragment_activity_main"
             android:name="androidx.navigation.fragment.NavHostFragment"

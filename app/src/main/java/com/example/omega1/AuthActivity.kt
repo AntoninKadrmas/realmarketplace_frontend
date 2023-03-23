@@ -3,6 +3,7 @@ package com.example.omega1
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -49,5 +50,4 @@ class AuthActivity : AppCompatActivity() {
             .replace(R.id.frame_auth_layout, listOfFragments[actual])
             .commitNow()
     }
-
 }

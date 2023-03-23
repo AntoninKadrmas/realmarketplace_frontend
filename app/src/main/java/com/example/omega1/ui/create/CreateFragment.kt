@@ -124,8 +124,7 @@ class CreateFragment : Fragment() {
                 clearAllData()
             }
         })
-        println(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
-        imageAdapter.addNewImage(File(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path))
+        imageAdapter.addNewImage(File(""))
         createVerification.focusCondition()
         createVerification.focusAdvertDescription()
         createVerification.focusPrice()
