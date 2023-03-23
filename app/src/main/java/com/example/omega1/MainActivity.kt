@@ -1,47 +1,49 @@
 package com.example.omega1
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import com.example.omega1.databinding.ActivityMainBinding
 import com.example.omega1.model.UserTokenAuth
-import com.example.omega1.rest.EnumService
 import com.example.omega1.rest.EnumViewData
-import com.example.omega1.rest.GenreItem
-import com.example.omega1.rest.RetrofitInstance
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.CreateFragment
 import com.example.omega1.ui.favorite.FavoriteFragment
 import com.example.omega1.ui.other.EyeFeature
+import com.example.omega1.ui.other.PermissionViewModel
 import com.example.omega1.ui.search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_eye_feature.*
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var retroServiceEnum:EnumService
     private lateinit var listOfFragments:List<Fragment>
     private lateinit var navView: BottomNavigationView
     private lateinit var timeOutClear:Handler
     private val enumViewDataModel:EnumViewData by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
+    private val permissionModel:PermissionViewModel by viewModels()
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
         timeOutClear.removeCallbacksAndMessages(null)
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            == PackageManager.PERMISSION_GRANTED) {
+            permissionModel.setPermissionStorage(true)
+        }
     }
     private fun cleanUserToken(){
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
@@ -66,11 +68,10 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retroServiceEnum = RetrofitInstance.getRetroFitInstance().create(EnumService::class.java)
-        loadConditionEnum()
-        loadPriceEnum()
-        loadGenreEnum()
-        //cleanUserToken() //odkomn=entovat do provozu
+        enumViewDataModel.loadConditionEnum()
+        enumViewDataModel.loadPriceEnum()
+        enumViewDataModel.loadGenreEnum()
+        cleanUserToken() //odkomn=entovat do provozu
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         listOfFragments = listOf(
@@ -118,125 +119,39 @@ class MainActivity : AppCompatActivity() {
             }
         }
         navView.selectedItemId = R.id.navigation_search
+        permissionModel.permissionStorageAsk.observe(this, Observer {
+            requestPermissionStorage()
+        })
     }
     private fun showFragment(index:Int){
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment_activity_main, listOfFragments[index])
             .commit()
     }
-    @SuppressLint("ResourceType")
-    private fun loadPriceEnum(){
-        val mainKeyValueString = R.string.real_market_place_key_value.toString()
-        val loadTextEnum = R.string.saved_enum_price_option.toString()
-        val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-        lifecycleScope.launch {
-            val response = try{
-                retroServiceEnum.getPrice()
-            }catch (e:IOException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }catch (e:HttpException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }
-            if(response.isSuccessful && response.body()!=null){
-                val stringEnumPrice = response.body()!!.joinToString(";")
-                val oldString = mainKeyValue.getString(loadTextEnum,";")
-                if(oldString==stringEnumPrice){
-                    mainKeyValue.edit().apply {
-                        putString(loadTextEnum,stringEnumPrice)
-                        apply()
-                    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun requestPermissionStorage(){
+        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
+        requestPermissions(listOf(permission).toTypedArray(),PermissionRequestCode.READ_EXTERNAL_STORAGE)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PermissionRequestCode.READ_EXTERNAL_STORAGE -> {
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    permissionModel.setPermissionStorage(true)
+                } else {
+                    permissionModel.setPermissionStorage(false)
                 }
-                enumViewDataModel.updatePriceEnum(response.body()!!.toTypedArray())
-            }else{
-                setDefaultPreviousValue(loadTextEnum)
+                return
             }
-            return@launch
+            else -> {
+            }
         }
     }
-    @SuppressLint("ResourceType")
-    private fun loadConditionEnum(){
-        val mainKeyValueString = R.string.real_market_place_key_value.toString()
-        val loadTextEnum = R.string.saved_enum_condition_option.toString()
-        val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-        lifecycleScope.launch {
-            val response = try{
-                retroServiceEnum.getBookCondition()
-            }catch (e:IOException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }catch (e:HttpException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }
-            if(response.isSuccessful && response.body()!=null){
-                val stringEnumPrice = response.body()!!.joinToString(";")
-                val oldString = mainKeyValue.getString(loadTextEnum,";")
-                if(oldString!=stringEnumPrice) {
-                    mainKeyValue.edit().apply {
-                        putString(loadTextEnum,stringEnumPrice)
-                        apply()
-                    }
-                }
-                enumViewDataModel.updateConditionEnum(response.body()!!.toTypedArray())
-            }else{
-                setDefaultPreviousValue(loadTextEnum)
-            }
-            return@launch
-        }
-    }
-    @SuppressLint("ResourceType")
-    private fun loadGenreEnum(){
-        val mainKeyValueString = R.string.real_market_place_key_value.toString()
-        val loadTextEnum = getString(R.string.saved_enum_genre)
-        val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-        lifecycleScope.launch {
-            val response = try{
-                retroServiceEnum.getGenres()
-            }catch (e:IOException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }catch (e:HttpException){
-                setDefaultPreviousValue(loadTextEnum)
-                return@launch
-            }
-            if(response.isSuccessful && response.body()!=null){
-                val oldString = mainKeyValue.getString(loadTextEnum,";")
-                val list = ArrayList<String>()
-                for(item in response.body()!!){
-                    list.add("${item.name}|${item.type}")
-                }
-                val stringEnumPrice = list.joinToString(";")
-                if(oldString!=stringEnumPrice){
-                    mainKeyValue.edit().apply {
-                        putString(loadTextEnum,stringEnumPrice)
-                        apply()
-                    }
-                }
-                enumViewDataModel.updateGenreEnum(response.body()!!)
-            }else{
-                setDefaultPreviousValue(loadTextEnum)
-            }
-            return@launch
-        }
-    }
-    private fun setDefaultPreviousValue(variable:String){
-        val mainKeyValueString = R.string.real_market_place_key_value.toString()
-        val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-        val oldString = mainKeyValue.getString(variable,";")
-        if (oldString != null) {
-            if(variable.toLowerCase().contains("price")) enumViewDataModel.updatePriceEnum(oldString.split(';').toTypedArray())
-            else if(variable.toLowerCase().contains("condition")) enumViewDataModel.updateConditionEnum(oldString.split(';').toTypedArray())
-            else if(variable.toLowerCase().contains("genre")){
-                val list = ArrayList<GenreItem>()
-                for(item in oldString.split(';').toTypedArray()){
-                    val temp = item.split('|')
-                    list.add(GenreItem(temp[0],temp[1]))
-                }
-                enumViewDataModel.updateGenreEnum(list)
-            }
-
-        }
-    }
+}
+object PermissionRequestCode{
+    const val READ_EXTERNAL_STORAGE = 105
+    const val CAMERA = 106
 }

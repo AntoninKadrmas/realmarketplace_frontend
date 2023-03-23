@@ -38,6 +38,8 @@ android {
 }
 
 dependencies {
+    def picasso = "2.8"
+    implementation "com.squareup.picasso:picasso:$picasso"
     //compress
     implementation 'id.zelory:compressor:3.0.1'
 

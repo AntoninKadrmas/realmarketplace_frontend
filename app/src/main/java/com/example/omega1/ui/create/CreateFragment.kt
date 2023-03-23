@@ -1,9 +1,7 @@
 package com.example.omega1.ui.create
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,11 +12,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
@@ -28,6 +24,7 @@ import com.example.omega1.model.AdvertModel
 import com.example.omega1.rest.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.image.ImageAdapter
+import com.example.omega1.ui.other.PermissionViewModel
 import com.example.omega1.vendor.usefulTools
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
@@ -42,6 +39,7 @@ class CreateFragment : Fragment() {
     private val createViewModel:CreateViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     private val enumViewDataModel: EnumViewData by activityViewModels()
+    private val permissionModel:PermissionViewModel by activityViewModels()
     private val maxImage = 5
     private var actualImage = 0
     private var _binding: FragmentCreateBinding? = null
@@ -120,6 +118,11 @@ class CreateFragment : Fragment() {
             createVerification.checkAll()
             submitForm()
         }
+        createViewModel.clean.observe(viewLifecycleOwner, Observer {
+            if(it){
+                clearAllData()
+            }
+        })
         println(Uri.parse("android.resource://com.example.omega1/drawable/camera_add"))
         imageAdapter.addNewImage(File(Uri.parse("android.resource://com.example.omega1/drawable/camera_add").path))
         createVerification.focusCondition()
@@ -158,12 +161,7 @@ class CreateFragment : Fragment() {
                 imagesUrls =ArrayList()
             )
             val token = authViewModel.userToken.value.toString()
-            val successful:Boolean =
-                context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
-            if(successful){
-                clearAllData()
-                createViewModel.clean.value=false
-            }
+            context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
         }else{
             Toast.makeText(context,"Some of the input fields are still invalid!",Toast.LENGTH_LONG).show()
         }
@@ -199,17 +197,9 @@ class CreateFragment : Fragment() {
         if(indexOfImage==1&&actualImage>0)(binding.recyclerView.findViewHolderForLayoutPosition(2) as ImageAdapter.ImageAdapterHolder).itemView.cover_image.visibility = View.VISIBLE
     }
     private fun imageClickAdd(uri:File){
-        when {
-            context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            } == PackageManager.PERMISSION_GRANTED -> {
-                pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-            }
+        permissionModel.setPermissionStorageAsk(true)
+        if(permissionModel.permissionStorage.value==true){
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
     private fun handleOutput(uris:List<Uri>){

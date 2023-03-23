@@ -1,22 +1,22 @@
 package com.example.omega1.ui.search.advert
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.omega1.R
 import com.example.omega1.model.AdvertModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.adapter_advert.view.*
 import kotlinx.android.synthetic.main.adapter_advert.view.image_view
-import kotlinx.android.synthetic.main.adapter_create_image.view.*
 
 class AdvertAdapter(private var advertList:ArrayList<AdvertModel>):RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
     class AdvertViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         fun bind(curAdvert:AdvertModel,position:Int){
             itemView.image_view.scaleType = ImageView.ScaleType.CENTER_CROP
+            Picasso.get().load("https://www.realmarketplace.shop"+curAdvert.mainImage).into(itemView.image_view)
             itemView.advert_title_text.text = curAdvert.title
             itemView.advert_description_text.text = curAdvert.description
             itemView.advert_genre_text.text = "${curAdvert.genreName}/${curAdvert.genreType}"
