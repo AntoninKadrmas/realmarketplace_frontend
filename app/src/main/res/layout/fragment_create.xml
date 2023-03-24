@@ -225,7 +225,6 @@
             android:layout_marginHorizontal="@dimen/input_element_margin_side"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:hint="Genre"
-
             app:helperText="@string/required"
             app:helperTextTextColor="@color/error"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
@@ -239,7 +238,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:allowClickWhenDisabled="true"
-                android:enabled="false" />
+                android:clickable="true"
+                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout

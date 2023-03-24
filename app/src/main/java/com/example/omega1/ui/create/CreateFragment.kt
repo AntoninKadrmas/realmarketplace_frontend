@@ -1,17 +1,20 @@
 package com.example.omega1.ui.create
 
+import MediaUtils
 import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
@@ -25,11 +28,13 @@ import com.example.omega1.rest.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.image.ImageAdapter
 import com.example.omega1.ui.other.PermissionViewModel
-import com.example.omega1.vendor.usefulTools
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
+
 
 class CreateFragment : Fragment() {
     private lateinit var createVerification:CreateVerification
@@ -44,7 +49,6 @@ class CreateFragment : Fragment() {
     private var actualImage = 0
     private var _binding: FragmentCreateBinding? = null
     private val binding get() = _binding!!
-    private lateinit var pickMultipleMedia :ActivityResultLauncher<PickVisualMediaRequest>
     companion object {
         fun newInstance() = CreateFragment()
     }
@@ -73,10 +77,6 @@ class CreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        pickMultipleMedia=
-            registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(maxImage)) { uris ->
-                    handleOutput(uris)
-            }
         priceOptions = enumViewDataModel.priceEnum.value!!
         condition = enumViewDataModel.conditionEnum.value!!
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
@@ -102,15 +102,22 @@ class CreateFragment : Fragment() {
                 binding.priceInput.setText(priceOptions[position])
             }
         }
-        binding.selectGenreInput.setOnClickListener(){
-                val intent = Intent(context,SelectGenre::class.java)
-                val list = ArrayList<String>()
-                for(item in enumViewDataModel.genreGenreEnum.value!!){
-                    list.add("${item.name}|${item.type}")
+        binding.selectGenreInput.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        val intent = Intent(context,SelectGenre::class.java)
+                        val list = ArrayList<String>()
+                        for(item in enumViewDataModel.genreGenreEnum.value!!){
+                            list.add("${item.name}|${item.type}")
+                        }
+                        intent.putStringArrayListExtra("genreArray",list)
+                        startActivityForResult(intent,10)
+                    }
                 }
-                intent.putStringArrayListExtra("genreArray",list)
-                startActivityForResult(intent,10)
-        }
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
         binding.createButton.setOnClickListener(){
             binding.editAdvertNameInput.clearFocus()
             binding.editAdvertDescriptionInput.clearFocus()
@@ -182,6 +189,20 @@ class CreateFragment : Fragment() {
                 binding.selectGenreLayout.helperText=createVerification.validGenre()
             }
         }
+        if(requestCode==15){
+            if(resultCode==Activity.RESULT_OK){
+                try{
+                    val uris = ArrayList<Uri>()
+                    val length:Int = data?.clipData?.itemCount!!
+                    for(value in 0..length-1){
+                        data?.clipData?.getItemAt(value)?.let { uris.add(it.uri) }
+                    }
+                    if(uris!=null) handleOutput(uris)
+                }catch (e:Exception){
+                    Toast.makeText(context,"Image type is not supported.",Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -200,7 +221,10 @@ class CreateFragment : Fragment() {
     private fun imageClickAdd(uri:File){
         permissionModel.setPermissionStorageAsk(true)
         if(permissionModel.permissionStorage.value==true){
-            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            val intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
         }
     }
     private fun handleOutput(uris:List<Uri>){
@@ -210,27 +234,27 @@ class CreateFragment : Fragment() {
             else Toast.makeText(context,"You can use just 5 photos",Toast.LENGTH_SHORT).show()
             actualMaximum--
             val fileArray = ArrayList<File>()
-            val extensionList = listOf(".png",".jpg",".svg",".jpeg")
+            val extensionList = listOf("png","jpg","svg","jpeg")
             CoroutineScope(Dispatchers.Main).launch {
                 for(value in 0..actualMaximum){
-                    var file = context?.let { usefulTools.getFileFromUri(uris[value], it) }
-                    val extension = file?.absolutePath?.lastIndexOf(".")
-                        ?.let { file?.absolutePath?.substring(it) }
+                    var file = context?.let { MediaUtils.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
+                    val extension = file?.absolutePath.toString()
+                        .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
                     file = context?.let { Compressor.compress(it, file!!) }!!
+                    println(extension)
                     if(extensionList.contains(extension)){
-                            actualImage++
-                            binding.imageCounter.text = "$actualImage/$maxImage"
-                            imageAdapter.addNewImage(file!!)
-                            imageAdapter.notifyItemInserted(actualImage)
-                            fileArray.add(file!!)
+                        actualImage++
+                        binding.imageCounter.text = "$actualImage/$maxImage"
+                        imageAdapter.addNewImage(file!!)
+                        imageAdapter.notifyItemInserted(actualImage)
+                        fileArray.add(file!!)
                     }
-                    else Toast.makeText(context,"Allowed file extensions are ${extensionList.joinToString(", ")}.$value. extension is $extension",Toast.LENGTH_SHORT).show()
+                    else Toast.makeText(context,"Allowed file extensions are ${extensionList.joinToString(", ")}.$value. extension is $extension",Toast.LENGTH_LONG).show()
                 }
                 if(fileArray.size>0){
                     createViewModel.appendNewFile(fileArray)
                 }
             }
-        } else {
         }
     }
     private fun clearAllData(){

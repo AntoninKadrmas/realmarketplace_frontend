@@ -20,7 +20,6 @@
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
             <!-- "Mark Favorite", should appear as action button if possible -->
-
         </androidx.appcompat.widget.Toolbar>
         <FrameLayout
             android:id="@+id/nav_host_fragment_activity_main"

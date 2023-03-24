@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 //        cleanUserToken() //odkomn=entovat do provozu
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        actionBar?.hide();
+//        setSupportActionBar(binding.myToolbar)
         listOfFragments = listOf(
             FavoriteFragment.newInstance(),
             SearchFragment.newInstance(),
@@ -142,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                             grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     permissionModel.setPermissionStorage(true)
                 } else {
+                    Toast.makeText(this,"Permission denied",Toast.LENGTH_SHORT).show()
                     permissionModel.setPermissionStorage(false)
                 }
                 return
@@ -152,6 +156,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 object PermissionRequestCode{
-    const val READ_EXTERNAL_STORAGE = 105
+    var READ_EXTERNAL_STORAGE = 105
     const val CAMERA = 106
 }
