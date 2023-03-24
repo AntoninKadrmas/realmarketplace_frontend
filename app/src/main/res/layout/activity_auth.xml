@@ -5,19 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/my_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:elevation="4dp"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/Theme.Material3.DayNight"
+                app:navigationIcon="@drawable/ic_baseline_keyboard_backspace_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:subtitle="Login"
+                app:title="Authentication"
+                app:titleTextColor="?attr/colorOnPrimary"
+                app:subtitleTextColor="?attr/colorOnPrimary"
+                >
 
-    <FrameLayout
-        android:id="@+id/frame_auth_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+                <!-- "Mark Favorite", should appear as action button if possible -->
+            </androidx.appcompat.widget.Toolbar>
+        <FrameLayout
+            android:id="@+id/frame_auth_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

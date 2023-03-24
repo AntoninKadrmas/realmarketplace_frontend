@@ -44,8 +44,13 @@ class AuthActivity : AppCompatActivity() {
             }
             finish()
         })
+        binding.myToolbar.setNavigationOnClickListener(){
+            finish()
+        }
     }
     private fun rotateFragment(){
+        if(actual==0)binding.myToolbar.subtitle="Login"
+        else binding.myToolbar.subtitle="Register"
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_auth_layout, listOfFragments[actual])
             .commitNow()
