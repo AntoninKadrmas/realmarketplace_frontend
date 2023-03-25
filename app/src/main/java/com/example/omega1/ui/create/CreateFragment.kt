@@ -1,9 +1,8 @@
 package com.example.omega1.ui.create
 
-import MediaUtils
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,28 +12,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
-import com.example.omega1.SelectGenre
+import com.example.omega1.SelectGenreActivity
 import com.example.omega1.databinding.FragmentCreateBinding
 import com.example.omega1.model.AdvertModel
-import com.example.omega1.rest.EnumViewData
+import com.example.omega1.viewModel.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.image.ImageAdapter
-import com.example.omega1.ui.other.PermissionViewModel
+import com.example.omega1.viewModel.PermissionViewModel
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.adapter_create_image.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-
 
 class CreateFragment : Fragment() {
     private lateinit var createVerification:CreateVerification
@@ -44,13 +40,14 @@ class CreateFragment : Fragment() {
     private val createViewModel:CreateViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     private val enumViewDataModel: EnumViewData by activityViewModels()
-    private val permissionModel:PermissionViewModel by activityViewModels()
+    private val permissionModel: PermissionViewModel by activityViewModels()
     private val maxImage = 5
     private var actualImage = 0
     private var _binding: FragmentCreateBinding? = null
     private val binding get() = _binding!!
     companion object {
         fun newInstance() = CreateFragment()
+        const val NAME = "Create"
     }
     override fun onResume() {
         super.onResume()
@@ -72,6 +69,7 @@ class CreateFragment : Fragment() {
         binding.priceOptionInput.setAdapter(priceArrayAdapter)
         binding.conditionInput.setAdapter(conditionArrayAdapter)
     }
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -106,7 +104,7 @@ class CreateFragment : Fragment() {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        val intent = Intent(context,SelectGenre::class.java)
+                        val intent = Intent(context,SelectGenreActivity::class.java)
                         val list = ArrayList<String>()
                         for(item in enumViewDataModel.genreGenreEnum.value!!){
                             list.add("${item.name}|${item.type}")
@@ -126,10 +124,11 @@ class CreateFragment : Fragment() {
             createVerification.checkAll()
             submitForm()
         }
+        binding.conditionInput.setOnItemClickListener() { _, _, position, _ ->
+            binding.conditionLayout.helperText=createVerification.validCondition()
+        }
         createViewModel.clean.observe(viewLifecycleOwner, Observer {
-            if(it){
-                clearAllData()
-            }
+            clearAllData()
         })
         imageAdapter.addNewImage(File(""))
         createVerification.focusCondition()
@@ -167,7 +166,6 @@ class CreateFragment : Fragment() {
                 mainImage ="",
                 imagesUrls =ArrayList()
             )
-            println(advertModel)
             val token = authViewModel.userToken.value.toString()
             context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
         }else{
@@ -237,7 +235,7 @@ class CreateFragment : Fragment() {
             val extensionList = listOf("png","jpg","svg","jpeg")
             CoroutineScope(Dispatchers.Main).launch {
                 for(value in 0..actualMaximum){
-                    var file = context?.let { MediaUtils.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
+                    var file = context?.let { UriToFileConvertor.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
                     val extension = file?.absolutePath.toString()
                         .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
                     file = context?.let { Compressor.compress(it, file!!) }!!

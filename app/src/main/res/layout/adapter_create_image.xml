@@ -38,7 +38,7 @@
         android:id="@+id/cover_image"
         android:layout_width="@dimen/create_image_dimension"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner_cover_image"
+        android:background="@drawable/rounded_corner_cover_image_bottom"
         android:paddingVertical="4sp"
         android:textColor="@color/white"
         android:text="Cover Image"

@@ -9,21 +9,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/my_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:elevation="4dp"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/Theme.Material3.DayNight"
-                app:navigationIcon="@drawable/ic_baseline_keyboard_backspace_24"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:subtitle="Login"
-                app:title="Authentication"
-                app:titleTextColor="?attr/colorOnPrimary"
-                app:subtitleTextColor="?attr/colorOnPrimary"
-                >
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/my_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/Theme.Material3.DayNight"
+                    app:navigationIcon="@drawable/ic_baseline_keyboard_backspace_24"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:subtitle="Login"
+                    app:title="Authentication"
+                    app:titleTextColor="?attr/colorOnPrimary"
+                    app:subtitleTextColor="?attr/colorOnPrimary"
+                    >
 
                 <!-- "Mark Favorite", should appear as action button if possible -->
             </androidx.appcompat.widget.Toolbar>

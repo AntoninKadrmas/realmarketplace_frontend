@@ -35,9 +35,12 @@ android {
     buildFeatures{
         viewBinding true
     }
+    lintOptions{
+        disable 'MissingDefaultResource'
+    }
 }
-
 dependencies {
+    //show images from url
     def picasso = "2.8"
     implementation "com.squareup.picasso:picasso:$picasso"
     //compress

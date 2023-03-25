@@ -14,13 +14,13 @@ import com.example.omega1.model.AdvertModel
 import com.example.omega1.ui.search.advert.AdvertAdapter
 
 class SearchFragment : Fragment() {
-
     private var _binding: FragmentSearchBinding? = null
     private val createViewModel: SearchViewModel by activityViewModels()
     private lateinit var advertAdapter:AdvertAdapter
     private val binding get() = _binding!!
     companion object {
         fun newInstance() = SearchFragment()
+        const val NAME = "Search"
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +40,8 @@ class SearchFragment : Fragment() {
         binding.advertRecyclerView.layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
-        val root: View = binding.root
-        return root
+
+        return binding.root
     }
 
     override fun onDestroyView() {

@@ -20,30 +20,27 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".AuthActivity"
-            android:exported="true"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             >
         </activity>
         <activity
-            android:name=".SelectGenre"
+            android:name=".SelectGenreActivity"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             android:exported="false" />
     </application>
-
 </manifest>

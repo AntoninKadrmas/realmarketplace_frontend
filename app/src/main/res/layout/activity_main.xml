@@ -14,13 +14,18 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="?attr/colorPrimary"
             android:elevation="4dp"
+            android:theme="@style/Theme.Material3.DayNight"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="RealMarketPlace"
+            app:subtitle="Favorite"
+            app:subtitleTextColor="?attr/colorOnPrimary"
             app:menu="@menu/top_tool_bar"
-            android:theme="@style/Theme.Material3.DayNight.NoActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:titleTextColor="?attr/colorOnPrimary" />
             <!-- "Mark Favorite", should appear as action button if possible -->
-        </androidx.appcompat.widget.Toolbar>
         <FrameLayout
             android:id="@+id/nav_host_fragment_activity_main"
             android:name="androidx.navigation.fragment.NavHostFragment"

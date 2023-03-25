@@ -1,7 +1,6 @@
 package com.example.omega1
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -17,12 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.omega1.databinding.ActivityMainBinding
 import com.example.omega1.model.UserTokenAuth
-import com.example.omega1.rest.EnumViewData
+import com.example.omega1.viewModel.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.CreateFragment
 import com.example.omega1.ui.favorite.FavoriteFragment
-import com.example.omega1.ui.other.EyeFeature
-import com.example.omega1.ui.other.PermissionViewModel
+import com.example.omega1.ui.auth.eye.EyeAuthFragment
+import com.example.omega1.viewModel.PermissionViewModel
 import com.example.omega1.ui.search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_eye_feature.*
@@ -34,9 +33,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listOfFragments:List<Fragment>
     private lateinit var navView: BottomNavigationView
     private lateinit var timeOutClear:Handler
-    private val enumViewDataModel:EnumViewData by viewModels()
+    private val enumViewDataModel: EnumViewData by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
-    private val permissionModel:PermissionViewModel by viewModels()
+    private val permissionModel: PermissionViewModel by viewModels()
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             FavoriteFragment.newInstance(),
             SearchFragment.newInstance(),
             CreateFragment.newInstance(),
-            EyeFeature.newInstance()
+            EyeAuthFragment.newInstance()
         )
         timeOutClear = Handler(Looper.getMainLooper())
         navView = binding.navView
@@ -92,29 +91,38 @@ class MainActivity : AppCompatActivity() {
             when(item.itemId){
                 R.id.navigation_favorite->{
                     val token = mainKeyValue.getString(userAuthTokenString,"")
-                    if(token=="")showFragment(3)
+                    if(token==""){
+                        showFragment(3)
+                        binding.myToolbar.subtitle= EyeAuthFragment.NAME
+                    }
                     else {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
                         authViewModel.updateUserToken(newToken)
                         showFragment(0)
+                        binding.myToolbar.subtitle=FavoriteFragment.NAME
                     }
                     true
                 }
                 R.id.navigation_search->{
                     showFragment(1)
+                    binding.myToolbar.subtitle=SearchFragment.NAME
                     true
                 }
                 R.id.navigation_create->{
                     val token = mainKeyValue.getString(userAuthTokenString,"")
-                    if(token=="")showFragment(3)
+                    if(token==""){
+                        showFragment(3)
+                        binding.myToolbar.subtitle= EyeAuthFragment.NAME
+                    }
                     else {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
                         authViewModel.updateUserToken(newToken)
                         showFragment(2)
+                        binding.myToolbar.subtitle=CreateFragment.NAME
                     }
                     true
                 }

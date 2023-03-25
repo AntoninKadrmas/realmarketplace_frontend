@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.omega1.model.AdvertId
 import com.example.omega1.model.AdvertModel
 import com.example.omega1.rest.AdvertService
 import com.example.omega1.rest.RetrofitInstance
