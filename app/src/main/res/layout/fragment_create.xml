@@ -160,10 +160,10 @@
                 style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:hint="Price"
                 app:counterEnabled="true"
-                app:counterMaxLength="10"
+                app:counterMaxLength="6"
                 app:helperText="@string/required"
                 app:helperTextTextColor="@color/error">
 
@@ -172,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="numberDecimal" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

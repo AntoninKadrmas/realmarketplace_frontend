@@ -20,9 +20,9 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun validAdvertAuthor(): String? {
         val advertName = binding.editAdvertAuthorInput.text.toString()
-        val checkAdvertAuthor = advertName.length <= 50
+        val checkAdvertAuthor = advertName.length <= binding.editAdvertAuthorLayout.counterMaxLength
         if (!checkAdvertAuthor) {
-            binding.editAdvertAuthorInput.error = "Limit of book author name is 50 characters."
+            binding.editAdvertAuthorInput.error = "Limit of book author name is ${binding.editAdvertAuthorLayout.counterMaxLength} characters."
             return "Invalid book author"
         }
         binding.editAdvertAuthorInput.error = null
@@ -42,9 +42,9 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun validAdvertName(): String? {
         val advertName = binding.editAdvertNameInput.text.toString()
-        val checkAdvertName = advertName.length <= 50
+        val checkAdvertName = advertName.length <= binding.editAdvertNameLayout.counterMaxLength
         if (!checkAdvertName) {
-            binding.editAdvertNameInput.error = "Limit of book name is 50 characters."
+            binding.editAdvertNameInput.error = "Limit of book name is ${binding.editAdvertNameLayout.counterMaxLength} characters."
             return "Invalid book name"
         }
         binding.editAdvertNameInput.error = null
@@ -66,10 +66,10 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun validAdvertDescription(): String? {
         val advertDescription = binding.editAdvertDescriptionInput.text.toString()
-        val checkAdvertDescription = advertDescription.length <= 2000
+        val checkAdvertDescription = advertDescription.length <= binding.editAdvertDescriptionLayout.counterMaxLength
         if (!checkAdvertDescription) {
             binding.editAdvertDescriptionInput.error =
-                "Limit of book description is 2000 characters."
+                "Limit of book description is ${binding.editAdvertDescriptionLayout.counterMaxLength} characters."
             return "Invalid book description"
         }
         binding.editAdvertDescriptionInput.error = null
@@ -89,9 +89,9 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun validPrice(): String? {
         val advertPrice = binding.priceInput.text.toString()
-        val checkAdvertPrice = advertPrice.length <= 10
+        val checkAdvertPrice = advertPrice.length <= binding.priceLayout.counterMaxLength
         if (!checkAdvertPrice) {
-            binding.priceInput.error = "Limit of price is 10 characters."
+            binding.priceInput.error = "Limit of price is ${binding.priceLayout.counterMaxLength} characters."
             return "Invalid price"
         }
         binding.priceInput.error = null

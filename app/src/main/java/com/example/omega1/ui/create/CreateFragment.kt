@@ -90,7 +90,7 @@ class CreateFragment : Fragment() {
             if(position==0){
                 binding.priceInput.isEnabled=true
                 binding.priceLayout.isCounterEnabled=true
-                binding.priceLayout.counterMaxLength = 10
+                binding.priceLayout.counterMaxLength = 6
                 binding.priceLayout.helperText=resources.getString(R.string.required)
                 binding.priceInput.text = null
             }else{

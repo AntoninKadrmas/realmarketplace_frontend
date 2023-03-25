@@ -16,7 +16,7 @@ data class AdvertModel(
     val createdIn:String,
     val mainImage:String,
     val imagesUrls:ArrayList<String>,
-)
+): java.io.Serializable
 data class AdvertId(
     @SerializedName("_id")
     val _id:String

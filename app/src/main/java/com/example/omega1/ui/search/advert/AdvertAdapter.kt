@@ -12,11 +12,22 @@ import kotlinx.android.synthetic.main.adapter_advert.view.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Objects
 
 class AdvertAdapter(
     private var advertList:ArrayList<AdvertModel>,
     private var clickAdvert:(AdvertModel)->Unit
     ):RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
+    companion object {
+        fun formatDate(dateString:String): String {
+            val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            val date: Date =
+                dateFormat.parse(dateString)
+            val formatter: DateFormat =
+                SimpleDateFormat("dd.MM.yyyy")
+            return formatter.format(date)
+        }
+    }
     class AdvertViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         fun bind(curAdvert:AdvertModel,clickAdvert:(AdvertModel)->Unit,position:Int){
             itemView.image_view.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -30,16 +41,7 @@ class AdvertAdapter(
             itemView.advert_create_in.text = formatDate(curAdvert.createdIn)
             itemView.whole_advert_card.setOnClickListener(){
                 clickAdvert(curAdvert)
-                println("click $position")
             }
-        }
-        private fun formatDate(dateString:String): String {
-            val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-            val date: Date =
-                dateFormat.parse(dateString)
-            val formatter: DateFormat =
-                SimpleDateFormat("dd.MM.yyyy")
-            return formatter.format(date)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdvertViewHolder {

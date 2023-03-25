@@ -1,5 +1,6 @@
 package com.example.omega1.ui.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,13 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.omega1.AdvertActivity
+import com.example.omega1.SelectGenreActivity
 import com.example.omega1.databinding.FragmentSearchBinding
 import com.example.omega1.model.AdvertModel
 import com.example.omega1.ui.search.advert.AdvertAdapter
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
     private val createViewModel: SearchViewModel by activityViewModels()
     private lateinit var advertAdapter:AdvertAdapter
@@ -35,7 +38,9 @@ class SearchFragment : Fragment() {
         context?.let { createViewModel.loadAllAdverts(it) }
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         var advertList = ArrayList<AdvertModel>()
-        advertAdapter = AdvertAdapter(advertList)
+        advertAdapter = AdvertAdapter(advertList, clickAdvert = {
+            advert:AdvertModel->openAdvert(advert)
+        })
         binding.advertRecyclerView.adapter = advertAdapter
         binding.advertRecyclerView.layoutManager = LinearLayoutManager(
             FragmentActivity(),
@@ -43,7 +48,12 @@ class SearchFragment : Fragment() {
 
         return binding.root
     }
-
+    private fun openAdvert(advert:AdvertModel){
+        println(advert)
+        val intent = Intent(context, AdvertActivity::class.java)
+        intent.putExtra("advertModel",advert)
+        startActivityForResult(intent,10)
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
