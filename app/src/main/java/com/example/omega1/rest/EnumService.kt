@@ -16,4 +16,4 @@ class ArrayType:ArrayList<String>()
 data class GenreItem(
     val name:String,
     val type:String
-)
+):java.io.Serializable

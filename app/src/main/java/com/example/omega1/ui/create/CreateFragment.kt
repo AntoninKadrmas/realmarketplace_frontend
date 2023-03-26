@@ -2,6 +2,7 @@ package com.example.omega1.ui.create
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,8 +22,11 @@ import com.example.omega1.R
 import com.example.omega1.SelectGenreActivity
 import com.example.omega1.databinding.FragmentCreateBinding
 import com.example.omega1.model.AdvertModel
+import com.example.omega1.model.UserTokenAuth
+import com.example.omega1.ui.advert.AdvertViewModel
 import com.example.omega1.viewModel.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
+import com.example.omega1.ui.create.crud.CrudAdvertViewModel
 import com.example.omega1.ui.create.image.ImageAdapter
 import com.example.omega1.viewModel.PermissionViewModel
 import id.zelory.compressor.Compressor
@@ -35,12 +39,14 @@ import java.io.File
 class CreateFragment : Fragment() {
     private lateinit var createVerification:CreateVerification
     private lateinit var imageAdapter: ImageAdapter
-    private lateinit var priceOptions: Array<String>
-    private lateinit var condition: Array<String>
-    private val createViewModel:CreateViewModel by activityViewModels()
+    private lateinit var priceOptions: ArrayList<String>
+    private lateinit var condition: ArrayList<String>
+    private lateinit var alertBuilder:AlertDialog.Builder
+    private val crudAdvertViewModel: CrudAdvertViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     private val enumViewDataModel: EnumViewData by activityViewModels()
     private val permissionModel: PermissionViewModel by activityViewModels()
+    private val advertViewModel:AdvertViewModel by activityViewModels()
     private val maxImage = 5
     private var actualImage = 0
     private var _binding: FragmentCreateBinding? = null
@@ -51,10 +57,10 @@ class CreateFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        if(this::priceOptions.isInitialized&&this::condition.isInitialized)updatePriceDropDown()
-        if(createViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/$maxImage"){
-            actualImage=createViewModel.imagesFile.value!!.size
-            for(uri in createViewModel.imagesFile.value!!){
+        if(this::priceOptions.isInitialized&&this::condition.isInitialized)updateDropDown()
+        if(crudAdvertViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/$maxImage"){
+            actualImage=crudAdvertViewModel.imagesFile.value!!.size
+            for(uri in crudAdvertViewModel.imagesFile.value!!){
                 imageAdapter.addNewImage(uri)
             }
             binding.imageCounter.text = "$actualImage/$maxImage"
@@ -62,10 +68,15 @@ class CreateFragment : Fragment() {
         createVerification.checkAll()
     }
 
-    private fun updatePriceDropDown(){
-        val priceArrayAdapter = ArrayAdapter(requireContext(),R.layout.adapter_drop_down_price_option,priceOptions)
-        val conditionArrayAdapter = ArrayAdapter(requireContext(),R.layout.adapter_drop_down_price_option,condition)
-        binding.priceOptionInput.setText(priceOptions[0])
+    private fun updateDropDown(){
+        val priceArrayAdapter =
+            context?.let { ArrayAdapter(it,R.layout.adapter_drop_down_price_option,priceOptions) }
+        val conditionArrayAdapter =
+            context?.let { ArrayAdapter(it,R.layout.adapter_drop_down_price_option,condition) }
+        if(binding.priceInput.text.toString()==""){
+            binding.priceOptionInput.setText(priceOptions[0])
+            binding.priceInput.setText("")
+        }
         binding.priceOptionInput.setAdapter(priceArrayAdapter)
         binding.conditionInput.setAdapter(conditionArrayAdapter)
     }
@@ -75,30 +86,24 @@ class CreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        alertBuilder = AlertDialog.Builder(context)
+        _binding = FragmentCreateBinding.inflate(inflater, container, false)
         priceOptions = enumViewDataModel.priceEnum.value!!
         condition = enumViewDataModel.conditionEnum.value!!
-        _binding = FragmentCreateBinding.inflate(inflater, container, false)
         createVerification = CreateVerification(binding,resources)
-        imageAdapter = ImageAdapter(mutableListOf(), clickDelete = {
+        imageAdapter = ImageAdapter(ArrayList(),
+            ArrayList(),
+            Uri.parse("android.resource://com.example.omega1/drawable/camera_add"),
+            clickDelete = {
             removeUri:File->imageClickDelete(removeUri)
         },clickAdd={
             addUri:File->imageClickAdd(addUri)
         })
         binding.recyclerView.adapter = imageAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(FragmentActivity(),LinearLayoutManager.HORIZONTAL,false)
+        imageAdapter.addNewImage(File(""))
         binding.priceOptionInput.setOnItemClickListener(){parent,view,position,id->
-            if(position==0){
-                binding.priceInput.isEnabled=true
-                binding.priceLayout.isCounterEnabled=true
-                binding.priceLayout.counterMaxLength = 6
-                binding.priceLayout.helperText=resources.getString(R.string.required)
-                binding.priceInput.text = null
-            }else{
-                binding.priceInput.isEnabled=false
-                binding.priceLayout.counterMaxLength = priceOptions[position].length
-                binding.priceLayout.helperText=null
-                binding.priceInput.setText(priceOptions[position])
-            }
+          createVerification.priceOptionHandleResult(position,priceOptions)
         }
         binding.selectGenreInput.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -117,20 +122,15 @@ class CreateFragment : Fragment() {
             }
         })
         binding.createButton.setOnClickListener(){
-            binding.editAdvertNameInput.clearFocus()
-            binding.editAdvertDescriptionInput.clearFocus()
-            binding.priceInput.clearFocus()
-            binding.conditionInput.clearFocus()
-            createVerification.checkAll()
+            createVerification.clearFocus()
             submitForm()
         }
         binding.conditionInput.setOnItemClickListener() { _, _, position, _ ->
             binding.conditionLayout.helperText=createVerification.validCondition()
         }
-        createViewModel.clean.observe(viewLifecycleOwner, Observer {
-            clearAllData()
+        crudAdvertViewModel.clean.observe(viewLifecycleOwner, Observer {
+            clearAllData(it)
         })
-        imageAdapter.addNewImage(File(""))
         createVerification.focusCondition()
         createVerification.focusAdvertDescription()
         createVerification.focusPrice()
@@ -139,35 +139,17 @@ class CreateFragment : Fragment() {
         return binding.root
     }
     private fun submitForm(){
-        val validAdvertName = binding.editAdvertNameLayout.helperText==null
-        val validAdvertDescription = binding.editAdvertDescriptionLayout.helperText==null
-        val validAdvertPrice = binding.priceLayout.helperText==null
-        val validAdvertCondition = binding.conditionLayout.helperText==null
-        val validAdvertGenre = binding.selectGenreLayout.helperText==null
-        val validAdvertAuthor = binding.editAdvertAuthorLayout.helperText==null
-        if( validAdvertName&&
-            validAdvertDescription&&
-            validAdvertPrice&&
-            validAdvertCondition&&
-            validAdvertGenre&&
-            validAdvertAuthor){
-            val advertModel = AdvertModel(
-                userId ="",
-                title =binding.editAdvertNameInput.text.toString(),
-                author=binding.editAdvertAuthorInput.text.toString(),
-                description =binding.editAdvertDescriptionInput.text.toString(),
-                createdIn ="",
-                condition =binding.conditionInput.text.toString(),
-                price =binding.priceInput.text.toString(),
-                priceOption =binding.priceOptionInput.text.toString(),
-                genreName =binding.selectGenreInput.text.toString().split("/")[0],
-                genreType =binding.selectGenreInput.text.toString().split("/")[1],
-                place ="",
-                mainImage ="",
-                imagesUrls =ArrayList()
-            )
-            val token = authViewModel.userToken.value.toString()
-            context?.let { createViewModel.createAdvert(advertModel,token, it) } == true
+        if(createVerification.submitFormVerification()){
+            val token: UserTokenAuth = authViewModel.userToken.value!!
+            var noImage = ""
+            if(actualImage==0)noImage=" without any image"
+            alertBuilder.setTitle("Are you sure you want to create new advert$noImage.")
+                .setCancelable(true)
+                .setPositiveButton("YES"){_,it->
+                    context?.let { crudAdvertViewModel.createAdvert(createVerification.createAdvert(),token.token, it) }
+                }
+                .setNegativeButton("NO"){_,it->
+                }.show()
         }else{
             Toast.makeText(context,"Some of the input fields are still invalid!",Toast.LENGTH_LONG).show()
         }
@@ -212,7 +194,7 @@ class CreateFragment : Fragment() {
         imageAdapter.removeNewImage(file)
         imageAdapter.notifyItemRemoved(indexOfImage)
         binding.imageCounter.text = "$actualImage/$maxImage"
-        createViewModel.removeOldFileByPos(indexOfImage-1)
+        crudAdvertViewModel.removeOldFileByPos(indexOfImage-1)
         println("$indexOfImage $actualImage")
         if(indexOfImage==1&&actualImage>0)(binding.recyclerView.findViewHolderForLayoutPosition(2) as ImageAdapter.ImageAdapterHolder).itemView.cover_image.visibility = View.VISIBLE
     }
@@ -247,29 +229,27 @@ class CreateFragment : Fragment() {
                         imageAdapter.notifyItemInserted(actualImage)
                         fileArray.add(file!!)
                     }
-                    else Toast.makeText(context,"Allowed file extensions are ${extensionList.joinToString(", ")}.$value. extension is $extension",Toast.LENGTH_LONG).show()
+                    else Toast.makeText(context,"($extension)Allowed file extensions are ${extensionList.joinToString(", ")}.",Toast.LENGTH_LONG).show()
                 }
                 if(fileArray.size>0){
-                    createViewModel.appendNewFile(fileArray)
+                    crudAdvertViewModel.appendNewFile(fileArray)
                 }
             }
         }
     }
-    private fun clearAllData(){
-        binding.editAdvertNameInput.text = null
-        binding.editAdvertDescriptionInput.text= null
-        binding.priceOptionInput.setText(priceOptions[0])
-        binding.priceInput.text=null
-        binding.conditionInput.text=null
-        binding.selectGenreInput.text=null
-        binding.editAdvertAuthorInput.text=null
-        if(createViewModel.imagesFile.value!=null){
-            for(uri in createViewModel.imagesFile.value!!){
+    private fun clearAllData(advert:AdvertModel){
+        if(crudAdvertViewModel.imagesFile.value!=null){
+            for(uri in crudAdvertViewModel.imagesFile.value!!){
                 imageAdapter.removeNewImage(uri)
             }
             imageAdapter.notifyDataSetChanged()
         }
-        createViewModel.clearFiles()
-        createVerification.checkAll()
+        if(crudAdvertViewModel.executed){
+            advertViewModel.addNewMyAdvert(advert)
+            crudAdvertViewModel.executed=false
+        }
+        crudAdvertViewModel.clearFiles()
+        updateDropDown()
+        createVerification.clearInputData()
     }
 }

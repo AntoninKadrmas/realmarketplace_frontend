@@ -2,6 +2,7 @@ package com.example.omega1
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -16,11 +17,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.omega1.databinding.ActivityMainBinding
 import com.example.omega1.model.UserTokenAuth
+import com.example.omega1.ui.advert.AdvertViewModel
 import com.example.omega1.viewModel.EnumViewData
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.CreateFragment
 import com.example.omega1.ui.favorite.FavoriteFragment
 import com.example.omega1.ui.auth.eye.EyeAuthFragment
+import com.example.omega1.ui.create.crud.CrudAdvertViewModel
 import com.example.omega1.viewModel.PermissionViewModel
 import com.example.omega1.ui.search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,6 +39,8 @@ class MainActivity : AppCompatActivity() {
     private val enumViewDataModel: EnumViewData by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
+    private val crudAdvertViewModel: CrudAdvertViewModel by viewModels()
+    private val advertViewModel:AdvertViewModel by viewModels()
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -46,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun cleanUserToken(){
+        advertViewModel.loadedMyAdverts=false
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
         val userAuthTokenString = R.string.user_auth_token.toString()
         val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
@@ -99,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
+                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
                         authViewModel.updateUserToken(newToken)
                         showFragment(0)
                         binding.myToolbar.subtitle=FavoriteFragment.NAME
@@ -106,6 +113,14 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_search->{
+                    val token = mainKeyValue.getString(userAuthTokenString,"")
+                    if(token!=""){
+                        val newToken = UserTokenAuth(
+                            token = token.toString()
+                        )
+//                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
+                        authViewModel.updateUserToken(newToken)
+                    }
                     showFragment(1)
                     binding.myToolbar.subtitle=SearchFragment.NAME
                     true
@@ -120,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
+//                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
                         authViewModel.updateUserToken(newToken)
                         showFragment(2)
                         binding.myToolbar.subtitle=CreateFragment.NAME
@@ -133,6 +149,19 @@ class MainActivity : AppCompatActivity() {
         permissionModel.permissionStorageAsk.observe(this, Observer {
             requestPermissionStorage()
         })
+        crudAdvertViewModel.logOut.observe(this, Observer {
+            cleanUserToken()
+            navView.selectedItemId = navView.selectedItemId
+        })
+        binding.myToolbar.menu.getItem(0).setOnMenuItemClickListener {
+            if(authViewModel.userToken.value!=null){
+
+            }
+            else{
+                startActivity(Intent(this,AuthActivity::class.java))
+            }
+            true
+        }
     }
     private fun showFragment(index:Int){
         supportFragmentManager.beginTransaction()

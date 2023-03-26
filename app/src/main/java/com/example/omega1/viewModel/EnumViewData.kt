@@ -15,19 +15,19 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class EnumViewData:ViewModel() {
-    private val mutablePriceEnum = MutableLiveData<Array<String>>()
+    private val mutablePriceEnum = MutableLiveData<ArrayList<String>>()
     private val mutableGenreEnum = MutableLiveData<ArrayList<GenreItem>>()
-    private val mutableConditionEnum = MutableLiveData<Array<String>>()
-    val priceEnum: LiveData<Array<String>> get() = mutablePriceEnum
+    private val mutableConditionEnum = MutableLiveData<ArrayList<String>>()
+    val priceEnum: LiveData<ArrayList<String>> get() = mutablePriceEnum
     val genreGenreEnum: LiveData<ArrayList<GenreItem>> get() = mutableGenreEnum
-    val conditionEnum: LiveData<Array<String>> get() = mutableConditionEnum
-    fun updatePriceEnum(item: Array<String>) {
+    val conditionEnum: LiveData<ArrayList<String>> get() = mutableConditionEnum
+    fun updatePriceEnum(item: ArrayList<String>) {
         mutablePriceEnum.value = item
     }
     fun updateGenreEnum(item: ArrayList<GenreItem>) {
         mutableGenreEnum.value = item
     }
-    fun updateConditionEnum(item: Array<String>) {
+    fun updateConditionEnum(item: ArrayList<String>) {
         mutableConditionEnum.value = item
     }
     private val retroServiceEnum: EnumService = RetrofitInstance.getRetroFitInstance()
@@ -45,7 +45,7 @@ class EnumViewData:ViewModel() {
             }
             if(response.isSuccessful && response.body()!=null){
                 withContext(Dispatchers.Main) {
-                    updatePriceEnum(response.body()!!.toTypedArray())
+                    updatePriceEnum(response.body()!!)
                 }
             }else{
             }
@@ -64,7 +64,7 @@ class EnumViewData:ViewModel() {
             }
             if(response.isSuccessful && response.body()!=null){
                 withContext(Dispatchers.Main) {
-                    updateConditionEnum(response.body()!!.toTypedArray())
+                    updateConditionEnum(response.body()!!)
                 }
             }else{
             }

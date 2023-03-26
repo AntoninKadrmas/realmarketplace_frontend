@@ -18,4 +18,4 @@ data class UserModelLogin(
 data class UserTokenAuth(
     @SerializedName("token")
     val token:String
-)
+):java.io.Serializable

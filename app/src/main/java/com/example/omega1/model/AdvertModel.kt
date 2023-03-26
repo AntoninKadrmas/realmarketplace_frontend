@@ -3,7 +3,8 @@ package com.example.omega1.model
 import com.google.gson.annotations.SerializedName
 
 data class AdvertModel(
-    val userId:String,
+    var _id: String,
+    var userId:String,
     val title: String,
     val author: String,
     val description:String,
@@ -13,9 +14,9 @@ data class AdvertModel(
     val genreName:String,
     val genreType:String,
     val place:String,
-    val createdIn:String,
-    val mainImage:String,
-    val imagesUrls:ArrayList<String>,
+    var createdIn:String,
+    var mainImage:String,
+    var imagesUrls:ArrayList<String>,
 ): java.io.Serializable
 data class AdvertId(
     @SerializedName("_id")

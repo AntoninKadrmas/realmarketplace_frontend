@@ -227,7 +227,7 @@
             android:hint="Genre"
             app:helperText="@string/required"
             app:helperTextTextColor="@color/error"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+            app:layout_constraintBottom_toTopOf="@+id/create_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -243,14 +243,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
+            android:visibility="visible"
             app:layout_goneMarginBottom="20dp"
-            android:id="@+id/linearLayout3"
+            android:id="@+id/create_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/input_element_margin_side"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/update_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -272,6 +273,70 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Create Advert" />
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            app:layout_goneMarginBottom="20dp"
+            android:id="@+id/update_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/delete_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_layout">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/update_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Update Advert" />
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            app:layout_goneMarginBottom="20dp"
+            android:id="@+id/delete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_layout">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Delete Advert" />
         </LinearLayout>
 
 

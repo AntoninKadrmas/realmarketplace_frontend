@@ -1,11 +1,10 @@
 package com.example.omega1.rest
 
+import com.example.omega1.model.AdvertModel
 import com.example.omega1.model.UserModel
 import retrofit2.Response
 import retrofit2.http.POST
-import retrofit2.http.GET
 import retrofit2.http.Body
-import retrofit2.http.Query
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.Header
 
@@ -24,4 +23,16 @@ data class ReturnTypeError(
 data class ReturnTypeSuccess(
     @SerializedName("success")
     val success:String
+)
+data class ReturnTypeSuccessAdvert(
+    @SerializedName("success")
+    val success:String,
+    @SerializedName("advert")
+    val advert: AdvertModel
+)
+data class ReturnTypeSuccessUris(
+    @SerializedName("success")
+    val success:String,
+    @SerializedName("imageUrls")
+    val imageUrls: ArrayList<String>
 )

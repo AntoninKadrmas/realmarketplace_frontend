@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 
 class FavoriteViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+    private var mutableFavoriteTab = MutableLiveData<Int>()
+    val favoriteTab: LiveData<Int> get()= mutableFavoriteTab
+    fun changeStatus(state:Int){
+        mutableFavoriteTab.value=state
     }
-    val text: LiveData<String> = _text
+
 }

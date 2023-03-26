@@ -1,7 +1,9 @@
 package com.example.omega1.ui.create
 
+import android.widget.ListAdapter
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentCreateBinding
+import com.example.omega1.model.AdvertModel
 
 class CreateVerification(private val insert_binding: FragmentCreateBinding, private val old_resources: android.content.res.Resources) {
     var binding: FragmentCreateBinding = insert_binding
@@ -120,5 +122,86 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         if(binding.priceInput.text?.isEmpty() == false)binding.priceLayout.helperText=validPrice()
         if(binding.conditionInput.text?.isEmpty() == false)binding.conditionLayout.helperText=validCondition()
         if(binding.selectGenreInput.text?.isEmpty() == false)binding.selectGenreLayout.helperText=validGenre()
+    }
+    fun clearInputData(){
+        binding.priceInput.text=null
+        binding.conditionInput.text=null
+        binding.selectGenreInput.text=null
+        binding.editAdvertAuthorInput.text=null
+        binding.editAdvertNameInput.text = null
+        binding.editAdvertDescriptionInput.text= null
+        checkAll()
+    }
+    fun createAdvert(): AdvertModel {
+        return AdvertModel(
+            _id = "",
+            userId = "",
+            title = binding.editAdvertNameInput.text.toString(),
+            author = binding.editAdvertAuthorInput.text.toString(),
+            description = binding.editAdvertDescriptionInput.text.toString(),
+            createdIn = "",
+            condition = binding.conditionInput.text.toString(),
+            price = binding.priceInput.text.toString(),
+            priceOption = binding.priceOptionInput.text.toString(),
+            genreName = binding.selectGenreInput.text.toString().split("/")[0],
+            genreType = binding.selectGenreInput.text.toString().split("/")[1],
+            place = "",
+            mainImage = "",
+            imagesUrls = ArrayList()
+        )
+    }
+    fun checkOldAndNewAdvertAreSimilar(oldAdvert:AdvertModel,newAdvert:AdvertModel):Boolean{
+        return oldAdvert.title==newAdvert.title
+                && oldAdvert.description == newAdvert.description
+                && oldAdvert.author == newAdvert.author
+                && oldAdvert.condition == newAdvert.condition
+                && oldAdvert.price == newAdvert.price
+                && oldAdvert.priceOption == newAdvert.priceOption
+                && oldAdvert.genreName == newAdvert.genreName
+                && oldAdvert.genreType == newAdvert.genreType
+    }
+    fun submitFormVerification():Boolean{
+        val validAdvertName = binding.editAdvertNameLayout.helperText==null
+        val validAdvertDescription = binding.editAdvertDescriptionLayout.helperText==null
+        val validAdvertPrice = binding.priceLayout.helperText==null
+        val validAdvertCondition = binding.conditionLayout.helperText==null
+        val validAdvertGenre = binding.selectGenreLayout.helperText==null
+        val validAdvertAuthor = binding.editAdvertAuthorLayout.helperText==null
+        return validAdvertName&&
+                validAdvertDescription&&
+                validAdvertPrice&&
+                validAdvertCondition&&
+                validAdvertGenre&&
+                validAdvertAuthor
+    }
+    fun clearFocus(){
+        binding.editAdvertNameInput.clearFocus()
+        binding.editAdvertDescriptionInput.clearFocus()
+        binding.priceInput.clearFocus()
+        binding.conditionInput.clearFocus()
+        checkAll()
+    }
+    fun priceOptionHandleResult(position:Int,priceOptions:ArrayList<String>){
+        if(position==0){
+            binding.priceInput.isEnabled=true
+            binding.priceLayout.isCounterEnabled=true
+            binding.priceLayout.counterMaxLength = 6
+            binding.priceLayout.helperText=resources.getString(R.string.required)
+            binding.priceInput.text = null
+        }else{
+            binding.priceInput.isEnabled=false
+            binding.priceLayout.counterMaxLength = priceOptions[position].length
+            binding.priceLayout.helperText=null
+            binding.priceInput.setText(priceOptions[position])
+        }
+    }
+    fun uploadAdvertDataIntoForm(advert:AdvertModel){
+        binding.editAdvertNameInput.setText(advert.title)
+        binding.editAdvertAuthorInput.setText(advert.author)
+        binding.editAdvertDescriptionInput.setText(advert.description)
+        binding.priceInput.setText(advert.price)
+        binding.priceOptionInput.setText(advert.priceOption)
+        binding.conditionInput.setText(advert.condition)
+        binding.selectGenreInput.setText("${advert.genreName}/${advert.genreType}")
     }
 }

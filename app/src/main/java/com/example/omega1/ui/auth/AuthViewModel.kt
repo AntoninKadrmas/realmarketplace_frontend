@@ -24,6 +24,8 @@ class AuthViewModel : ViewModel() {
     val selectedItem: LiveData<Int> get() = mutableSelectedItem
     private val mutableUserToken = MutableLiveData<UserTokenAuth>()
     val userToken: LiveData<UserTokenAuth> get() = mutableUserToken
+//    private var mutableLogOut = MutableLiveData<Boolean>()
+//    val logOut:LiveData<Boolean> get()= mutableLogOut
     fun selectItem(item: Int) {
         mutableSelectedItem.value = item
     }
@@ -50,6 +52,7 @@ class AuthViewModel : ViewModel() {
                 val body: UserTokenAuth? = Gson().fromJson(Gson().toJson(response.body()), UserTokenAuth::class.java)
                 withContext(Dispatchers.Main) {
                     if (body != null) {
+                        println(body)
                         updateUserToken(body)
                     }
                 }
@@ -89,6 +92,7 @@ class AuthViewModel : ViewModel() {
                 val body: UserTokenAuth? = Gson().fromJson(Gson().toJson(response.body()), UserTokenAuth::class.java)
                 withContext(Dispatchers.Main) {
                     if (body != null) {
+                        println(body)
                         updateUserToken(body)
                     }
                 }

@@ -10,15 +10,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.omega1.AdvertActivity
-import com.example.omega1.SelectGenreActivity
+import com.example.omega1.ui.advert.AdvertActivity
 import com.example.omega1.databinding.FragmentSearchBinding
 import com.example.omega1.model.AdvertModel
+import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.search.advert.AdvertAdapter
 
 class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
     private val createViewModel: SearchViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
+
     private lateinit var advertAdapter:AdvertAdapter
     private val binding get() = _binding!!
     companion object {
@@ -45,13 +47,14 @@ class SearchFragment : Fragment(){
         binding.advertRecyclerView.layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
-
         return binding.root
     }
     private fun openAdvert(advert:AdvertModel){
         println(advert)
         val intent = Intent(context, AdvertActivity::class.java)
+        println(authViewModel.userToken.value)
         intent.putExtra("advertModel",advert)
+        intent.putExtra("token",authViewModel.userToken.value)
         startActivityForResult(intent,10)
     }
     override fun onDestroyView() {

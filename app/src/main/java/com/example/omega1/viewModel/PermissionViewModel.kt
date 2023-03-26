@@ -15,4 +15,5 @@ class PermissionViewModel:ViewModel() {
     fun setPermissionStorageAsk(state:Boolean){
         mutableStoragePermissionAsk.value = state
     }
+
 }
