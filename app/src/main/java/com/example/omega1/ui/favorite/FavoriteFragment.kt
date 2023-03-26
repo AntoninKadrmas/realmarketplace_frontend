@@ -42,6 +42,8 @@ class FavoriteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if(advertViewModel.myAdverts.value!=null)println(advertViewModel.myAdverts.value!!)
+        if(advertViewModel.favoriteAdverts.value!=null)println(advertViewModel.favoriteAdverts.value!!)
         if(advertViewModel.myAdverts.value!=null)myAdverts=advertViewModel.myAdverts.value!!
         if(advertViewModel.favoriteAdverts.value!=null)favoriteAdverts=advertViewModel.favoriteAdverts.value!!
         favoriteViewModel.changeStatus(tabLayout.selectedTabPosition)
@@ -52,10 +54,16 @@ class FavoriteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         advertViewModel.myAdverts.observe(viewLifecycleOwner, Observer {
+            println(it)
             myAdverts = it
+            advertAdapter.updateAdvertList(myAdverts)
+            advertAdapter.notifyDataSetChanged()
         })
         advertViewModel.favoriteAdverts.observe(viewLifecycleOwner, Observer {
+            println(it)
             favoriteAdverts = it
+            advertAdapter.updateAdvertList(favoriteAdverts)
+            advertAdapter.notifyDataSetChanged()
         })
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         tabLayout = binding.tabLayout
@@ -64,15 +72,23 @@ class FavoriteFragment : Fragment() {
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
         tabLayout.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                println("switch")
                 favoriteViewModel.changeStatus(tab!!.position)
-                if(tab!!.position==0)advertAdapter.updateAdvertList(favoriteAdverts)
-                else advertAdapter.updateAdvertList(myAdverts)
+                if(tab!!.position==0){
+                    println(favoriteAdverts)
+                    advertAdapter.updateAdvertList(favoriteAdverts)
+                }
+                else{
+                    println(myAdverts)
+                    advertAdapter.updateAdvertList(myAdverts)
+                }
                 advertAdapter.notifyDataSetChanged()
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 favoriteViewModel.changeStatus(tab!!.position)
+                advertAdapter.notifyDataSetChanged()
             }
         })
         advertAdapter = AdvertAdapter(ArrayList(), clickAdvert = {
@@ -107,7 +123,6 @@ class FavoriteFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
-                println("====================================================================================================")
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
                 val previousAdvert: String? = data?.getStringExtra("prevAdvertId")
                 val newAdvert:AdvertModel? = data?.getSerializableExtra("newAdvert") as AdvertModel?
@@ -133,6 +148,9 @@ class FavoriteFragment : Fragment() {
             it->it._id==advertId
         }[0])!!
         advertViewModel.removeMyAdvertByIndex(position)
+        advertViewModel.removeNewFavoriteAdvert(advertViewModel.myAdverts.value!!.filter {
+                it->it._id==advertId
+        }[0])
         advertAdapter.updateAdvertList(advertViewModel.myAdverts.value!!)
         advertAdapter.notifyItemRemoved(position)
     }

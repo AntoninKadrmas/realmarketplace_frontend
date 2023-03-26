@@ -1,6 +1,7 @@
 package com.example.omega1.ui.create
 
 import android.widget.ListAdapter
+import androidx.core.text.isDigitsOnly
 import com.example.omega1.R
 import com.example.omega1.databinding.FragmentCreateBinding
 import com.example.omega1.model.AdvertModel
@@ -200,6 +201,9 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.editAdvertAuthorInput.setText(advert.author)
         binding.editAdvertDescriptionInput.setText(advert.description)
         binding.priceInput.setText(advert.price)
+        if(binding.priceInput.text?.isDigitsOnly()==false){
+            binding.priceLayout.counterMaxLength=advert.price.length
+        }
         binding.priceOptionInput.setText(advert.priceOption)
         binding.conditionInput.setText(advert.condition)
         binding.selectGenreInput.setText("${advert.genreName}/${advert.genreType}")

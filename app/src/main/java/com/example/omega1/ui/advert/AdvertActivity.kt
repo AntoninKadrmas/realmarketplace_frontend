@@ -18,16 +18,19 @@ class AdvertActivity : AppCompatActivity() {
     private lateinit var adapterPager: AdapterViewPager
     private lateinit var token:UserTokenAuth
     private val advertViewModel:AdvertViewModel by viewModels()
-    private var retroServiceAuth: AdvertService = RetrofitInstance.getRetroFitInstance().create(
-        AdvertService::class.java)
-
+    private lateinit var dataIntent:Intent
     private var favorite = false
     override fun onDestroy() {
         super.onDestroy()
+        dataIntent.putExtra("prevAdvertId","")
+        dataIntent.putExtra("logOut",false)
+        dataIntent.putExtra("newAdvert",advert)
+        dataIntent.putExtra("favorite",favorite)
+        setResult(RECEIVER_EXPORTED, dataIntent)
         if(favorite){
             advertViewModel.addFavoriteAdvert(advert,token,this)
+            finish()
         }
-        returnAdvert()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,12 +78,7 @@ class AdvertActivity : AppCompatActivity() {
         binding.advertDescriptionText.text = advert.description
         binding.advertConditionText.text = advert.condition
         binding.advertCreatedInText.text =AdvertAdapter.formatDate(advert.createdIn)
+        dataIntent = Intent()
     }
-    private fun returnAdvert(){
-        val data = Intent()
-        data.putExtra("favorite", favorite)
-        data.putExtra("advert",advert)
-        setResult(RESULT_OK, data)
-        finish()
-    }
+
 }

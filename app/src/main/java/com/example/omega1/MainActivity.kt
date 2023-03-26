@@ -55,6 +55,11 @@ class MainActivity : AppCompatActivity() {
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
         val userAuthTokenString = R.string.user_auth_token.toString()
         val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
+        authViewModel.updateUserToken(
+            UserTokenAuth(
+            token = ""
+        )
+        )
         mainKeyValue.edit().apply(){
             putString(userAuthTokenString,null)
             apply()
@@ -154,10 +159,14 @@ class MainActivity : AppCompatActivity() {
             navView.selectedItemId = navView.selectedItemId
         })
         binding.myToolbar.menu.getItem(0).setOnMenuItemClickListener {
+            println(authViewModel.userToken.value)
             if(authViewModel.userToken.value!=null){
+                if(authViewModel.userToken.value!!.token!=""){
 
-            }
-            else{
+                }else{
+                    startActivity(Intent(this,AuthActivity::class.java))
+                }
+            }else{
                 startActivity(Intent(this,AuthActivity::class.java))
             }
             true

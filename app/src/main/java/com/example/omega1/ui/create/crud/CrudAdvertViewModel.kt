@@ -1,7 +1,6 @@
 package com.example.omega1.ui.create.crud
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -143,9 +142,7 @@ class CrudAdvertViewModel : ViewModel() {
                     val errorResponse: ReturnTypeError? =
                         Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main) {
-                        if(response.code()==401){
-                            mutableLogOut.value = true
-                        }
+                        if(response.code()==401)mutableLogOut.value = true
                         Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
@@ -242,9 +239,7 @@ class CrudAdvertViewModel : ViewModel() {
                     val errorResponse: ReturnTypeError? =
                         Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main) {
-                        if(response.code()==401){
-                            mutableLogOut.value = true
-                        }
+                        if(response.code()==401)mutableLogOut.value = true
                         Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
@@ -288,9 +283,7 @@ fun deleteAdvert(advertId: String, userToken: String, context: Context) {
                 val errorResponse: ReturnTypeError? =
                     Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                 withContext(Dispatchers.Main) {
-                    if(response.code()==401){
-                        mutableLogOut.value = true
-                    }
+                    if(response.code()==401)mutableLogOut.value = true
                     Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {

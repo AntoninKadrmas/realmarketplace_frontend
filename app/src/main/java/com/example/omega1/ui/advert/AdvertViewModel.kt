@@ -35,9 +35,9 @@ class AdvertViewModel:ViewModel() {
     fun addNewFavoriteAdvert(advert:AdvertModel){
         if(mutableFavoriteAdverts.value==null)mutableFavoriteAdverts.value = ArrayList()
         if(!mutableFavoriteAdverts.value!!.contains(advert))mutableFavoriteAdverts.value?.add(advert)
+        else mutableFavoriteAdverts.value!![mutableFavoriteAdverts.value!!.indexOf(advert)]=advert
     }
     fun removeNewFavoriteAdvert(advert:AdvertModel){
-        if(mutableFavoriteAdverts.value==null)mutableFavoriteAdverts.value = ArrayList()
         if(mutableFavoriteAdverts.value!!.contains(advert))mutableFavoriteAdverts.value?.remove(advert)
     }
     private var retroServiceAdvert: AdvertService = RetrofitInstance.getRetroFitInstance().create(
