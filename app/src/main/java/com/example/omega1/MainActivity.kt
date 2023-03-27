@@ -1,6 +1,7 @@
 package com.example.omega1
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -39,8 +40,8 @@ class MainActivity : AppCompatActivity() {
     private val enumViewDataModel: EnumViewData by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
-    private val crudAdvertViewModel: CrudAdvertViewModel by viewModels()
-    private val advertViewModel:AdvertViewModel by viewModels()
+    private val crudAdvertViewModel:CrudAdvertViewModel by viewModels()
+    private val advertViewModel= AdvertViewModel
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -50,20 +51,21 @@ class MainActivity : AppCompatActivity() {
             permissionModel.setPermissionStorage(true)
         }
     }
+    @SuppressLint("SuspiciousIndentation")
     private fun cleanUserToken(){
         advertViewModel.loadedMyAdverts=false
         val mainKeyValueString = R.string.real_market_place_key_value.toString()
         val userAuthTokenString = R.string.user_auth_token.toString()
         val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-        authViewModel.updateUserToken(
-            UserTokenAuth(
-            token = ""
-        )
+            authViewModel.updateUserToken(
+                UserTokenAuth(
+                token = ""
+            )
         )
         mainKeyValue.edit().apply(){
             putString(userAuthTokenString,null)
             apply()
-    ""    }
+        }
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
-//                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
+                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
                         authViewModel.updateUserToken(newToken)
                     }
                     showFragment(1)
@@ -140,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                         val newToken = UserTokenAuth(
                             token = token.toString()
                         )
-//                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
+                        if(!advertViewModel.loadedMyAdverts)advertViewModel.loadAllUserAdverts(newToken,this)
                         authViewModel.updateUserToken(newToken)
                         showFragment(2)
                         binding.myToolbar.subtitle=CreateFragment.NAME

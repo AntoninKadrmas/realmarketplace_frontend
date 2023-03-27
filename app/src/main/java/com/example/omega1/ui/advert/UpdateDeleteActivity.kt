@@ -28,7 +28,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
     private lateinit var advert: AdvertModel
     private lateinit var token: UserTokenAuth
     private val crudViewModel:CrudAdvertViewModel by viewModels()
-    private val advertViewModel:AdvertViewModel by viewModels()
+    private val advertViewModel= AdvertViewModel
     private val authViewModel:AuthViewModel by viewModels()
     private val enumViewModel:EnumViewData by viewModels()
     private val permissionModel:PermissionViewModel by viewModels()
@@ -40,28 +40,24 @@ class UpdateDeleteActivity : AppCompatActivity() {
         setContentView(binding.root)
         token = if(intent.getSerializableExtra("token")!=null) (intent.getSerializableExtra("token") as? UserTokenAuth)!!
         else UserTokenAuth("")
+        if(intent.getBooleanExtra("favorite",false))switchFavorite(true)
+        else switchFavorite(false)
         advert = (intent.getSerializableExtra("advertModel") as? AdvertModel)!!
-        advertViewModel.addNewMyAdvert(advert)
+        advertViewModel.addNewMyAdvertItem(advert)
         authViewModel.updateUserToken(token)
         enumViewModel.updatePriceEnum(intent.getSerializableExtra("priceEnum")as ArrayList<String>)
         enumViewModel.updateConditionEnum(intent.getSerializableExtra("conditionEnum") as ArrayList<String>)
         enumViewModel.updateGenreEnum(intent.getSerializableExtra("genreGenreEnum") as ArrayList<GenreItem>)
         loadFragment()
         my_toolbar.setNavigationOnClickListener(){
-            val data = Intent()
-            data.putExtra("prevAdvertId","")
-            data.putExtra("logOut",false)
-            data.putExtra("newAdvert",advert)
-            data.putExtra("favorite",favorite)
-            setResult(RESULT_OK, data)
             finish()
         }
         binding.myToolbar.title=advert.title
         binding.myToolbar.menu.getItem(0).setOnMenuItemClickListener {
             if(token.token!=""){
-                favorite=!favorite
-                binding.myToolbar.menu.getItem(0).isVisible = false
-                binding.myToolbar.menu.getItem(1).isVisible = true
+                switchFavorite(true)
+                advertViewModel.addFavoriteAdvert(advert,token,this)
+                favoriteObject.addNewAdvertId(advert._id)
             }
             else{
                 Toast.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT).show()
@@ -70,9 +66,9 @@ class UpdateDeleteActivity : AppCompatActivity() {
         }
         binding.myToolbar.menu.getItem(1).setOnMenuItemClickListener {
             if(token.token!=""){
-                favorite=!favorite
-                binding.myToolbar.menu.getItem(0).isVisible = true
-                binding.myToolbar.menu.getItem(1).isVisible = false
+                switchFavorite(false)
+                advertViewModel.deleteFavoriteAdvert(advert,token,this)
+                favoriteObject.removeAdvertId(advert._id)
             }
             else{
                 Toast.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT).show()
@@ -112,20 +108,16 @@ class UpdateDeleteActivity : AppCompatActivity() {
             .replace(R.id.create_update_frame_layout, UpdateDeleteFragment.newInstance())
             .commit()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if(favorite){
-            advertViewModel.addFavoriteAdvert(advert,token,this)
+    private fun switchFavorite(state:Boolean){
+        if(state){
+            favorite=true
+            binding.myToolbar.menu.getItem(0).isVisible = false
+            binding.myToolbar.menu.getItem(1).isVisible = true
         }
-        if(!this::dataIntent.isInitialized){
-            dataIntent = Intent()
-            dataIntent.putExtra("prevAdvertId","")
-            dataIntent.putExtra("logOut",false)
-            dataIntent.putExtra("newAdvert",advert)
-            dataIntent.putExtra("favorite",favorite)
-            setResult(RESULT_OK, dataIntent)
-            finish()
+        else{
+            favorite=false
+            binding.myToolbar.menu.getItem(0).isVisible = true
+            binding.myToolbar.menu.getItem(1).isVisible = false
         }
     }
     @RequiresApi(Build.VERSION_CODES.M)

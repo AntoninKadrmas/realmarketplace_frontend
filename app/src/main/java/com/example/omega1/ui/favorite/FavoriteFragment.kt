@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.ui.advert.AdvertActivity
@@ -16,6 +17,7 @@ import com.example.omega1.databinding.FragmentFavoriteBinding
 import com.example.omega1.model.AdvertModel
 import com.example.omega1.ui.advert.AdvertViewModel
 import com.example.omega1.ui.advert.UpdateDeleteActivity
+import com.example.omega1.ui.advert.favoriteObject
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.create.crud.CrudAdvertViewModel
 import com.example.omega1.ui.search.advert.AdvertAdapter
@@ -27,7 +29,7 @@ class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val favoriteViewModel:FavoriteViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val advertViewModel: AdvertViewModel by activityViewModels()
+    private val advertViewModel= AdvertViewModel
     private val enumViewDataModel:EnumViewData by activityViewModels()
     private val crudAdvertViewModel:CrudAdvertViewModel by activityViewModels()
     private val binding get() = _binding!!
@@ -54,17 +56,22 @@ class FavoriteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         advertViewModel.myAdverts.observe(viewLifecycleOwner, Observer {
-            println(it)
             myAdverts = it
-            advertAdapter.updateAdvertList(myAdverts)
-            advertAdapter.notifyDataSetChanged()
+            if(tabLayout.selectedTabPosition==1){
+                advertAdapter.updateAdvertList(myAdverts)
+                advertAdapter.notifyDataSetChanged()
+            }
         })
         advertViewModel.favoriteAdverts.observe(viewLifecycleOwner, Observer {
-            println(it)
             favoriteAdverts = it
-            advertAdapter.updateAdvertList(favoriteAdverts)
-            advertAdapter.notifyDataSetChanged()
+            if(tabLayout.selectedTabPosition==0){
+                advertAdapter.updateAdvertList(favoriteAdverts)
+                advertAdapter.notifyDataSetChanged()
+            }
+
         })
+        println(advertViewModel.myAdverts.value)
+        println(advertViewModel.favoriteAdverts.value)
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         tabLayout = binding.tabLayout
         tabLayout.addTab(tabLayout.newTab().setText("Favorite Adverts"))
@@ -72,7 +79,6 @@ class FavoriteFragment : Fragment() {
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
         tabLayout.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                println("switch")
                 favoriteViewModel.changeStatus(tab!!.position)
                 if(tab!!.position==0){
                     println(favoriteAdverts)
@@ -115,6 +121,8 @@ class FavoriteFragment : Fragment() {
             intent.putExtra("conditionEnum",enumViewDataModel.conditionEnum.value!!)
             intent.putExtra("genreGenreEnum",enumViewDataModel.genreGenreEnum.value!!)
         }
+        if(favoriteObject.existsAdvertId(advert._id)!=-1)intent.putExtra("favorite",true)
+        else intent.putExtra("favorite",false)
         intent.putExtra("advertModel",advert)
         intent.putExtra("token",authViewModel.userToken.value)
         startActivityForResult(intent,10)
@@ -126,18 +134,15 @@ class FavoriteFragment : Fragment() {
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
                 val previousAdvert: String? = data?.getStringExtra("prevAdvertId")
                 val newAdvert:AdvertModel? = data?.getSerializableExtra("newAdvert") as AdvertModel?
-                val favorite:Boolean? = data?.getBooleanExtra("favorite",false)
                 if(logOut!!){
                     crudAdvertViewModel.setLogOut(true)
                 }
                 else if(newAdvert==null){//delete
                     deleteAdvertById(previousAdvert!!)
                 }
-                else{//update
+                else if(newAdvert!=null){//update
                     if (previousAdvert != null) {
-                        if (favorite != null) {
-                            updateAdvertById(previousAdvert,newAdvert,favorite)
-                        }
+                            updateAdvertById(previousAdvert,newAdvert)
                     }
                 }
             }
@@ -145,27 +150,13 @@ class FavoriteFragment : Fragment() {
     }
     private fun deleteAdvertById(advertId:String){
         val position:Int =advertViewModel.myAdverts.value?.indexOf(advertViewModel.myAdverts.value!!.filter {
-            it->it._id==advertId
-        }[0])!!
-        advertViewModel.removeMyAdvertByIndex(position)
-        advertViewModel.removeNewFavoriteAdvert(advertViewModel.myAdverts.value!!.filter {
                 it->it._id==advertId
-        }[0])
+        }[0])!!
         advertAdapter.updateAdvertList(advertViewModel.myAdverts.value!!)
         advertAdapter.notifyItemRemoved(position)
     }
-    private fun updateAdvertById(previousAdvert:String,newAdvert:AdvertModel,favorite:Boolean){
-        if(previousAdvert!=""){
-            val previous = advertViewModel.myAdverts.value?.filter { it->
-                it._id==previousAdvert
-            }?.get(0)
-            val position = advertViewModel.myAdverts.value?.indexOf(previous)
-            if (position != null) {
-                advertViewModel.myAdverts.value?.set(position, newAdvert)
-                advertAdapter.notifyItemChanged(position)
-            }
-        }
-        if(favorite)advertViewModel.addNewFavoriteAdvert(newAdvert)
-        else advertViewModel.removeNewFavoriteAdvert(newAdvert)
+    private fun updateAdvertById(previousAdvert:String,newAdvert:AdvertModel){
+        val position = advertViewModel.updateNewMyAdvert(previousAdvert,newAdvert)
+        advertAdapter.notifyItemChanged(position)
     }
 }

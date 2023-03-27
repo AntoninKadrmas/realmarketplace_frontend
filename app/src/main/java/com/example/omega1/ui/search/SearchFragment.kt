@@ -1,21 +1,22 @@
 package com.example.omega1.ui.search
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.ui.advert.AdvertActivity
 import com.example.omega1.databinding.FragmentSearchBinding
 import com.example.omega1.model.AdvertModel
 import com.example.omega1.ui.advert.AdvertViewModel
+import com.example.omega1.ui.advert.favoriteObject
 import com.example.omega1.ui.auth.AuthViewModel
 import com.example.omega1.ui.search.advert.AdvertAdapter
 
@@ -23,7 +24,7 @@ class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
     private val createViewModel: SearchViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val advertViewModel:AdvertViewModel by activityViewModels()
+    private val advertViewModel= AdvertViewModel
 
     private lateinit var advertAdapter:AdvertAdapter
     private val binding get() = _binding!!
@@ -53,35 +54,17 @@ class SearchFragment : Fragment(){
             LinearLayoutManager.VERTICAL,false)
         return binding.root
     }
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        println("------------------------${result.resultCode}${Activity.RESULT_OK}")
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            val newAdvert:AdvertModel? = data?.getSerializableExtra("newAdvert") as AdvertModel?
-            val favorite:Boolean? = data?.getBooleanExtra("favorite",false)
-            if(favorite == true) newAdvert?.let { advertViewModel.addNewFavoriteAdvert(newAdvert) }
-            else newAdvert?.let { advertViewModel.removeNewFavoriteAdvert(newAdvert) }
-        }
-    }
     private fun openAdvert(advert:AdvertModel){
-        println(advert)
         val intent = Intent(context, AdvertActivity::class.java)
-        println(authViewModel.userToken.value)
         intent.putExtra("advertModel",advert)
+        if(favoriteObject.existsAdvertId(advert._id)!=-1)intent.putExtra("favorite",true)
+        else intent.putExtra("favorite",false)
         intent.putExtra("token",authViewModel.userToken.value)
-        resultLauncher.launch(intent)
+        startActivityForResult(intent,10)
+
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 10) {
-//            if (resultCode == Activity.RESULT_OK) {
-//
-//            }
-//        }
-//    }
 }

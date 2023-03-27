@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omega1.R
 import com.example.omega1.SelectGenreActivity
@@ -45,7 +46,7 @@ class UpdateDeleteFragment : Fragment() {
     private val authViewModel: AuthViewModel by activityViewModels()
     private val enumViewDataModel: EnumViewData by activityViewModels()
     private val permissionModel: PermissionViewModel by activityViewModels()
-    private val advertViewModel:AdvertViewModel by activityViewModels()
+    private val advertViewModel= AdvertViewModel
     private var originalFiles= ArrayList<File>()
     private lateinit var advert:AdvertModel
     private var deleteUrls = ArrayList<String>()

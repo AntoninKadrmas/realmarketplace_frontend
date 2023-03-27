@@ -1,6 +1,5 @@
 package com.example.omega1.ui.advert
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -8,7 +7,6 @@ import androidx.activity.viewModels
 import com.example.omega1.databinding.ActivityAdvertBinding
 import com.example.omega1.model.AdvertModel
 import com.example.omega1.model.UserTokenAuth
-import com.example.omega1.rest.*
 import com.example.omega1.ui.search.advert.AdapterViewPager
 import com.example.omega1.ui.search.advert.AdvertAdapter
 
@@ -17,21 +15,9 @@ class AdvertActivity : AppCompatActivity() {
     private lateinit var advert: AdvertModel
     private lateinit var adapterPager: AdapterViewPager
     private lateinit var token:UserTokenAuth
-    private val advertViewModel:AdvertViewModel by viewModels()
-    private lateinit var dataIntent:Intent
+    private val advertViewModel = AdvertViewModel
     private var favorite = false
-    override fun onDestroy() {
-        super.onDestroy()
-        dataIntent.putExtra("prevAdvertId","")
-        dataIntent.putExtra("logOut",false)
-        dataIntent.putExtra("newAdvert",advert)
-        dataIntent.putExtra("favorite",favorite)
-        setResult(RECEIVER_EXPORTED, dataIntent)
-        if(favorite){
-            advertViewModel.addFavoriteAdvert(advert,token,this)
-            finish()
-        }
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvertBinding.inflate(layoutInflater)
@@ -39,15 +25,17 @@ class AdvertActivity : AppCompatActivity() {
         setContentView(binding.root)
         token = if(intent.getSerializableExtra("token")!=null) (intent.getSerializableExtra("token") as? UserTokenAuth)!!
         else UserTokenAuth("")
+        if(intent.getBooleanExtra("favorite",false))switchFavorite(true)
+        else switchFavorite(false)
         advert = (intent.getSerializableExtra("advertModel") as? AdvertModel)!!
         binding.myToolbar.setNavigationOnClickListener(){
             finish()
         }
         binding.myToolbar.menu.getItem(0).setOnMenuItemClickListener {
             if(token.token!=""){
-                favorite=!favorite
-                binding.myToolbar.menu.getItem(0).isVisible = false
-                binding.myToolbar.menu.getItem(1).isVisible = true
+                switchFavorite(true)
+                advertViewModel.addFavoriteAdvert(advert,token,this)
+                favoriteObject.addNewAdvertId(advert._id)
             }
             else{
                 Toast.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT).show()
@@ -56,9 +44,9 @@ class AdvertActivity : AppCompatActivity() {
         }
         binding.myToolbar.menu.getItem(1).setOnMenuItemClickListener {
             if(token.token!=""){
-                favorite=!favorite
-                binding.myToolbar.menu.getItem(0).isVisible = true
-                binding.myToolbar.menu.getItem(1).isVisible = false
+                switchFavorite(false)
+                advertViewModel.deleteFavoriteAdvert(advert,token,this)
+                favoriteObject.removeAdvertId(advert._id)
             }
             else{
                 Toast.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT).show()
@@ -66,6 +54,19 @@ class AdvertActivity : AppCompatActivity() {
             true
         }
         init()
+    }
+    private fun switchFavorite(state:Boolean){
+        if(state){
+            favorite=true
+            binding.myToolbar.menu.getItem(0).isVisible = false
+            binding.myToolbar.menu.getItem(1).isVisible = true
+
+        }
+        else{
+            favorite=false
+            binding.myToolbar.menu.getItem(0).isVisible = true
+            binding.myToolbar.menu.getItem(1).isVisible = false
+        }
     }
     private fun init(){
         adapterPager = AdapterViewPager(advert.imagesUrls)
@@ -78,7 +79,5 @@ class AdvertActivity : AppCompatActivity() {
         binding.advertDescriptionText.text = advert.description
         binding.advertConditionText.text = advert.condition
         binding.advertCreatedInText.text =AdvertAdapter.formatDate(advert.createdIn)
-        dataIntent = Intent()
     }
-
 }

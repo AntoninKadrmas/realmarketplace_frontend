@@ -52,6 +52,10 @@ interface AdvertService {
     suspend fun addFavorite(
         @Query("advertId") advertId:String,
         @Header("Authorization") token:String): Response<Any>
+    @DELETE(value="/advert/favorite")
+    suspend fun deleteFavorite(
+        @Query("advertId") advertId:String,
+        @Header("Authorization") token:String): Response<Any>
     @GET(value = "/advert/all")
     suspend fun getAdvert():Response<ReturnListAdvertModel>
     @GET(value="/advert")
