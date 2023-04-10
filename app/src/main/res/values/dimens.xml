@@ -1,0 +1,9 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="create_image_dimension">150sp</dimen>
+    <dimen name="input_element_margin_auth">0.3in</dimen>
+    <dimen name="input_element_margin_create">0.125in</dimen>
+    <dimen name="input_element_margin_side">0.2in</dimen>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="time_out_clean_1_min">60000</integer>
+    <integer name="time_out_clean_5_min">300000</integer>
+    <integer name="time_out_clean_10_min">600000</integer>
+</resources>

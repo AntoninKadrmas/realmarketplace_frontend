@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.auth.SigninFragmen">
+
+        <Button
+            android:layout_marginTop="20dp"
+            android:id="@+id/switch_to_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch To LogIn"
+            android:textSize="15dp"
+            android:layout_marginBottom="0.1in"
+            app:layout_constraintBottom_toTopOf="@+id/first_name_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textfield.TextInputLayout
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/first_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/last_name_layout"
+            app:layout_constraintTop_toBottomOf="@+id/switch_to_login"
+            tools:layout_editor_absoluteX="50dp"
+            android:hint="First Name"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/first_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+   <com.google.android.material.textfield.TextInputLayout
+       app:helperText="@string/required"
+       app:helperTextTextColor="@color/error"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/last_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/phone_layout"
+            app:layout_constraintTop_toBottomOf="@+id/first_name_layout"
+            tools:layout_editor_absoluteX="50dp"
+            android:hint="Last Name"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/last_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:counterEnabled="true"
+            app:counterMaxLength="9"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/phone_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/email_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/last_name_layout"
+            tools:layout_editor_absoluteX="50dp"
+            android:hint="Phone Number"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textSize="25sp"
+                android:inputType="phone"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/phone_layout"
+            app:layout_constraintBottom_toTopOf="@+id/password_first_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="50dp"
+            android:hint="Email Address"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+   <com.google.android.material.textfield.TextInputLayout
+           app:helperText="@string/required"
+           app:helperTextTextColor="@color/error"
+           app:passwordToggleEnabled="true"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:id="@+id/password_first_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+           app:layout_constraintBottom_toTopOf="@+id/password_second_layout"
+           app:layout_constraintTop_toBottomOf="@+id/email_layout"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.5"
+           app:layout_constraintStart_toStartOf="parent"
+            android:hint="Password"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_first_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+   <com.google.android.material.textfield.TextInputLayout
+       app:helperText="@string/required"
+       app:helperTextTextColor="@color/error"
+       app:passwordToggleEnabled="true"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/password_second_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/password_first_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+           app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintBottom_toTopOf="@+id/signin_button"
+
+       android:hint="Password again"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_second_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:textSize="25sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <Button
+            android:layout_marginBottom="20dp"
+            android:id="@+id/signin_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="20dp"
+            android:text="Register"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/password_second_layout"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

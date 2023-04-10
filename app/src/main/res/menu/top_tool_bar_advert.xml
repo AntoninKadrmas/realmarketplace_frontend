@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_visible"
+        android:icon="@drawable/menu_visible"
+        android:title="Account"
+        android:visible="true"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_not_visible"
+        android:icon="@drawable/menu_visible_not"
+        android:title="Account"
+        android:visible="false"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_not_favorite"
+        android:icon="@drawable/menu_favorite_border"
+        android:title="Account"
+        android:visible="true"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/menu_favorite"
+        android:title="Account"
+        android:visible="false"
+        app:showAsAction="always"/>
+</menu>

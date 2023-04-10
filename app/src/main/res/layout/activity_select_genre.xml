@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="realmarketplace.realmarketplace.SelectGenreActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/Theme.Material3.DayNight"
+            app:navigationIcon="@drawable/menu_navigation_arrow"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Select Genre"
+            app:subtitle="Fiction or NonFiction"
+            app:subtitleTextColor="?attr/colorOnPrimary"
+            app:titleTextColor="?attr/colorOnPrimary" />
+
+        <LinearLayout
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/search_view_bg"
+                android:iconifiedByDefault="false"
+                android:queryHint="Search Genres ..."
+                android:theme="@style/TextAppearance.Material3.SearchView.Prefix" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_weight="0"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/filter_fiction_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:background="@drawable/rounded_corner_cover"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:textOff="Fiction OFF"
+                    android:textOn="Fiction ON"
+                    android:checked="true"
+                    android:allowClickWhenDisabled="true"/>
+
+                <ToggleButton
+                    android:id="@+id/filter_nonfiction_button"
+                    android:layout_width="0dp"
+                    android:background="@drawable/rounded_corner_cover"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="30dp"                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:layout_weight="1"
+                    android:textOff="NonFiction OFF"
+                    android:textOn="NonFiction ON"
+                    android:checked="true"
+                    />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

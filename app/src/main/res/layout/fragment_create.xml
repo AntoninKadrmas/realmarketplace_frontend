@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="realmarketplace.realmarketplace.ui.create.CreateFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/image_info_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <LinearLayout
+            android:id="@+id/image_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_create"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            app:layout_constraintBottom_toTopOf="@+id/edit_advert_name_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view">
+
+            <TextView
+                android:id="@+id/image_info_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="You can't choose more than 5 images."
+                app:layout_constraintEnd_toStartOf="@+id/image_counter"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+            <TextView
+                android:id="@+id/image_counter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="0/5"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_advert_name_layout"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:hint="Book Title"
+            app:counterEnabled="true"
+            app:counterMaxLength="50"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/edit_advert_author_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_info_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_advert_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_advert_author_layout"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:hint="Book Author"
+            app:counterEnabled="true"
+            app:counterMaxLength="50"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/edit_advert_description_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_advert_name_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_advert_author_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:gravity="start|top"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_advert_description_layout"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:hint="Book Description"
+            app:counterEnabled="true"
+            app:counterMaxLength="2000"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_advert_author_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_advert_description_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/condition_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_advert_description_layout">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/price_layout"
+                style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:hint="Price"
+                app:counterEnabled="true"
+                app:counterMaxLength="6"
+                app:helperText="@string/required"
+                app:helperTextTextColor="@color/error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/price_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/price_option_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
+                android:hint="Price Options">
+
+                <AutoCompleteTextView
+                    android:id="@+id/price_option_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/condition_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:hint="Condition"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/select_genre_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            <AutoCompleteTextView
+                android:id="@+id/condition_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/select_genre_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:hint="Genre"
+            app:helperText="@string/required"
+            app:helperTextTextColor="@color/error"
+            app:layout_constraintBottom_toTopOf="@+id/create_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/condition_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/select_genre_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:allowClickWhenDisabled="true"
+                android:clickable="true"
+                 />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:visibility="visible"
+            app:layout_goneMarginBottom="20dp"
+            android:id="@+id/create_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/update_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/select_genre_layout">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/create_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Create Advert" />
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            app:layout_goneMarginBottom="20dp"
+            android:id="@+id/update_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/delete_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_layout">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/update_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Update Advert" />
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            app:layout_goneMarginBottom="20dp"
+            android:id="@+id/delete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_layout">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Delete Advert" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

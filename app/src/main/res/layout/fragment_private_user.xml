@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="realmarketplace.realmarketplace.ui.user.PrivateUserFragment">
+
+
+    <LinearLayout
+        android:id="@+id/private_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/private_mail_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/private_image_user_advert"
+            android:layout_width="100dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/Circular"
+            android:layout_height="100dp"
+            android:layout_weight="0" />
+
+        <LinearLayout
+            android:id="@+id/private_last_first_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            tools:layout_editor_absoluteX="10dp">
+
+            <TextView
+                android:id="@+id/private_last_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/private_first_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/private_mail_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/private_phone_created_in_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/private_information">
+
+        <TextView
+            android:id="@+id/private_mail_tooltip_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/private_mail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="example@gmail.com"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/private_phone_created_in_layout"
+        app:layout_constraintBottom_toTopOf="@+id/private_menu_layout"
+        app:layout_constraintTop_toBottomOf="@+id/private_mail_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/private_phone_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/private_phone_tooltip_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Phone"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/private_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="123456789"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginBottom="@dimen/input_element_margin_create"
+            android:id="@+id/created_in_layout"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/created_in_tooltip_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:layout_weight="0"
+                android:text="Created In"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/private_created_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:layout_weight="0"
+                android:text="1.1.2022"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/private_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/private_phone_created_in_layout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/private_update_profile"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/rounded_corner_cover_settings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/settings_basic"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Update User Profile"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/private_update_password"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/rounded_corner_cover_settings"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/settings_lock"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Update User Password"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/private_update_image"
+            android:layout_marginVertical="5dp"
+            android:padding="5dp"
+            android:background="@drawable/rounded_corner_cover_settings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/settings_image"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Update User Image"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/private_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:background="@drawable/rounded_corner_cover_settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/private_menu_layout"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:drawableLeft="@drawable/settings_logout" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Logout"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

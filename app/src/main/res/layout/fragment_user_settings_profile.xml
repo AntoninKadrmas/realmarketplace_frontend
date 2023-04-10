@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.auth.SigninFragmen">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="20dp"
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:id="@+id/settings_first_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/input_element_margin_side"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/settings_last_name_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="50dp"
+        android:hint="First Name"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+        app:layout_constraintVertical_chainStyle="packed"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/settings_first_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:textSize="25sp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:id="@+id/settings_last_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/input_element_margin_side"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/settings_phone_layout"
+        app:layout_constraintTop_toBottomOf="@+id/settings_first_name_layout"
+        tools:layout_editor_absoluteX="50dp"
+        android:hint="Last Name"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/settings_last_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:textSize="25sp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        app:helperText="@string/required"
+        app:helperTextTextColor="@color/error"
+        app:counterEnabled="true"
+        app:counterMaxLength="9"
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:id="@+id/settings_phone_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/input_element_margin_side"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/settings_email_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_last_name_layout"
+        tools:layout_editor_absoluteX="50dp"
+        android:hint="Phone Number"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/settings_phone_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="25sp"
+            android:inputType="phone"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginBottom="@dimen/input_element_margin_create"
+        android:id="@+id/settings_email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/input_element_margin_side"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/settings_phone_layout"
+        app:layout_constraintBottom_toTopOf="@+id/settings_update_user_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="50dp"
+        android:hint="Email Address"
+        android:enabled="false"
+        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/settings_email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:textSize="25sp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/settings_update_user_profile"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            app:layout_constraintTop_toBottomOf="@+id/settings_email_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="Update Profile" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

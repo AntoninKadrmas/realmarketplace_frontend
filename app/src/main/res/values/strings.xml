@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">RealMarketPlace</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="favorite">Favorite</string>
+    <string name="search">Search</string>
+    <string name="create">Create</string>
+    <string-array name="price_options">
+        <item>"Exact Price"</item>
+        <item>"Free"</item>
+        <item>"In Text"</item>
+        <item>"On Argument"</item>
+        <item>"For Ride"</item>
+        <item>"Offer"</item>
+    </string-array>
+    <string name="required">Required</string>
+    <string name="saved_enum_price_option">SavedEnumPriceOption</string>
+    <string name="saved_enum_condition_option">SavedEnumConditionOption</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_auth_token">UserAuthToken</string>
+    <string name="user_expiration_time">UserExpirationTime</string>
+    <string name="real_market_place_key_value">RealMarketPLaceKeyValue</string>
+    <string name="saved_enum_genre">SavedEnumGenre</string>
+    <string name="genre_type_fiction">Fiction</string>
+    <string name="genre_type_non_fiction">Non Fiction</string>
+</resources>
