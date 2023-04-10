@@ -82,3 +82,4 @@ interface AdvertService {
 }
 class ReturnListAdvertModel: ArrayList<AdvertModel>()
 class ReturnListFavoriteAdvertModel: ArrayList<FavoriteAdvertModel>()
+

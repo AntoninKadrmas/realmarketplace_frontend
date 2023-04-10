@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.realmarketplace.databinding.AdapterCreateImageBinding
 import com.squareup.picasso.Picasso
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ImageAdapter(
@@ -20,12 +22,12 @@ class ImageAdapter(
     private var urls:ArrayList<String>,
     private var uri:Uri,
     private var clickDelete: (File) -> Unit,
-    private var clickAdd: (File) -> Unit,
+    private var clickAdd: (Boolean) -> Unit,
     private val life: LifecycleOwner
 ): RecyclerView.Adapter<ImageAdapter.ImageAdapterHolder>() {
     var checkFirst:MutableLiveData<File> = MutableLiveData()
     class ImageAdapterHolder(private val itemBinding: AdapterCreateImageBinding):RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(curImage: File,urls:ArrayList<String>,uri:Uri, clickDelete: (File) -> Unit, clickAdd: (File) -> Unit, position: Int,checkFirst:MutableLiveData<File>,life:LifecycleOwner) {
+        fun bind(curImage: File,urls:ArrayList<String>,uri:Uri, clickDelete: (File) -> Unit, clickAdd: (Boolean) -> Unit, position: Int,checkFirst:MutableLiveData<File>,life:LifecycleOwner) {
             itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             checkFirst.observe(life, Observer{
                 if(curImage==it) itemBinding.coverImage.visibility = View.VISIBLE
@@ -36,7 +38,11 @@ class ImageAdapter(
                 itemBinding.deleteText.visibility = View.GONE
                 itemBinding.coverImage.visibility = View.GONE
                 itemBinding.imageView.setOnClickListener(){
-                    clickAdd(curImage)
+                    clickAdd(true)
+                }
+                itemBinding.imageView.setOnLongClickListener(){
+                    clickAdd(true)
+                    true
                 }
             }
             else{
@@ -81,6 +87,10 @@ class ImageAdapter(
         images.remove(image)
         if(urls.size>0) urls.remove(image.path)
         if(images.size>1)checkFirst.value=images[1]
+    }
+    fun swap(from:Int,to:Int){
+        Collections.swap(images,from,to)
+        checkFirst.value=images[1]
     }
     fun positionOfImage(image:File):Int{
         return images.indexOf(image)

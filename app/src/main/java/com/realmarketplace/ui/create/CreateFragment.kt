@@ -6,19 +6,16 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.realmarketplace.R
 import com.realmarketplace.SelectGenreActivity
 import com.realmarketplace.databinding.FragmentCreateBinding
 import com.realmarketplace.model.AdvertModel
@@ -28,13 +25,10 @@ import com.realmarketplace.viewModel.EnumViewData
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.create.crud.CrudAdvertViewModel
+import com.realmarketplace.ui.create.crud.CrudShared
 import com.realmarketplace.ui.create.image.ImageAdapter
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
-import id.zelory.compressor.Compressor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 
 class CreateFragment : Fragment() {
@@ -43,12 +37,11 @@ class CreateFragment : Fragment() {
     private lateinit var priceOptions: ArrayList<String>
     private lateinit var condition: ArrayList<String>
     private lateinit var alertBuilder:AlertDialog.Builder
+    private lateinit var crudShared: CrudShared
     private val crudAdvertViewModel: CrudAdvertViewModel by activityViewModels()
     private val enumViewDataModel: EnumViewData by activityViewModels()
     private val permissionModel: PermissionViewModel by activityViewModels()
     private val advertViewModel= AdvertViewModel
-    private val maxImage = 5
-    private var actualImage = 0
     private var _binding: FragmentCreateBinding? = null
     private val binding get() = _binding!!
     var buttonEnables = true
@@ -59,28 +52,12 @@ class CreateFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        if(this::priceOptions.isInitialized&&this::condition.isInitialized)updateDropDown()
-        if(crudAdvertViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/$maxImage"){
-            actualImage=crudAdvertViewModel.imagesFile.value!!.size
-            for(uri in crudAdvertViewModel.imagesFile.value!!){
-                imageAdapter.addNewImage(uri)
-            }
-            binding.imageCounter.text = "$actualImage/$maxImage"
+        if(this::priceOptions.isInitialized&&this::condition.isInitialized) context?.let {
+            crudShared.updateDropDown(
+                it,priceOptions,condition)
         }
+        crudShared.loadImages()
         createVerification.checkAll()
-    }
-
-    private fun updateDropDown(){
-        val priceArrayAdapter =
-            context?.let { ArrayAdapter(it,R.layout.adapter_drop_down_price_option,priceOptions) }
-        val conditionArrayAdapter =
-            context?.let { ArrayAdapter(it,R.layout.adapter_drop_down_price_option,condition) }
-        if(binding.priceInput.text.toString()==""){
-            binding.priceOptionInput.setText(priceOptions[0])
-            binding.priceInput.setText("")
-        }
-        binding.priceOptionInput.setAdapter(priceArrayAdapter)
-        binding.conditionInput.setAdapter(conditionArrayAdapter)
     }
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
@@ -97,9 +74,9 @@ class CreateFragment : Fragment() {
             ArrayList(),
             Uri.parse("android.resource://com.realmarketplace/drawable/camera_add"),
             clickDelete = {
-            removeUri:File->imageClickDelete(removeUri)
+            removeUri:File->crudShared.clickDelete(removeUri)
         },clickAdd={
-            addUri:File->imageClickAdd(addUri)
+            addUri:Boolean->imageClickAdd(addUri)
         }, viewLifecycleOwner)
         binding.recyclerView.adapter = imageAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(FragmentActivity(),LinearLayoutManager.HORIZONTAL,false)
@@ -141,13 +118,14 @@ class CreateFragment : Fragment() {
         createVerification.focusPrice()
         createVerification.focusAdvertName()
         createVerification.focusAdvertAuthor()
+        crudShared = CrudShared(imageAdapter,crudAdvertViewModel,binding)
         return binding.root
     }
     private fun submitForm(){
         if(createVerification.submitFormVerification()&&buttonEnables){
             val token: UserTokenAuth = AuthViewModel.userToken.value!!
             var noImage = ""
-            if(actualImage==0)noImage=" without any image"
+            if(crudShared.actualImage==0)noImage=" without any image"
             alertBuilder.setTitle("Are you sure you want to create new advert$noImage.")
                 .setCancelable(true)
                 .setPositiveButton("YES"){_,_->
@@ -185,7 +163,7 @@ class CreateFragment : Fragment() {
                     for(value in 0 until length){
                         data?.clipData?.getItemAt(value)?.let { uris.add(it.uri) }
                     }
-                    if(uris.size>0) handleOutput(uris)
+                    if(uris.size>0) context?.let { crudShared.handleOutput(uris, it) }
                 }catch (e:Exception){
                     context?.let { ToastObject.showToast(it,"Image type is not supported.",Toast.LENGTH_LONG) }
                 }
@@ -196,52 +174,9 @@ class CreateFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun imageClickDelete(file:File){
-        actualImage--
-        val indexOfImage = imageAdapter.positionOfImage(file)
-        imageAdapter.removeNewImage(file)
-        imageAdapter.notifyItemRemoved(indexOfImage)
-        binding.imageCounter.text = "$actualImage/$maxImage"
-        crudAdvertViewModel.removeOldFileByPos(indexOfImage-1)
-    }
-    private fun imageClickAdd(uri:File){
-        permissionModel.setPermissionStorageAsk(true)
-        if(permissionModel.permissionStorage.value==true){
-            val intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
-        }
-    }
-    private fun handleOutput(uris:List<Uri>){
-        if (uris.isNotEmpty()) {
-            var actualMaximum:Int = maxImage-actualImage
-            if(uris.size<=actualMaximum)actualMaximum = uris.size
-            else context?.let { ToastObject.showToast(it,"You can use just 5 photos",Toast.LENGTH_SHORT) }
-            actualMaximum--
-            val fileArray = ArrayList<File>()
-            val extensionList = listOf("png","jpg","svg","jpeg")
-            CoroutineScope(Dispatchers.Main).launch {
-                for(value in 0..actualMaximum){
-                    var file = context?.let { UriToFileConvertor.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
-                    val extension = file.absolutePath.toString()
-                        .substring(file.absolutePath.toString().lastIndexOf(".") + 1)
-                    file = context?.let { Compressor.compress(it, file) }!!
-                    println(extension)
-                    if(extensionList.contains(extension)){
-                        actualImage++
-                        binding.imageCounter.text = "$actualImage/$maxImage"
-                        imageAdapter.addNewImage(file)
-                        imageAdapter.notifyItemInserted(actualImage)
-                        fileArray.add(file)
-                    }
-                    else ToastObject.showToast(requireContext(),"($extension)Allowed file extensions are ${extensionList.joinToString(", ")}.",Toast.LENGTH_LONG)
-                }
-                if(fileArray.size>0){
-                    crudAdvertViewModel.appendNewFile(fileArray)
-                }
-            }
-        }
+    private fun imageClickAdd(state:Boolean){
+        val intent = crudShared.clickAdd(state,permissionModel)
+        if(intent!=null) startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
     }
     private fun clearAllData(advert: AdvertModel){
         if(crudAdvertViewModel.imagesFile.value!=null){
@@ -255,7 +190,7 @@ class CreateFragment : Fragment() {
             crudAdvertViewModel.executed=false
         }
         crudAdvertViewModel.clearFiles()
-        updateDropDown()
+        context?.let { crudShared.updateDropDown(it,priceOptions,condition) }
         createVerification.clearInputData()
     }
 }

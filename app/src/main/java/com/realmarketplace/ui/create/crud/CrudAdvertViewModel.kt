@@ -13,18 +13,19 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import com.realmarketplace.rest.*
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
 class CrudAdvertViewModel : ViewModel() {
-    private var crudTools= CrudAdvertTools()
+    private var crudTools = CrudAdvertTools()
     private var mutableReturnDelete = MutableLiveData<Boolean>()
-    val returnDelete:LiveData<Boolean> get() = mutableReturnDelete
+    val returnDelete: LiveData<Boolean> get() = mutableReturnDelete
     private var mutableReturnUpdate = MutableLiveData<AdvertModel>()
-    val returnUpdate:LiveData<AdvertModel> get() = mutableReturnUpdate
+    val returnUpdate: LiveData<AdvertModel> get() = mutableReturnUpdate
     var buttonsEnabled = MutableLiveData<Boolean>()
     private var mutableImagesFile = MutableLiveData<ArrayList<File>>().apply {
-        value=ArrayList()
+        value = ArrayList()
     }
     val imagesFile: LiveData<ArrayList<File>> get() = mutableImagesFile
     val clean = MutableLiveData<AdvertModel>()
@@ -39,6 +40,7 @@ class CrudAdvertViewModel : ViewModel() {
         }
         mutableImagesFile.value = list
     }
+
     fun removeOldFileByPos(position: Int) {
         val list = ArrayList<File>()
         var count = 0;
@@ -49,16 +51,18 @@ class CrudAdvertViewModel : ViewModel() {
             }
         mutableImagesFile.value = list
     }
-    fun clearFiles( ){
-        mutableImagesFile.value=ArrayList<File>()
+
+    fun clearFiles() {
+        mutableImagesFile.value = ArrayList<File>()
     }
+
     private var retroServiceAdvert: AdvertService = RetrofitInstance.getRetroFitInstance().create(
         AdvertService::class.java
     )
     fun createAdvert(advertModel: AdvertModel, userToken: String, context: Context) {
-        executed=true
+        executed = true
         CoroutineScope(Dispatchers.IO).launch {
-            val bodyList = crudTools.createImagesFileBody(0,imagesFile.value)
+            val bodyList = crudTools.createImagesFileBody(imagesFile.value)
             val response = try {
                 retroServiceAdvert.createAdvert(
                     bodyList,
@@ -99,39 +103,26 @@ class CrudAdvertViewModel : ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                    buttonsEnabled.value=true
+                    buttonsEnabled.value = true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                    buttonsEnabled.value=true
+                    buttonsEnabled.value = true
                 }
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
-                val body: ReturnTypeSuccessAdvert? =
-                    Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccessAdvert::class.java)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
-                    clean.value=body?.advert
-                    buttonsEnabled.value=true
-                }
+                successResponse(response,context)
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main) {
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                        buttonsEnabled.value=true
-                    }
+                    crudTools.errorResponse(response, response.code(),context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
                             .show()
-                        buttonsEnabled.value=true
+                        buttonsEnabled.value = true
                     }
                 }
             }
@@ -139,10 +130,11 @@ class CrudAdvertViewModel : ViewModel() {
         }
     }
     fun updateAdvert(
-        newAdvertModel: AdvertModel,
-        deletedUrls:ArrayList<String>, userToken: String, context: Context) {
+        newAdvertModel: AdvertModel, deletedUrls: ArrayList<String>,
+        userToken: String, context: Context
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val bodyList = crudTools.createImagesFileBody(newAdvertModel.imagesUrls.size,imagesFile.value)
+            val bodyList = crudTools.createImagesFileBody(crudTools.getNewFileArray(imagesFile.value))
             val response = try {
                 retroServiceAdvert.updateAdvert(
                     bodyList,
@@ -188,7 +180,7 @@ class CrudAdvertViewModel : ViewModel() {
                     ),
                     RequestBody.create(
                         "text/plain".toMediaTypeOrNull(),
-                        newAdvertModel.imagesUrls.joinToString(";")
+                        crudTools.getOldFileArray(imagesFile.value).joinToString(";;")
                     ),
                     RequestBody.create(
                         "text/plain".toMediaTypeOrNull(),
@@ -199,98 +191,97 @@ class CrudAdvertViewModel : ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                    buttonsEnabled.value=true
+                    buttonsEnabled.value = true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                    buttonsEnabled.value=true
+                    buttonsEnabled.value = true
                 }
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val body: ReturnTypeSuccessUris? =
-                    Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccessUris::class.java)
+                    Gson().fromJson(
+                        Gson().toJson(response.body()),
+                        ReturnTypeSuccessUris::class.java
+                    )
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
-                    if(body?.imageUrls!=null){
-                        newAdvertModel.imagesUrls=body?.imageUrls!!
-                        if(body.imageUrls.size>0)newAdvertModel.mainImageUrl=newAdvertModel.imagesUrls[0]
-                        else newAdvertModel.mainImageUrl=""
-                    }else{
-                        newAdvertModel.imagesUrls= ArrayList()
-                        newAdvertModel.mainImageUrl=""
+                    if (body?.imageUrls != null) {
+                        newAdvertModel.imagesUrls = body?.imageUrls!!
+                        if (body.imageUrls.size > 0) newAdvertModel.mainImageUrl = newAdvertModel.imagesUrls[0]
+                        else newAdvertModel.mainImageUrl = ""
+                    } else {
+                        newAdvertModel.imagesUrls = ArrayList()
+                        newAdvertModel.mainImageUrl = ""
                     }
-                    mutableReturnUpdate.value=newAdvertModel
-                    buttonsEnabled.value=true
+                    mutableReturnUpdate.value = newAdvertModel
+                    buttonsEnabled.value = true
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main) {
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                        buttonsEnabled.value=true
-                    }
+                    crudTools.errorResponse(response, response.code(),context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
-                        buttonsEnabled.value=true
+                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
+                            .show()
+                        buttonsEnabled.value = true
                     }
                 }
             }
             return@launch
         }
     }
-fun deleteAdvert(advertId: String, userToken: String, context: Context) {
-    CoroutineScope(Dispatchers.IO).launch {
-        val response = try {
-            retroServiceAdvert.deleteAdvert(
-                advertId,
-                userToken
-            )
-        } catch (e: IOException) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                buttonsEnabled.value=true
+    fun deleteAdvert(advertId: String, userToken: String, context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = try {
+                retroServiceAdvert.deleteAdvert(
+                    advertId,
+                    userToken
+                )
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value = true
+                }
+                return@launch
+            } catch (e: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value = true
+                }
+                return@launch
             }
-            return@launch
-        } catch (e: HttpException) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                buttonsEnabled.value=true
+            if (response.isSuccessful && response.body() != null) {
+                successResponse(response,context)
+                buttonsEnabled.value = true
+            } else {
+                try {
+                   crudTools.errorResponse(response, response.code(),context)
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
+                            .show()
+                        buttonsEnabled.value = true
+                    }
+                }
             }
             return@launch
         }
-        if (response.isSuccessful && response.body() != null) {
-            val body: ReturnTypeSuccessAdvert? =
-                Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccessAdvert::class.java)
-            withContext(Dispatchers.Main) {
-                mutableReturnDelete.value = true
-                Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
-                buttonsEnabled.value=true
-            }
-        } else {
-            val errorBody = response.errorBody()
-            try {
-                val errorResponse: ReturnTypeError? =
-                    Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                withContext(Dispatchers.Main) {
-                    if(response.code()==401) LogOutAuth.setLogOut(true)
-                    Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                    buttonsEnabled.value=true
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
-                    buttonsEnabled.value=true
-
-                }
-            }
-        }
-        return@launch
     }
-}}
+    private suspend fun successResponse(response: Response<Any>, context: Context){
+        val body: ReturnTypeSuccessAdvert? =
+            Gson().fromJson(
+                Gson().toJson(response.body()),
+                ReturnTypeSuccessAdvert::class.java
+            )
+        withContext(Dispatchers.Main) {
+            if(body?.advert!=null)clean.value=body.advert
+            mutableReturnDelete.value = true
+            Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
+            buttonsEnabled.value = true
+        }
+    }
+}

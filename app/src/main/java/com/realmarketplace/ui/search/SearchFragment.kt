@@ -4,21 +4,27 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.realmarketplace.ui.advert.AdvertActivity
+import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentSearchBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
-import com.realmarketplace.ui.favorite.FavoriteObject
+import com.realmarketplace.ui.advert.AdvertActivity
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
+import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.ui.search.advert.AdvertAdapter
+
 
 class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
