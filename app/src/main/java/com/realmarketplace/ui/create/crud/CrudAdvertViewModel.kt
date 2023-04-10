@@ -256,7 +256,6 @@ class CrudAdvertViewModel : ViewModel() {
             }
             if (response.isSuccessful && response.body() != null) {
                 successResponse(response,context)
-                buttonsEnabled.value = true
             } else {
                 try {
                    crudTools.errorResponse(response, response.code(),context)

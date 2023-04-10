@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -44,7 +45,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timeOutClear:Handler
     private val enumViewDataModel: EnumViewData by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
-    private val crudAdvertViewModel: CrudAdvertViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
     private val favoriteAdvertModel= FavoriteViewModel
     private val advertViewModel= AdvertViewModel
@@ -108,6 +108,10 @@ class MainActivity : AppCompatActivity() {
             CreateFragment.newInstance(),
             EyeAuthFragment.newInstance()
         )
+        AdvertViewModel.showToolBar.observe(this,Observer{
+            if(it)binding.myToolbar.visibility= View.VISIBLE
+            else binding.myToolbar.visibility= View.GONE
+        })
         timeOutClear = Handler(Looper.getMainLooper())
         navView = binding.navView
         navView.setOnItemSelectedListener {item->
@@ -144,7 +148,6 @@ class MainActivity : AppCompatActivity() {
                         if(AuthViewModel.userToken.value==null) AuthViewModel.updateUserToken(newToken)
                     }
                     showFragment(1)
-                    binding.myToolbar.subtitle= SearchFragment.NAME
                     true
                 }
                 R.id.navigation_create ->{

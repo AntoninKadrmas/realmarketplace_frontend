@@ -20,6 +20,7 @@ import com.realmarketplace.databinding.FragmentSearchBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.ui.advert.AdvertActivity
+import com.realmarketplace.ui.advert.AdvertViewModel
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.favorite.FavoriteObject
@@ -40,6 +41,7 @@ class SearchFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        AdvertViewModel.changeToolBarState(false)
         createViewModel.advertModel.observe(viewLifecycleOwner, Observer {
             advertAdapter.updateAdvertList(it)
             binding.container.isRefreshing = false

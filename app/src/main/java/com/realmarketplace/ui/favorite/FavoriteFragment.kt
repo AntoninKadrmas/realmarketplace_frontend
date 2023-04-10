@@ -27,10 +27,8 @@ import com.google.android.material.tabs.TabLayout
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
-    private val favoriteViewModel= FavoriteViewModel
     private val advertViewModel= AdvertViewModel
     private val enumViewDataModel: EnumViewData by activityViewModels()
-    private val crudAdvertViewModel: CrudAdvertViewModel by activityViewModels()
     private val permissionViewModel: PermissionViewModel by activityViewModels()
     private val binding get() = _binding!!
     private lateinit var advertAdapter: AdvertAdapter
@@ -64,13 +62,16 @@ class FavoriteFragment : Fragment() {
             myAdverts = it
             if(tabLayout.selectedTabPosition==1){
                 advertAdapter.updateAdvertList(myAdverts)
+                if(myAdverts.size==0) binding.noAdverts.text = "You have 0 created adverts yet."
                 advertAdapter.notifyDataSetChanged()
+
             }
         })
         FavoriteViewModel.favoriteAdverts.observe(viewLifecycleOwner, Observer {
             favoriteAdverts = it
             if(tabLayout.selectedTabPosition==0){
                 advertAdapter.updateAdvertList(favoriteAdverts)
+                if(favoriteAdverts.size==0) binding.noAdverts.text = "You have 0 favorite adverts yet."
                 advertAdapter.notifyDataSetChanged()
             }
 
@@ -80,10 +81,13 @@ class FavoriteFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setText("Favorite Adverts"))
         tabLayout.addTab(tabLayout.newTab().setText("My Adverts"))
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+        binding.noAdverts.text = "You have 0 favorite adverts yet."
         tabLayout.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 FavoriteViewModel.changeStatus(tab!!.position)
                 if(tab!!.position==0){
+                    if(favoriteAdverts.size==0) binding.noAdverts.text = "You have 0 favorite adverts yet."
+                    else binding.noAdverts.text = ""
                     advertAdapter.updateAdvertList(favoriteAdverts)
                     advertAdapter.notifyDataSetChanged()
                     context?.let {
@@ -94,6 +98,8 @@ class FavoriteFragment : Fragment() {
                     }
                 }
                 else{
+                    if(myAdverts.size==0) binding.noAdverts.text = "You have 0 created adverts yet."
+                    else binding.noAdverts.text = ""
                     advertAdapter.updateAdvertList(myAdverts)
                     advertAdapter.notifyDataSetChanged()
                 }
@@ -112,6 +118,7 @@ class FavoriteFragment : Fragment() {
         binding.advertRecyclerView.layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
+        AdvertViewModel.changeToolBarState(true)
         return binding.root
     }
 

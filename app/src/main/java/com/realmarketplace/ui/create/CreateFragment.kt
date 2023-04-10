@@ -119,6 +119,7 @@ class CreateFragment : Fragment() {
         createVerification.focusAdvertName()
         createVerification.focusAdvertAuthor()
         crudShared = CrudShared(imageAdapter,crudAdvertViewModel,binding)
+        AdvertViewModel.changeToolBarState(true)
         return binding.root
     }
     private fun submitForm(){

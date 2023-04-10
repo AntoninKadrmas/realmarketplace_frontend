@@ -9,6 +9,7 @@ class PermissionViewModel:ViewModel() {
     val permissionStorage: LiveData<Boolean> get() = mutableStoragePermission
     private var mutableStoragePermissionAsk = MutableLiveData<Boolean>()
     val permissionStorageAsk: LiveData<Boolean> get() = mutableStoragePermissionAsk
+
     fun setPermissionStorage(state:Boolean){
         mutableStoragePermission.value=state
     }

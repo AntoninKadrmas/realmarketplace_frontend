@@ -25,7 +25,12 @@ object AdvertViewModel {
     val myAdverts:LiveData<ArrayList<AdvertModel>> get() = mutableMyAdverts
     val showAdvert = MutableLiveData<AdvertModel>()
     var enableButton = MutableLiveData<Int>()
+    private var showToolBarMutable = MutableLiveData<Boolean>()
+    val showToolBar: LiveData<Boolean> get() = showToolBarMutable
     var loadedMyAdverts = false
+    fun changeToolBarState(state:Boolean){
+        showToolBarMutable.value = state
+    }
     fun addNewMyAdvertItem(advertList: AdvertModel){
         if(mutableMyAdverts.value==null) mutableMyAdverts.value = ArrayList()
         else{
