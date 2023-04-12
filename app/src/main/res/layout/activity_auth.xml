@@ -10,9 +10,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
                 <androidx.appcompat.widget.Toolbar
+                    android:layout_height="@dimen/tool_bar_height"
                     android:id="@+id/my_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:elevation="4dp"
                     android:background="?attr/colorPrimary"

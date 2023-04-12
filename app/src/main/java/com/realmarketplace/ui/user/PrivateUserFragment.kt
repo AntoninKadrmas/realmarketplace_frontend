@@ -1,6 +1,8 @@
 package com.realmarketplace.ui.user
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -8,12 +10,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.google.android.material.textfield.TextInputLayout
 import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentPrivateUserBinding
 import com.realmarketplace.model.LightUser
+import com.realmarketplace.model.UserTokenAuth
+import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.search.advert.AdvertAdapter
@@ -31,14 +37,17 @@ class PrivateUserFragment : Fragment() {
     private var _binding: FragmentPrivateUserBinding? = null
     private val userViewModel: UserViewModel by activityViewModels()
     private val permissionModel: PermissionViewModel by activityViewModels()
+    private lateinit var alertBuilder: AlertDialog.Builder
     private lateinit var file:File
     private val binding get() = _binding!!
     private lateinit var user: LightUser
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        alertBuilder = AlertDialog.Builder(context)
         _binding = FragmentPrivateUserBinding.inflate(inflater, container, false)
         userViewModel.user.observe(viewLifecycleOwner, Observer {
             user = it
@@ -61,6 +70,28 @@ class PrivateUserFragment : Fragment() {
             intent.putExtra("user",user)
             intent.putExtra("type",1)
             startActivityForResult(intent,10)
+        }
+        binding.privateDeleteAccount.setOnClickListener(){
+            val dialogLayout = layoutInflater.inflate(R.layout.adapter_edit_text,null)
+            val editText = dialogLayout.findViewById<EditText>(R.id.edit_text_alert)
+            editText.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
+            alertBuilder.setTitle("Are you sure you want to delete your account permanently?")
+                .setPositiveButton("YES"){_,_->
+                    val password = editText.text.toString()
+                    if(AuthViewModel.checkPassword(password))Toast.makeText(context,TextModelAuth.INCORRECT_PASSWORD,Toast.LENGTH_SHORT).show()
+                    else{
+                        val token = AuthViewModel.userToken.value?: UserTokenAuth("")
+                        context?.let { it1 ->
+                            this.userViewModel.deleteUser(password,token,
+                                it1
+                            )
+                        }
+                    }
+                }
+                .setNegativeButton("NO"){_,_->
+
+                }.setView(dialogLayout)
+                .show()
         }
         return binding.root
     }

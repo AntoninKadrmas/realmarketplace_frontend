@@ -234,11 +234,12 @@ class CrudAdvertViewModel : ViewModel() {
             return@launch
         }
     }
-    fun deleteAdvert(advertId: String, userToken: String, context: Context) {
+    fun deleteAdvert(advert: AdvertModel, userToken: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val response = try {
                 retroServiceAdvert.deleteAdvert(
-                    advertId,
+                    advert._id,
+                    advert.imagesUrls.joinToString(";"),
                     userToken
                 )
             } catch (e: IOException) {

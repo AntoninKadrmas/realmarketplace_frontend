@@ -32,7 +32,10 @@ interface AuthService {
     suspend fun updateUser(
         @Body body: LightUser,
         @Header("Authentication") token:String):Response<Any>
-
+    @DELETE(value="/user")
+    suspend fun deleteUser(
+        @Header("Authorization") credential:String,
+        @Header("Authentication") token:String):Response<Any>
 }
 data class ReturnTypeError(
     @SerializedName("error")

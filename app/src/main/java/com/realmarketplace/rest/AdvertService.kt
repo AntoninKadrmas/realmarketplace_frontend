@@ -5,6 +5,7 @@ import com.realmarketplace.model.FavoriteAdvertModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -31,6 +32,7 @@ interface AdvertService {
     @DELETE(value="/advert")
     suspend fun deleteAdvert(
         @Query("advertId") advertId:String,
+        @Header("deleteUrls") imageUrls:String,
         @Header("Authentication") token:String): Response<Any>
     @Multipart
     @PUT(value="/advert")
@@ -72,7 +74,7 @@ interface AdvertService {
         @Header("userEmail") email:String,
         @Header("createdIn") createdIn:String,
         @Header("Authentication") token:String
-    ):Response<ReturnListAdvertModel>
+    ):Response<Any>
     @PUT(value="/advert/visible")
         suspend fun updateAdvertVisibility(
         @Query("advertId") advertId:String,

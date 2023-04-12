@@ -20,6 +20,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import com.realmarketplace.rest.*
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
@@ -64,14 +65,8 @@ class   UserViewModel:ViewModel() {
                     }
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main) {
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                    }
+                    errorResponse(response,context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -106,14 +101,8 @@ class   UserViewModel:ViewModel() {
                     }
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main) {
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                    }
+                    errorResponse(response,context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -159,14 +148,8 @@ class   UserViewModel:ViewModel() {
                     userMutable.value=userOld
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main) {
-                        if (response.code() == 401) LogOutAuth.setLogOut(true)
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                    }
+                    errorResponse(response,context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -204,13 +187,8 @@ class   UserViewModel:ViewModel() {
                     }
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                        buttonEnables=true
-                    }
+                    errorResponse(response,context)
                 }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
@@ -250,13 +228,8 @@ class   UserViewModel:ViewModel() {
                     }
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
-                        buttonEnables=true
-                    }
+                    errorResponse(response,context)
                 }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
@@ -266,6 +239,56 @@ class   UserViewModel:ViewModel() {
                 }
             }
             return@launch
+        }
+    }
+    fun deleteUser(password:String, token: UserTokenAuth, context: Context){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = try{
+                retroServiceUser.deleteUser(okhttp3.Credentials.basic(password, ""), token.token)
+            }catch (e: IOException){
+                withContext(Dispatchers.Main) {
+                    println(e)
+                    Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonEnables=true
+                }
+                return@launch
+            }catch (e: HttpException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonEnables=true
+                }
+                return@launch
+            }
+            if(response.isSuccessful && response.body()!=null){
+                val body: ReturnTypeSuccess? = Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccess::class.java)
+                withContext(Dispatchers.Main) {
+                    if (body != null) {
+                        Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
+                        LogOutAuth.setLogOut(true)
+                        buttonEnables=true
+                    }
+                }
+            }else{
+                try {
+                    errorResponse(response,context)
+                }
+                catch (e:Exception){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
+                        buttonEnables=true
+                    }
+                }
+            }
+            return@launch
+        }
+    }
+    private suspend fun errorResponse(response:Response<Any>,context: Context){
+        val errorBody = response.errorBody()
+        val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
+        withContext(Dispatchers.Main){
+            if (response.code() == 401) LogOutAuth.setLogOut(true)
+            Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
+            buttonEnables=true
         }
     }
 }

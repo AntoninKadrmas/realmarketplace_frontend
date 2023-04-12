@@ -150,7 +150,7 @@ class UpdateDeleteFragment : Fragment() {
                 .setCancelable(true)
                 .setPositiveButton("YES"){_,it->
                     buttonEnables=false
-                    context?.let { crudAdvertViewModel.deleteAdvert(advert._id,token.token, it) }
+                    context?.let { crudAdvertViewModel.deleteAdvert(advert,token.token, it) }
                 }
                 .setNegativeButton("NO"){_,it->
             }.show()
