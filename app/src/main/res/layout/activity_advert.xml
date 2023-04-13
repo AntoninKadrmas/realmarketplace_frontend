@@ -81,6 +81,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginHorizontal="10dp"
+                                android:background="@drawable/rounded_corner_cover_position"
+                                android:padding="5dp"
                                 android:layout_weight="0">
                             </me.relex.circleindicator.CircleIndicator3>
                             <TextView

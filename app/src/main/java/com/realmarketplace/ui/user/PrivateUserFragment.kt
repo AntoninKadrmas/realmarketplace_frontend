@@ -124,9 +124,10 @@ class PrivateUserFragment : Fragment() {
         if(requestCode==15){
             if(resultCode== Activity.RESULT_OK){
                 try {
-                    val uri = data?.clipData?.getItemAt(0)?.uri
+                    val uri = data?.data
                     val extensionList = listOf("png", "jpg", "svg", "jpeg")
                     CoroutineScope(Dispatchers.Main).launch {
+                        println(uri)
                         file = context?.let { it ->
                             UriToFileConvertor.getRealPathFromURI(
                                 it,

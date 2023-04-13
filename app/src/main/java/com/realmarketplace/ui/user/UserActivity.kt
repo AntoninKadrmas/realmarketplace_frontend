@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.realmarketplace.PermissionRequestCode
 import com.realmarketplace.R
@@ -73,7 +74,12 @@ class UserActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     fun requestPermissionStorage(){
         val permission = Manifest.permission.READ_EXTERNAL_STORAGE
-        requestPermissions(listOf(permission).toTypedArray(), PermissionRequestCode.READ_EXTERNAL_STORAGE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(listOf(permission).toTypedArray(),
+                PermissionRequestCode.READ_EXTERNAL_STORAGE
+            )
+        }
+        else ContextCompat.checkSelfPermission(this,permission)
     }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
