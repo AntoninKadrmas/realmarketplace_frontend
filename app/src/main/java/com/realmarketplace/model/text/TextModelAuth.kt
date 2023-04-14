@@ -1,5 +1,10 @@
 package com.realmarketplace.model.text
 
+/**
+ * A group of *text_object*.
+ *
+ * Object that contains all phrases that is used in input validation.
+ */
 class TextModelAuth {
     companion object{
         const val DIFFERENT_PASSWORD="Password Is Different"

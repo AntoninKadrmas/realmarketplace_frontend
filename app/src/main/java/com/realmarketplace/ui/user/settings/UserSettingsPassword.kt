@@ -14,6 +14,7 @@ import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.user.UserViewModel
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
 class UserSettingsPassword : Fragment() {
@@ -22,9 +23,9 @@ class UserSettingsPassword : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var alertBuilder:AlertDialog.Builder
     private fun checkAll(){
-        if(binding.passwordNewSecondInput.text?.isEmpty() == false)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
-        if(binding.passwordNewFirstInput.text?.isEmpty() == false)binding.passwordNewFirstLayout.helperText = validPasswordFirst()
-        if(binding.passwordPreviousInput.text?.isEmpty() == false)binding.passwordPreviousLayout.helperText = validPasswordPrevious()
+        if(binding.passwordNewSecondInput.text?.trim()?.isEmpty() == false)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
+        if(binding.passwordNewFirstInput.text?.trim()?.isEmpty() == false)binding.passwordNewFirstLayout.helperText = validPasswordFirst()
+        if(binding.passwordPreviousInput.text?.trim()?.isEmpty() == false)binding.passwordPreviousLayout.helperText = validPasswordPrevious()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,15 +47,16 @@ class UserSettingsPassword : Fragment() {
     }
     private fun submitForm(){
         if(submitFormVerification()){
-            if(userViewModel.buttonEnables){
+            if(userViewModel.buttonEnables.value!!){
                 val token: UserTokenAuth = AuthViewModel.userToken.value?: UserTokenAuth("")
                 alertBuilder.setTitle("Are you sure you want to update your password.")
                     .setCancelable(true)
                     .setPositiveButton("YES"){_,it->
-                        userViewModel.buttonEnables=false
+                        userViewModel.buttonEnables.value=false
+                        LoadingBar.mutableHideLoadingUserSettingsActivity.value=false
                         context?.let { userViewModel.updatePassword(
-                            binding.passwordPreviousInput.text.toString(),
-                            binding.passwordNewSecondInput.text.toString(),
+                            binding.passwordPreviousInput.text.toString().trim(),
+                            binding.passwordNewSecondInput.text.toString().trim(),
                             token,
                             it
                         ) }
@@ -63,7 +65,7 @@ class UserSettingsPassword : Fragment() {
                     }.show()
             }
         }else{
-            if(userViewModel.buttonEnables) context?.let { ToastObject.showToast(it,
+            if(userViewModel.buttonEnables.value!!) context?.let { ToastObject.showToast(it,
                 TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
         }
     }
@@ -77,13 +79,13 @@ class UserSettingsPassword : Fragment() {
     }
     private fun focusPasswordPrevious(){
         binding.passwordPreviousInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.passwordPreviousInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.passwordPreviousInput.text?.trim()?.isNotEmpty()==true) {
                 binding.passwordPreviousLayout.helperText = validPasswordPrevious()
             }else if(!focused && binding.passwordPreviousLayout.helperText!=resources.getString(R.string.required))binding.passwordPreviousLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPasswordPrevious():String?{
-        val passwordText = binding.passwordPreviousInput.text.toString()
+        val passwordText = binding.passwordPreviousInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){
             binding.passwordPreviousInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             return TextModelAuth.INCORRECT_PASSWORD
@@ -93,34 +95,34 @@ class UserSettingsPassword : Fragment() {
     }
     private fun focusPasswordFirst(){
         binding.passwordNewFirstInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.passwordNewFirstInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.passwordNewFirstInput.text?.trim()?.isNotEmpty()==true) {
                 binding.passwordNewFirstLayout.helperText = validPasswordFirst()
             }else if(!focused && binding.passwordNewFirstLayout.helperText!=resources.getString(R.string.required))binding.passwordNewFirstLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPasswordFirst():String?{
-        val passwordText = binding.passwordNewFirstInput.text.toString()
-        val checkSamePasswordPrevious = binding.passwordPreviousInput.text.toString()==passwordText
+        val passwordText = binding.passwordNewFirstInput.text.toString().trim()
+        val checkSamePasswordPrevious = binding.passwordPreviousInput.text.toString().trim()==passwordText
         if(AuthViewModel.checkPassword(passwordText)){
             binding.passwordNewFirstInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             return TextModelAuth.INCORRECT_PASSWORD
         }
-        if(binding.passwordNewSecondInput.text?.isNotEmpty()==true)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
+        if(binding.passwordNewSecondInput.text?.trim()?.isNotEmpty()==true)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
         if(checkSamePasswordPrevious)return TextModelAuth.SAME_PASSWORD
         binding.passwordNewFirstInput.error = null
         return null
     }
     private fun focusPasswordSecond(){
         binding.passwordNewSecondInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.passwordNewSecondInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.passwordNewSecondInput.text?.trim()?.isNotEmpty()==true) {
                 binding.passwordNewSecondLayout.helperText = validPasswordSecond()
             }else if(!focused && binding.passwordNewSecondLayout.helperText!=resources.getString(R.string.required))binding.passwordNewSecondLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPasswordSecond():String?{
-        val passwordText = binding.passwordNewSecondInput.text.toString()
-        val checkSamePassword = binding.passwordNewFirstInput.text.toString()==passwordText
-        val checkSamePasswordPrevious = binding.passwordPreviousInput.text.toString()==passwordText
+        val passwordText = binding.passwordNewSecondInput.text.toString().trim()
+        val checkSamePassword = binding.passwordNewFirstInput.text.toString().trim()==passwordText
+        val checkSamePasswordPrevious = binding.passwordPreviousInput.text.toString().trim()==passwordText
         if(AuthViewModel.checkPassword(passwordText)){
             binding.passwordNewSecondInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             return TextModelAuth.INCORRECT_PASSWORD

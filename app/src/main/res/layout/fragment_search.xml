@@ -32,20 +32,8 @@
                     android:iconifiedByDefault="false"
                     android:queryHint="Search Advert ..."
                     android:theme="@style/TextAppearance.Material3.SearchView.Prefix" />
-
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_weight="0"
-                    android:backgroundTint="?attr/colorPrimaryInverse"
-                    android:text="Filters" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -54,8 +42,6 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         tools:context="com.realmarketplace.MainActivity">
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/advert_recycler_view"
             android:layout_width="match_parent"

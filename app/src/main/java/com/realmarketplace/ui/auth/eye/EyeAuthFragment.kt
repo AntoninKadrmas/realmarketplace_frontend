@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.realmarketplace.AuthActivity
+import com.realmarketplace.ui.auth.AuthActivity
 import com.realmarketplace.databinding.FragmentEyeFeatureBinding
 
 

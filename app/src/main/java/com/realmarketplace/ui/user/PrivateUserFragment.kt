@@ -20,10 +20,12 @@ import com.realmarketplace.databinding.FragmentPrivateUserBinding
 import com.realmarketplace.model.LightUser
 import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.model.text.TextModelAuth
+import com.realmarketplace.model.text.TextModelGlobal
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.ui.user.settings.UserSettings
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
 import com.squareup.picasso.Picasso
@@ -77,11 +79,12 @@ class PrivateUserFragment : Fragment() {
             editText.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             alertBuilder.setTitle("Are you sure you want to delete your account permanently?")
                 .setPositiveButton("YES"){_,_->
-                    val password = editText.text.toString()
+                    val password = editText.text.toString().trim()
                     if(AuthViewModel.checkPassword(password))Toast.makeText(context,TextModelAuth.INCORRECT_PASSWORD,Toast.LENGTH_SHORT).show()
                     else{
                         val token = AuthViewModel.userToken.value?: UserTokenAuth("")
                         context?.let { it1 ->
+                            LoadingBar.mutableHideLoadingUserActivity.value=false
                             this.userViewModel.deleteUser(password,token,
                                 it1
                             )
@@ -93,6 +96,9 @@ class PrivateUserFragment : Fragment() {
                 }.setView(dialogLayout)
                 .show()
         }
+        userViewModel.buttonEnables.observe(viewLifecycleOwner, Observer {
+            if(it) LoadingBar.mutableHideLoadingUserActivity.value=true
+        })
         return binding.root
     }
 
@@ -101,7 +107,7 @@ class PrivateUserFragment : Fragment() {
     }
     private fun loadUserInformation(){
         Picasso.get()
-            .load("https://realmarketplace.shop/user${user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.privateImageUserAdvert)
         binding.privateFirstNameText.text = user.firstName
@@ -119,10 +125,11 @@ class PrivateUserFragment : Fragment() {
             startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
         }
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {//stejne
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==15){
             if(resultCode== Activity.RESULT_OK){
+                LoadingBar.mutableHideLoadingUserActivity.value=false
                 try {
                     val uri = data?.data
                     val extensionList = listOf("png", "jpg", "svg", "jpeg")

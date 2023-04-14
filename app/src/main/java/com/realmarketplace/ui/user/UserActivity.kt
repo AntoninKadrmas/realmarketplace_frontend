@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -17,6 +18,7 @@ import com.realmarketplace.databinding.ActivityUserBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 
 class UserActivity : AppCompatActivity() {
@@ -32,6 +34,10 @@ class UserActivity : AppCompatActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LoadingBar.mutableHideLoadingUserActivity.observe(this, Observer {
+            if(!it)binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        })
         LogOutAuth.logOut.observe(this, Observer {
             if(it){
                 val dataIntent = Intent()
@@ -55,12 +61,17 @@ class UserActivity : AppCompatActivity() {
                 binding.myToolbar.subtitle="${userViewModel.user.value?.lastName} ${userViewModel.user.value?.firstName} "
                 showFragment(1)
             })
+            userViewModel.buttonEnables.value=false
+            LoadingBar.mutableHideLoadingUserActivity.value=false
             userViewModel.loadUserInformation(AuthViewModel.userToken.value!!, this)
             binding.myToolbar.title="Private Profile"
         }
         binding.myToolbar.setNavigationOnClickListener(){
             finish()
         }
+        userViewModel.buttonEnables.observe(this, Observer {
+            if(it)LoadingBar.mutableHideLoadingUserActivity.value=true
+        })
         permissionModel.setPermissionStorage(intent.getBooleanExtra("permissionStorage",false))
         permissionModel.permissionStorageAsk.observe(this, Observer {
             requestPermissionStorage()

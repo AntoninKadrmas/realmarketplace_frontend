@@ -11,12 +11,14 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.ActivityAdvertBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
+import com.realmarketplace.model.text.TextModelGlobal
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.ui.search.advert.AdapterViewPager
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.ui.user.UserActivity
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 import com.squareup.picasso.Picasso
 import me.relex.circleindicator.CircleIndicator3
@@ -40,7 +42,6 @@ class AdvertActivity : AppCompatActivity() {
             }
         })
         binding = ActivityAdvertBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
         token = if(AuthViewModel.userToken.value!=null) AuthViewModel.userToken.value!!
         else UserTokenAuth("")
@@ -51,11 +52,13 @@ class AdvertActivity : AppCompatActivity() {
             finish()
         }
         AdvertViewModel.enableButton.observe(this, Observer {
+            LoadingBar.mutableHideLoadingAdvertActivity.value=true
             binding.myToolbar.menu.getItem(it).isEnabled=true
         })
         binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_OFF).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchFavorite(true)
+                LoadingBar.mutableHideLoadingAdvertActivity.value=false
                 AdvertViewModel.addFavoriteAdvert(advert, token, this)
                 binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).isEnabled=false
                 FavoriteObject.addNewAdvertId(advert._id,advert,advert.visible)
@@ -68,6 +71,7 @@ class AdvertActivity : AppCompatActivity() {
         binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchFavorite(false)
+                LoadingBar.mutableHideLoadingAdvertActivity.value=false
                 AdvertViewModel.deleteFavoriteAdvert(advert, token, this)
                 binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_OFF).isEnabled=false
                 FavoriteObject.removeAdvertId(advert._id)
@@ -83,6 +87,10 @@ class AdvertActivity : AppCompatActivity() {
             intent.putExtra("publicUserProfile",true)
             startActivityForResult(intent,10)
         }
+        LoadingBar.mutableHideLoadingAdvertActivity.observe(this,Observer{
+            if(!it)binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        })
         init()
     }
     private fun switchFavorite(state:Boolean){
@@ -122,8 +130,8 @@ class AdvertActivity : AppCompatActivity() {
         binding.advertCreatedInText.text = AdvertAdapter.formatDate(advert.createdIn!!)
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_OFF).isVisible = false
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).isVisible = false
-        if(advert.user==null){
-            binding.userInfoLayout.visibility= View.GONE
+        if(advert.user==null&&AuthViewModel.userToken.value!=null){
+            if(AuthViewModel.userToken.value!!.token!="")binding.userInfoLayout.visibility= View.GONE
         }
         else{
             binding.userInfoLayout.visibility= View.VISIBLE
@@ -131,7 +139,7 @@ class AdvertActivity : AppCompatActivity() {
             binding.firstNameText.text= advert.user?.firstName ?: ""
         }
         Picasso.get()
-            .load("https://realmarketplace.shop/user${advert.user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${advert.user?.mainImageUrl}")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.imageUserAdvert)
     }

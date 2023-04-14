@@ -8,19 +8,9 @@ import com.realmarketplace.model.AdvertModel
 class CreateVerification(private val insert_binding: FragmentCreateBinding, private val old_resources: android.content.res.Resources) {
     var binding: FragmentCreateBinding = insert_binding
     var resources: android.content.res.Resources = old_resources
-    fun focusAdvertName() {
-        binding.editAdvertNameInput.setOnFocusChangeListener() { _, focused ->
-            if (!focused && binding.editAdvertNameInput.text?.isNotEmpty() == true) {
-                binding.editAdvertNameLayout.helperText = validAdvertName()
-            } else if (!focused && binding.editAdvertNameLayout.helperText != resources.getString(R.string.required)) binding.editAdvertNameLayout.helperText =
-                resources.getString(
-                    R.string.required
-                )
-        }
-    }
     fun validAdvertAuthor(): String? {
-        val advertName = binding.editAdvertAuthorInput.text.toString()
-        val checkAdvertAuthor = advertName.length <= binding.editAdvertAuthorLayout.counterMaxLength
+        val authorName = binding.editAdvertAuthorInput.text.toString().trim()
+        val checkAdvertAuthor = authorName.length <= binding.editAdvertAuthorLayout.counterMaxLength && authorName.isNotEmpty()
         if (!checkAdvertAuthor) {
             binding.editAdvertAuthorInput.error = "Limit of book author name is ${binding.editAdvertAuthorLayout.counterMaxLength} characters."
             return "Invalid book author"
@@ -31,7 +21,7 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun focusAdvertAuthor() {
         binding.editAdvertAuthorInput.setOnFocusChangeListener() { _, focused ->
-            if (!focused && binding.editAdvertAuthorInput.text?.isNotEmpty() == true) {
+            if (!focused && binding.editAdvertAuthorInput.text?.trim()?.isNotEmpty() == true) {
                 binding.editAdvertAuthorLayout.helperText = validAdvertAuthor()
             } else if (!focused && binding.editAdvertAuthorLayout.helperText != resources.getString(R.string.required)) binding.editAdvertAuthorLayout.helperText =
                 resources.getString(
@@ -39,10 +29,20 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 )
         }
     }
+    fun focusAdvertName() {
+        binding.editAdvertNameInput.setOnFocusChangeListener() { _, focused ->
+            if (!focused && binding.editAdvertNameInput.text?.trim()?.isNotEmpty() == true) {
+                binding.editAdvertNameLayout.helperText = validAdvertName()
+            } else if (!focused && binding.editAdvertNameLayout.helperText != resources.getString(R.string.required)) binding.editAdvertNameLayout.helperText =
+                resources.getString(
+                    R.string.required
+                )
+        }
+    }
 
     fun validAdvertName(): String? {
-        val advertName = binding.editAdvertNameInput.text.toString()
-        val checkAdvertName = advertName.length <= binding.editAdvertNameLayout.counterMaxLength
+        val advertName = binding.editAdvertNameInput.text.toString().trim()
+        val checkAdvertName = advertName.length <= binding.editAdvertNameLayout.counterMaxLength && advertName.isNotEmpty()
         if (!checkAdvertName) {
             binding.editAdvertNameInput.error = "Limit of book name is ${binding.editAdvertNameLayout.counterMaxLength} characters."
             return "Invalid book name"
@@ -53,7 +53,7 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun focusAdvertDescription() {
         binding.editAdvertDescriptionInput.setOnFocusChangeListener() { _, focused ->
-            if (!focused && binding.editAdvertDescriptionInput.text?.isNotEmpty() == true) {
+            if (!focused && binding.editAdvertDescriptionInput.text?.trim()?.isNotEmpty() == true) {
                 binding.editAdvertDescriptionLayout.helperText = validAdvertDescription()
             } else if (!focused && binding.editAdvertDescriptionLayout.helperText != resources.getString(
                     R.string.required
@@ -65,8 +65,8 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
     }
 
     fun validAdvertDescription(): String? {
-        val advertDescription = binding.editAdvertDescriptionInput.text.toString()
-        val checkAdvertDescription = advertDescription.length <= binding.editAdvertDescriptionLayout.counterMaxLength
+        val advertDescription = binding.editAdvertDescriptionInput.text.toString().trim()
+        val checkAdvertDescription = advertDescription.length <= binding.editAdvertDescriptionLayout.counterMaxLength && advertDescription.isNotEmpty()
         if (!checkAdvertDescription) {
             binding.editAdvertDescriptionInput.error =
                 "Limit of book description is ${binding.editAdvertDescriptionLayout.counterMaxLength} characters."
@@ -78,7 +78,7 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
 
     fun focusPrice() {
         binding.priceInput.setOnFocusChangeListener() { _, focused ->
-            if (!focused && binding.priceInput.text?.isNotEmpty() == true) {
+            if (!focused && binding.priceInput.text?.trim()?.isNotEmpty() == true) {
                 binding.priceLayout.helperText = validPrice()
             } else if (!focused && binding.priceLayout.helperText != resources.getString(R.string.required)) binding.priceLayout.helperText =
                 resources.getString(
@@ -88,10 +88,15 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
     }
 
     fun validPrice(): String? {
-        val advertPrice = binding.priceInput.text.toString()
-        val checkAdvertPrice = advertPrice.length <= binding.priceLayout.counterMaxLength
+        val advertPrice = binding.priceInput.text.toString().trim()
+        val checkAdvertPrice = advertPrice.length <= binding.priceLayout.counterMaxLength && advertPrice.isNotEmpty()
+        val doNotStartWithZero = advertPrice.length>1 && advertPrice[0]=='0'
         if (!checkAdvertPrice) {
             binding.priceInput.error = "Limit of price is ${binding.priceLayout.counterMaxLength} characters."
+            return "Invalid price"
+        }
+        else if(doNotStartWithZero){
+            binding.priceInput.error = "Price bigger than one number can't start with 0."
             return "Invalid price"
         }
         binding.priceInput.error = null
@@ -105,21 +110,21 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
     }
 
     fun validCondition(): String? {
-        if (binding.conditionInput.text?.isNullOrEmpty() == true) return resources.getString(R.string.required)
+        if (binding.conditionInput.text?.trim()?.isNullOrEmpty() == true) return resources.getString(R.string.required)
         else return null
     }
 
     fun validGenre(): String? {
-        if (binding.selectGenreInput.text?.isNullOrEmpty() == true) return resources.getString(R.string.required)
+        if (binding.selectGenreInput.text?.trim()?.isNullOrEmpty() == true) return resources.getString(R.string.required)
         else return null
     }
     fun checkAll(){
-        if(binding.editAdvertNameInput.text?.isEmpty() == false)binding.editAdvertNameLayout.helperText=validAdvertName()
-        if(binding.editAdvertAuthorInput.text?.isEmpty() == false)binding.editAdvertAuthorLayout.helperText=validAdvertAuthor()
-        if(binding.editAdvertDescriptionInput.text?.isEmpty() == false)binding.editAdvertDescriptionLayout.helperText=validAdvertDescription()
-        if(binding.priceInput.text?.isEmpty() == false)binding.priceLayout.helperText=validPrice()
-        if(binding.conditionInput.text?.isEmpty() == false)binding.conditionLayout.helperText=validCondition()
-        if(binding.selectGenreInput.text?.isEmpty() == false)binding.selectGenreLayout.helperText=validGenre()
+        if(binding.editAdvertNameInput.text?.trim()?.isEmpty() == false)binding.editAdvertNameLayout.helperText=validAdvertName()
+        if(binding.editAdvertAuthorInput.text?.trim()?.isEmpty() == false)binding.editAdvertAuthorLayout.helperText=validAdvertAuthor()
+        if(binding.editAdvertDescriptionInput.text?.trim()?.isEmpty() == false)binding.editAdvertDescriptionLayout.helperText=validAdvertDescription()
+        if(binding.priceInput.text?.trim()?.isEmpty() == false)binding.priceLayout.helperText=validPrice()
+        if(binding.conditionInput.text?.trim()?.isEmpty() == false)binding.conditionLayout.helperText=validCondition()
+        if(binding.selectGenreInput.text?.trim()?.isEmpty() == false)binding.selectGenreLayout.helperText=validGenre()
     }
     fun clearInputData(){
         binding.priceInput.text=null
@@ -133,14 +138,14 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
     fun createAdvert(): AdvertModel {
         return AdvertModel(
             _id="",
-            title = binding.editAdvertNameInput.text.toString(),
-            author = binding.editAdvertAuthorInput.text.toString(),
-            description = binding.editAdvertDescriptionInput.text.toString(),
-            condition = binding.conditionInput.text.toString(),
-            price = binding.priceInput.text.toString(),
-            priceOption = binding.priceOptionInput.text.toString(),
-            genreName = binding.selectGenreInput.text.toString().split("/")[0],
-            genreType = binding.selectGenreInput.text.toString().split("/")[1],
+            title = binding.editAdvertNameInput.text.toString().trim(),
+            author = binding.editAdvertAuthorInput.text.toString().trim(),
+            description = binding.editAdvertDescriptionInput.text.toString().trim(),
+            condition = binding.conditionInput.text.toString().trim(),
+            price = binding.priceInput.text.toString().trim(),
+            priceOption = binding.priceOptionInput.text.toString().trim(),
+            genreName = binding.selectGenreInput.text.toString().trim().split("/")[0],
+            genreType = binding.selectGenreInput.text.toString().trim().split("/")[1],
             imagesUrls = ArrayList(),
             mainImageUrl="",
             visible = true

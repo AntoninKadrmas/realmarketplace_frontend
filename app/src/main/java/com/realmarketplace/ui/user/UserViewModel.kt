@@ -19,19 +19,20 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import com.realmarketplace.rest.*
+import com.realmarketplace.viewModel.LoadingBar
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
-class   UserViewModel:ViewModel() {
+class UserViewModel:ViewModel() {
     private var crudTools= CrudAdvertTools()
     private val userAdvertsMutable = MutableLiveData<ArrayList<AdvertModel>>()
     val userAdverts: LiveData<ArrayList<AdvertModel>> get() = userAdvertsMutable
     private val userMutable = MutableLiveData<LightUser>()
     val user: LiveData<LightUser> get() = userMutable
     var endSettings:MutableLiveData<Boolean> = MutableLiveData()
-    var buttonEnables = true
+    var buttonEnables = MutableLiveData<Boolean>()
     private var retroServiceAdvert: AdvertService = RetrofitInstance.getRetroFitInstance().create(
         AdvertService::class.java
     )
@@ -49,28 +50,26 @@ class   UserViewModel:ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val body: ReturnListAdvertModel? = Gson().fromJson(Gson().toJson(response.body()), ReturnListAdvertModel::class.java)
                 withContext(Dispatchers.Main) {
-                    if (body != null) {
-                        userAdvertsMutable.value = body!!
-                    }
+                    if (body != null) userAdvertsMutable.value = body!!
+                    buttonEnables.value=true
                 }
             } else {
-                try {
-                    errorResponse(response,context)
-                } catch (e: Exception) {
+                try { errorResponse(response,context) } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -85,28 +84,27 @@ class   UserViewModel:ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val body: LightUser? = Gson().fromJson(Gson().toJson(response.body()), LightUser::class.java)
                 withContext(Dispatchers.Main) {
-                    if (body != null) {
-                        userMutable.value=body!!
-                    }
+                    if (body != null)userMutable.value=body!!
+                    buttonEnables.value=true
                 }
             } else {
-                try {
-                    errorResponse(response,context)
-                } catch (e: Exception) {
+                try { errorResponse(response,context) } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
+                        buttonEnables.value=true
                     }
                 }
             }
@@ -128,11 +126,13 @@ class   UserViewModel:ViewModel() {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonEnables.value=true
                 }
                 return@launch
             }
@@ -146,14 +146,13 @@ class   UserViewModel:ViewModel() {
                     Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
                     userOld.mainImageUrl = body!!.imageUrls[0]
                     userMutable.value=userOld
+                    buttonEnables.value=true
                 }
             } else {
-                try {
-                    errorResponse(response,context)
-                } catch (e: Exception) {
+                try { errorResponse(response,context) } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
+                        buttonEnables.value=true
                     }
                 }
             }
@@ -167,13 +166,13 @@ class   UserViewModel:ViewModel() {
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }catch (e: HttpException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }
@@ -182,18 +181,16 @@ class   UserViewModel:ViewModel() {
                 withContext(Dispatchers.Main) {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
-                        buttonEnables=true
+                        buttonEnables.value=true
                         endSettings.value=true
                     }
                 }
             }else{
-                try {
-                    errorResponse(response,context)
-                }
+                try { errorResponse(response,context) }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
-                        buttonEnables=true
+                        buttonEnables.value=true
                     }
                 }
             }
@@ -207,13 +204,13 @@ class   UserViewModel:ViewModel() {
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }catch (e: HttpException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }
@@ -223,18 +220,16 @@ class   UserViewModel:ViewModel() {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         userMutable.value=newUser
-                        buttonEnables=true
+                        buttonEnables.value=true
                         endSettings.value=true
                     }
                 }
             }else{
-                try {
-                    errorResponse(response,context)
-                }
+                try { errorResponse(response,context) }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
-                        buttonEnables=true
+                        buttonEnables.value=true
                     }
                 }
             }
@@ -249,13 +244,13 @@ class   UserViewModel:ViewModel() {
                 withContext(Dispatchers.Main) {
                     println(e)
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }catch (e: HttpException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
-                    buttonEnables=true
+                    buttonEnables.value=true
                 }
                 return@launch
             }
@@ -264,18 +259,15 @@ class   UserViewModel:ViewModel() {
                 withContext(Dispatchers.Main) {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
-                        LogOutAuth.setLogOut(true)
-                        buttonEnables=true
+                        buttonEnables.value=true
                     }
                 }
             }else{
-                try {
-                    errorResponse(response,context)
-                }
+                try { errorResponse(response,context) }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
-                        buttonEnables=true
+                        buttonEnables.value=true
                     }
                 }
             }
@@ -288,7 +280,7 @@ class   UserViewModel:ViewModel() {
         withContext(Dispatchers.Main){
             if (response.code() == 401) LogOutAuth.setLogOut(true)
             Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
-            buttonEnables=true
+            buttonEnables.value=true
         }
     }
 }

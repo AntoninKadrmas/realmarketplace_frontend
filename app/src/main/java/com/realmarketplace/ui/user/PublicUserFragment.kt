@@ -18,10 +18,12 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentPublicUserBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.LightUser
+import com.realmarketplace.model.text.TextModelGlobal
 import com.realmarketplace.ui.advert.AdvertActivity
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.ui.search.advert.AdvertAdapter
+import com.realmarketplace.viewModel.LoadingBar
 import com.squareup.picasso.Picasso
 
 class PublicUserFragment : Fragment() {
@@ -37,8 +39,14 @@ class PublicUserFragment : Fragment() {
     ): View? {
         _binding = FragmentPublicUserBinding.inflate(inflater, container, false)
         user = userViewModel.user.value!!
+        userViewModel.userAdverts.observe(viewLifecycleOwner, Observer {
+            advertAdapter.updateAdvertList(it)
+            advertAdapter.notifyDataSetChanged()
+            binding.userAdvertsLayout.visibility = View.VISIBLE
+        })
         AuthViewModel.userToken.value?.let {
             context?.let { it1 ->
+                LoadingBar.mutableHideLoadingUserActivity.value=false
                 userViewModel.loadAllUserPublicAdverts(user,
                     it, it1
                 )
@@ -46,31 +54,20 @@ class PublicUserFragment : Fragment() {
         }
         advertAdapter = AdvertAdapter(ArrayList(), clickAdvert = {
                 advert: AdvertModel ->openAdvert(advert)
-        })
+        },false)
         binding.userAdverts.adapter = advertAdapter
-        binding.userAdverts.layoutManager = LinearLayoutManager(
+            val layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
-        if(userViewModel.userAdverts.value!=null){
-            advertAdapter.updateAdvertList(userViewModel.userAdverts.value!!)
-            advertAdapter.notifyDataSetChanged()
-            binding.userAdvertsLayout.visibility = View.VISIBLE
-        }
-        else{
-            binding.userAdvertsLayout.visibility = View.GONE
-        }
-        userViewModel.userAdverts.observe(viewLifecycleOwner, Observer {
-            advertAdapter.updateAdvertList(it)
-            advertAdapter.notifyDataSetChanged()
-            binding.userAdvertsLayout.visibility = View.VISIBLE
-        })
-        loadUser()
+        binding.userAdverts.layoutManager = layoutManager
+        binding.userAdvertsLayout.visibility = View.GONE
         binding.publicMailCopy.setOnClickListener(){
             addToClipBoard(binding.publicMail.text.toString(),"Email")
         }
         binding.publicPhoneCopy.setOnClickListener(){
             addToClipBoard(binding.publicPhone.text.toString(),"Phone")
         }
+        loadUser()
         return binding.root
     }
     private fun addToClipBoard(text:String,label:String){
@@ -88,7 +85,7 @@ class PublicUserFragment : Fragment() {
     }
     private fun loadUser(){
         Picasso.get()
-            .load("https://realmarketplace.shop/user${user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.publicImageUser)
         binding.publicUserFirstName.text = user.firstName

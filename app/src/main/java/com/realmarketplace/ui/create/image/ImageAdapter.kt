@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.realmarketplace.databinding.AdapterCreateImageBinding
+import com.realmarketplace.model.text.TextModelGlobal
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.util.*
@@ -49,7 +50,7 @@ class ImageAdapter(
                 if(urls.size+1>position){
                     println("${urls.size+1}>$position ${urls[position-1]}")
                     Picasso.get()
-                        .load("https://www.realmarketplace.shop/advert"+urls[position-1])
+                        .load("${TextModelGlobal.REAL_MARKET_URL}/advert"+urls[position-1])
                         .into(itemBinding.imageView)
                 }
                 else{

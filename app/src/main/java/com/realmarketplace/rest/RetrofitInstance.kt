@@ -1,6 +1,7 @@
 package com.realmarketplace.rest
 
 import com.google.gson.GsonBuilder
+import com.realmarketplace.model.text.TextModelGlobal
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,7 +19,7 @@ class RetrofitInstance {
                 .readTimeout(30,TimeUnit.SECONDS)
                 .writeTimeout(25,TimeUnit.SECONDS)
         }.build()
-        const val BASE_URL = "https://www.realmarketplace.shop"
+        const val BASE_URL = TextModelGlobal.REAL_MARKET_URL
         fun getRetroFitInstance():Retrofit{
             return Retrofit
                 .Builder()

@@ -15,6 +15,7 @@ import com.realmarketplace.rest.AdvertService
 import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnListFavoriteAdvertModel
 import com.realmarketplace.rest.ReturnTypeError
+import com.realmarketplace.viewModel.LoadingBar
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -59,6 +60,7 @@ object FavoriteViewModel {
         AdvertService::class.java
     )
     fun loadAllFavoriteAdverts(token: UserTokenAuth, context: Context) {
+        LoadingBar.mutableHideLoadingMainActivity.value=false
         loadedFavoriteAdvert =true
         CoroutineScope(Dispatchers.IO).launch {
             val response = try {
@@ -66,11 +68,13 @@ object FavoriteViewModel {
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    LoadingBar.mutableHideLoadingMainActivity.value=true
                 }
                 return@launch
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    LoadingBar.mutableHideLoadingMainActivity.value=true
                 }
                 return@launch
             }
@@ -90,6 +94,7 @@ object FavoriteViewModel {
                         mutableFavoriteAdverts.value=newList
                         FavoriteObject.updateAdvertId(newFavoriteList)
                     }
+                    LoadingBar.mutableHideLoadingMainActivity.value=true
                 }
             } else {
                 val errorBody = response.errorBody()
@@ -98,11 +103,13 @@ object FavoriteViewModel {
                         Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
+                        LoadingBar.mutableHideLoadingMainActivity.value=true
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
                             .show()
+                        LoadingBar.mutableHideLoadingMainActivity.value=true
                     }
                 }
             }

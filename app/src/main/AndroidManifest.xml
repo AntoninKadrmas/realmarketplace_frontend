@@ -53,12 +53,12 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.realmarketplace.AuthActivity"
+            android:name="com.realmarketplace.ui.auth.AuthActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.realmarketplace.SelectGenreActivity"
+            android:name="com.realmarketplace.ui.create.genre.SelectGenreActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustPan" />

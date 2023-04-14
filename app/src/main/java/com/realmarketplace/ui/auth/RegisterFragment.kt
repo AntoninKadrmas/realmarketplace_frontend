@@ -13,6 +13,7 @@ import com.realmarketplace.databinding.FragmentSigninBinding
 import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.model.UserModel
 import com.realmarketplace.model.Validated
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
 class RegisterFragment : Fragment() {
@@ -27,12 +28,12 @@ class RegisterFragment : Fragment() {
         checkAll()
     }
     private fun checkAll(){
-        if (binding.passwordSecondInput.text?.isEmpty() == false) binding.passwordSecondLayout.helperText = validPasswordSecond()
-        if (binding.passwordFirstInput.text?.isEmpty() == false) binding.passwordFirstLayout.helperText = validPasswordFirst()
-        if (binding.firstNameInput.text?.isEmpty() == false) binding.firstNameLayout.helperText = validFirstName()
-        if (binding.lastNameInput.text?.isEmpty() == false) binding.lastNameLayout.helperText = validLastName()
-        if (binding.emailInput.text?.isEmpty() == false) binding.emailLayout.helperText = validEmail()
-        if (binding.phoneInput.text?.isEmpty() == false) binding.phoneLayout.helperText = validPhone()
+        if (binding.passwordSecondInput.text?.trim()?.isEmpty() == false) binding.passwordSecondLayout.helperText = validPasswordSecond()
+        if (binding.passwordFirstInput.text?.trim()?.isEmpty() == false) binding.passwordFirstLayout.helperText = validPasswordFirst()
+        if (binding.firstNameInput.text?.trim()?.isEmpty() == false) binding.firstNameLayout.helperText = validFirstName()
+        if (binding.lastNameInput.text?.trim()?.isEmpty() == false) binding.lastNameLayout.helperText = validLastName()
+        if (binding.emailInput.text?.trim()?.isEmpty() == false) binding.emailLayout.helperText = validEmail()
+        if (binding.phoneInput.text?.trim()?.isEmpty() == false) binding.phoneLayout.helperText = validPhone()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,14 +80,15 @@ class RegisterFragment : Fragment() {
             validPhone){
             val newUser= UserModel(
                 createdIn= "",
-                email= binding.emailInput.text.toString(),
-                firstName= binding.firstNameInput.text.toString(),
-                lastName= binding.lastNameInput.text.toString(),
-                password= binding.passwordFirstInput.text.toString(),
-                phone= binding.phoneInput.text.toString(),
+                email= binding.emailInput.text.toString().trim(),
+                firstName= binding.firstNameInput.text.toString().trim(),
+                lastName= binding.lastNameInput.text.toString().trim(),
+                password= binding.passwordFirstInput.text.toString().trim(),
+                phone= binding.phoneInput.text.toString().trim(),
                 validated= Validated(false,false,false)
             )
-                buttonEnables=false
+            buttonEnables=false
+            LoadingBar.mutableHideLoadingAuthActivity.value=false
             context?.let { AuthViewModel.register(newUser, it) }
         }else{
             context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS, Toast.LENGTH_LONG) }
@@ -100,7 +102,7 @@ class RegisterFragment : Fragment() {
         }
     }
     private fun validFirstName():String?{
-        val firstName = binding.firstNameInput.text.toString()
+        val firstName = binding.firstNameInput.text.toString().trim()
         if(firstName.isNullOrEmpty()){
             binding.firstNameInput.error = TextModelAuth.INCORRECT_FIRST_NAME_TOOLTIP
             return TextModelAuth.INCORRECT_FIRST_NAME
@@ -116,7 +118,7 @@ class RegisterFragment : Fragment() {
         }
     }
     private fun validLastName():String?{
-        val lastName = binding.lastNameInput.text.toString()
+        val lastName = binding.lastNameInput.text.toString().trim()
         if(lastName.isNullOrEmpty()){
             binding.lastNameInput.error = TextModelAuth.INCORRECT_LAST_NAME_TOOLTIP
             return TextModelAuth.INCORRECT_LAST_NAME
@@ -126,13 +128,13 @@ class RegisterFragment : Fragment() {
     }
     private fun focusEmail(){
         binding.emailInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.emailInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.emailInput.text?.trim()?.isNotEmpty()==true) {
                 binding.emailLayout.helperText = validEmail()
             }else if(!focused && binding.emailLayout.helperText!=resources.getString(R.string.required))binding.emailLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validEmail():String?{
-        val email = binding.emailInput.text.toString()
+        val email = binding.emailInput.text.toString().trim()
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             binding.emailInput.error = TextModelAuth.INCORRECT_EMAIL_TOOLTIP
             return TextModelAuth.INCORRECT_EMAIL
@@ -142,13 +144,13 @@ class RegisterFragment : Fragment() {
     }
     private fun focusPhone(){
         binding.phoneInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.phoneInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.phoneInput.text?.trim()?.isNotEmpty()==true) {
                 binding.phoneLayout.helperText = validPhone()
             }else if(!focused && binding.phoneLayout.helperText!=resources.getString(R.string.required))binding.phoneLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPhone():String?{
-        val phone = binding.phoneInput.text.toString()
+        val phone = binding.phoneInput.text.toString().trim()
         if(!phone.matches("[0-9]{9}".toRegex())){
             binding.phoneInput.error = TextModelAuth.INCORRECT_PHONE_NUMBER_TOOLTIP
             return TextModelAuth.INCORRECT_PHONE_NUMBER
@@ -158,31 +160,31 @@ class RegisterFragment : Fragment() {
     }
     private fun focusPasswordFirst(){
         binding.passwordFirstInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.passwordFirstInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.passwordFirstInput.text?.trim()?.isNotEmpty()==true) {
                 binding.passwordFirstLayout.helperText = validPasswordFirst()
             }else if(!focused && binding.passwordFirstLayout.helperText!=resources.getString(R.string.required))binding.passwordFirstLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPasswordFirst():String?{
-        val passwordText = binding.passwordFirstInput.text.toString()
+        val passwordText = binding.passwordFirstInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){
                 binding.passwordFirstInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             return TextModelAuth.INCORRECT_PASSWORD
         }
-        if(binding.passwordSecondInput.text?.isNotEmpty()==true)binding.passwordSecondLayout.helperText = validPasswordSecond()
+        if(binding.passwordSecondInput.text?.trim()?.isNotEmpty()==true)binding.passwordSecondLayout.helperText = validPasswordSecond()
         binding.passwordFirstInput.error = null
         return null
     }
     private fun focusPasswordSecond(){
         binding.passwordSecondInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.passwordSecondInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.passwordSecondInput.text?.trim()?.isNotEmpty()==true) {
                 binding.passwordSecondLayout.helperText = validPasswordSecond()
             }else if(!focused && binding.passwordSecondLayout.helperText!=resources.getString(R.string.required))binding.passwordSecondLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPasswordSecond():String?{
-        val passwordText = binding.passwordSecondInput.text.toString()
-        val checkSamePassword = binding.passwordFirstInput.text.toString()==passwordText
+        val passwordText = binding.passwordSecondInput.text.toString().trim()
+        val checkSamePassword = binding.passwordFirstInput.text.toString().trim()==passwordText
         if(AuthViewModel.checkPassword(passwordText)){
                 binding.passwordSecondInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
                 return TextModelAuth.INCORRECT_PASSWORD

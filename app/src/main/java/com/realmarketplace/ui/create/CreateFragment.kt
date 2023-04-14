@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.realmarketplace.SelectGenreActivity
 import com.realmarketplace.databinding.FragmentCreateBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
@@ -26,7 +25,9 @@ import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.create.crud.CrudAdvertViewModel
 import com.realmarketplace.ui.create.crud.CrudShared
+import com.realmarketplace.ui.create.genre.SelectGenreActivity
 import com.realmarketplace.ui.create.image.ImageAdapter
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
 import java.io.File
@@ -101,6 +102,7 @@ class CreateFragment : Fragment() {
             }
         })
         crudAdvertViewModel.buttonsEnabled.observe(viewLifecycleOwner,Observer{
+            LoadingBar.mutableHideLoadingMainActivity.value=true
             buttonEnables=true
         })
         binding.createButton.setOnClickListener(){
@@ -131,6 +133,7 @@ class CreateFragment : Fragment() {
                 .setCancelable(true)
                 .setPositiveButton("YES"){_,_->
                     buttonEnables=false
+                    LoadingBar.mutableHideLoadingMainActivity.value=false
                     context?.let { crudAdvertViewModel.createAdvert(createVerification.createAdvert(),token.token, it) }
                 }
                 .setNegativeButton("NO"){_,_->

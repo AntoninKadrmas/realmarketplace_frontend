@@ -18,7 +18,6 @@ import com.realmarketplace.ui.advert.AdvertViewModel
 import com.realmarketplace.ui.advert.UpdateDeleteActivity
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
-import com.realmarketplace.ui.create.crud.CrudAdvertViewModel
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.viewModel.EnumViewData
 import com.realmarketplace.viewModel.PermissionViewModel
@@ -113,11 +112,13 @@ class FavoriteFragment : Fragment() {
         })
         advertAdapter = AdvertAdapter(ArrayList(), clickAdvert = {
                 advert: AdvertModel ->openAdvert(advert)
-        })
+        },true)
         binding.advertRecyclerView.adapter = advertAdapter
-        binding.advertRecyclerView.layoutManager = LinearLayoutManager(
+        binding.advertRecyclerView.adapter = advertAdapter
+        val layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
+        binding.advertRecyclerView.layoutManager = layoutManager
         AdvertViewModel.changeToolBarState(true)
         return binding.root
     }
@@ -169,10 +170,12 @@ class FavoriteFragment : Fragment() {
         }[0])!!
         advertViewModel.removeNewMyAdvert(position)
         if(FavoriteObject.existsAdvertId(advertId)) FavoriteObject.removeAdvertId(advertId)
-        advertAdapter.notifyItemRemoved(position)
+        advertAdapter.notifyItemRemoved(advertAdapter.itemCount-position)
     }
     private fun updateAdvertById(previousAdvert:String,newAdvert: AdvertModel){
+        println("$previousAdvert $newAdvert")
         val position = advertViewModel.updateNewMyAdvert(previousAdvert,newAdvert)
-        advertAdapter.notifyItemChanged(position)
+        advertAdapter.updateAdvertList(advertViewModel.myAdverts.value!!)
+        advertAdapter.notifyItemChanged(advertAdapter.itemCount-position)
     }
 }

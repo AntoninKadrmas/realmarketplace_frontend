@@ -12,6 +12,7 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentLoginBinding
 import com.realmarketplace.model.UserModelLogin
 import com.realmarketplace.model.text.TextModelAuth
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
 
@@ -27,8 +28,8 @@ class LoginFragment : Fragment() {
         checkAll()
     }
     private fun checkAll(){
-        if(binding.emailInput.text?.isEmpty() == false)binding.emailLayout.helperText = validEmail()
-        if(binding.passwordInput.text?.isEmpty() == false)binding.passwordLayout.helperText = validPassword()
+        if(binding.emailInput.text?.trim()?.isEmpty() == false)binding.emailLayout.helperText = validEmail()
+        if(binding.passwordInput.text?.trim()?.isEmpty() == false)binding.passwordLayout.helperText = validPassword()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,10 +60,11 @@ class LoginFragment : Fragment() {
         val validPassword = binding.passwordLayout.helperText==null
         if(validPassword&&validIdNumber&&buttonEnables){
             val userModel: UserModelLogin = UserModelLogin(
-                email= binding.emailInput.text.toString(),
-                password= binding.passwordInput.text.toString(),
+                email= binding.emailInput.text.toString().trim(),
+                password= binding.passwordInput.text.toString().trim(),
             )
             buttonEnables=false
+            LoadingBar.mutableHideLoadingAuthActivity.value=false
             context?.let { AuthViewModel.login(userModel, it) }
         }else{
             context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
@@ -76,7 +78,7 @@ class LoginFragment : Fragment() {
         }
     }
     private fun validEmail():String?{
-        val email = binding.emailInput.text.toString()
+        val email = binding.emailInput.text.toString().trim()
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             binding.emailInput.error = TextModelAuth.INCORRECT_EMAIL_TOOLTIP
             return TextModelAuth.INCORRECT_EMAIL
@@ -92,7 +94,7 @@ class LoginFragment : Fragment() {
         }
     }
     private fun validPassword():String?{
-        val passwordText = binding.passwordInput.text.toString()
+        val passwordText = binding.passwordInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){
             binding.passwordInput.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             return TextModelAuth.INCORRECT_PASSWORD

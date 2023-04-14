@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.realmarketplace.SelectGenreActivity
 import com.realmarketplace.databinding.FragmentCreateBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
@@ -27,7 +26,9 @@ import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.create.crud.CrudAdvertViewModel
 import com.realmarketplace.ui.create.crud.CrudShared
+import com.realmarketplace.ui.create.genre.SelectGenreActivity
 import com.realmarketplace.ui.create.image.ImageAdapter
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
 import java.io.File
@@ -124,6 +125,7 @@ class UpdateDeleteFragment : Fragment() {
         })
         crudAdvertViewModel.buttonsEnabled.observe(viewLifecycleOwner,Observer{
             buttonEnables=true
+            LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=true
         })
         binding.conditionInput.setOnItemClickListener() { _, _, position, _ ->
             binding.conditionLayout.helperText=createVerification.validCondition()
@@ -135,6 +137,7 @@ class UpdateDeleteFragment : Fragment() {
             createVerification.clearFocus()
             submitFormUpdate()
         }
+
         createVerification.uploadAdvertDataIntoForm(advert)
         createVerification.focusCondition()
         createVerification.focusAdvertDescription()
@@ -150,6 +153,7 @@ class UpdateDeleteFragment : Fragment() {
                 .setCancelable(true)
                 .setPositiveButton("YES"){_,it->
                     buttonEnables=false
+                    LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                     context?.let { crudAdvertViewModel.deleteAdvert(advert,token.token, it) }
                 }
                 .setNegativeButton("NO"){_,it->
@@ -179,6 +183,7 @@ class UpdateDeleteFragment : Fragment() {
                     .setCancelable(true)
                     .setPositiveButton("YES"){_,it->
                         buttonEnables=true
+                        LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                         context?.let { crudAdvertViewModel.updateAdvert(newAdvert,crudShared.deleteUrls,token.token, it) }
                     }
                     .setNegativeButton("NO"){_,it->

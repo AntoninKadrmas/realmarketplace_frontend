@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.realmarketplace.ui.create.CreateFragment">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
@@ -338,7 +337,6 @@
                 android:layout_weight="1"
                 android:text="Delete Advert" />
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

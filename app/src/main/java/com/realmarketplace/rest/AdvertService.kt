@@ -1,6 +1,7 @@
 package com.realmarketplace.rest
 
 import com.realmarketplace.model.AdvertModel
+import com.realmarketplace.model.AdvertSearchModel
 import com.realmarketplace.model.FavoriteAdvertModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -63,8 +64,13 @@ interface AdvertService {
     suspend fun getFavorite(
         @Header("Authentication") token:String): Response<Any>
     @GET(value = "/advert/all")
-    suspend fun getAdvert(
-        @Header("Authentication") token:String):Response<ReturnListAdvertModel>
+    suspend fun getAdvertSample(
+        @Header("Authentication") token:String):Response<Any>
+    @GET(value = "/advert/all")
+    suspend fun getAdvertSearch(
+        @Query("search") search:String,
+        @Query("page") page:Int,
+        @Header("Authentication") token:String):Response<Any>
     @GET(value="/advert")
     suspend fun getUserAdvert(
         @Header("Authentication") token:String

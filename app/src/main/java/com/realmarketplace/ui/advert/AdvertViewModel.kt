@@ -50,6 +50,7 @@ object AdvertViewModel {
         if(previous?.size!! >0){
             position = myAdverts.value?.indexOf(previous[0])!!
             mutableMyAdverts.value!![position]=advert
+            mutableMyAdverts.value = mutableMyAdverts.value
         }
         else if(!mutableMyAdverts.value!!.contains(advert)) mutableMyAdverts.value?.add(advert)
         return position

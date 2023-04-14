@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.realmarketplace.ui.advert.AdvertActivity">
     <LinearLayout
+        android:id="@+id/whole_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -14,19 +15,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar_layout"
         app:layout_constraintVertical_bias="0.5">
         <androidx.appcompat.widget.Toolbar
-            android:layout_height="@dimen/tool_bar_height"
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_weight="0"
+            android:layout_height="@dimen/tool_bar_height"
             android:background="?attr/colorPrimary"
-            android:elevation="4dp"
             android:theme="@style/Theme.Material3.DayNight"
+
+            app:menu="@menu/top_tool_bar_advert"
             app:navigationIcon="@drawable/menu_navigation_arrow"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:menu="@menu/top_tool_bar_advert"
             app:title="Advert Name"
             app:titleTextColor="?attr/colorOnPrimary" />
             <ScrollView
@@ -338,5 +338,23 @@
                         </LinearLayout>
                 </LinearLayout>
             </ScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/margin_top_progress_bar_with_toolbar"
+        >
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@drawable/rounded_corner_circle_progress_bar"
+            android:indeterminate="true"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

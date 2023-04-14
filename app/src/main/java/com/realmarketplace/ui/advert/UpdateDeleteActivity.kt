@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -23,6 +24,7 @@ import com.realmarketplace.ui.create.UpdateDeleteFragment
 import com.realmarketplace.ui.create.crud.CrudAdvertViewModel
 import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.viewModel.EnumViewData
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 
 class UpdateDeleteActivity : AppCompatActivity() {
@@ -30,7 +32,6 @@ class UpdateDeleteActivity : AppCompatActivity() {
     private lateinit var advert: AdvertModel
     private lateinit var token: UserTokenAuth
     private val crudViewModel: CrudAdvertViewModel by viewModels()
-    private val advertViewModel= AdvertViewModel
     private val enumViewModel: EnumViewData by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
     private lateinit var dataIntent: Intent
@@ -58,6 +59,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
         switchVisible(advert.visible,true)
         AdvertViewModel.showAdvert.value = advert
         AdvertViewModel.enableButton.observe(this, Observer {
+            LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=true
             when(it.toInt()){
                 in 0..1->{
                     binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).isEnabled=true
@@ -68,7 +70,6 @@ class UpdateDeleteActivity : AppCompatActivity() {
                     binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_OFF).isEnabled=true
                 }
             }
-            binding.myToolbar.menu.getItem(it).isEnabled=true
         })
         AuthViewModel.updateUserToken(token)
         enumViewModel.updatePriceEnum(intent.getSerializableExtra("priceEnum")as ArrayList<String>)
@@ -82,6 +83,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchVisible(false)
+                LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                 AdvertViewModel.changeVisibility(advert, token, false, this)
                 advert.visible=false
                 AdvertViewModel.myAdverts.value?.find { it._id==advert._id }?.visible=false
@@ -92,6 +94,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_OFF).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchVisible(true)
+                LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                 AdvertViewModel.changeVisibility(advert, token, true, this)
                 advert.visible=true
                 AdvertViewModel.myAdverts.value?.find { it._id==advert._id }?.visible=true
@@ -102,6 +105,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
         binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_OFF).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchFavorite(true)
+                LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                 AdvertViewModel.addFavoriteAdvert(advert, token, this)
                 FavoriteObject.addNewAdvertId(advert._id,advert,advert.visible)
             }
@@ -111,6 +115,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
         binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).setOnMenuItemClickListener {
             if(token.token!=""){
                 switchFavorite(false)
+                LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                 AdvertViewModel.deleteFavoriteAdvert(advert, token, this)
                 FavoriteObject.removeAdvertId(advert._id)
             }
@@ -136,7 +141,10 @@ class UpdateDeleteActivity : AppCompatActivity() {
             setResult(RESULT_OK, dataIntent)
             finish()
         })
-
+        LoadingBar.mutableHideLoadingUpdateDeleteActivity.observe(this,Observer{
+            if(!it)binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        })
     }
     private fun loadFragment(){
         supportFragmentManager.beginTransaction()

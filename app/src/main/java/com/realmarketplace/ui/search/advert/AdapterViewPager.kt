@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.realmarketplace.databinding.AdapterImageSlideBinding
+import com.realmarketplace.model.text.TextModelGlobal
 import com.squareup.picasso.Picasso
 
 class AdapterViewPager(
@@ -13,7 +14,7 @@ class AdapterViewPager(
         fun bind(curImageUrl:String,position: Int){
             Picasso
                 .get()
-                .load("https://www.realmarketplace.shop/advert$curImageUrl")
+                .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl")
                 .into(itemBinding.slideImageView)
         }
     }

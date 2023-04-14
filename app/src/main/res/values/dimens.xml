@@ -7,4 +7,6 @@
     <dimen name="input_element_margin_create">0.125in</dimen>
     <dimen name="input_element_margin_side">0.2in</dimen>
     <dimen name="tool_bar_height">64dp</dimen>
+    <dimen name="margin_top_progress_bar_with_toolbar">89dp</dimen>
+    <dimen name="margin_top_progress_bar">25dp</dimen>
 </resources>

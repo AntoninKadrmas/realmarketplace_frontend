@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.realmarketplace.R
 import com.realmarketplace.databinding.AdapterAdvertBinding
 import com.realmarketplace.model.AdvertModel
+import com.realmarketplace.model.text.TextModelGlobal
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -15,8 +16,12 @@ import java.util.Date
 
 class AdvertAdapter(
     private var advertList:ArrayList<AdvertModel>,
-    private var clickAdvert:(AdvertModel)->Unit
+    private var clickAdvert:(AdvertModel)->Unit,
+    private var doReverse:Boolean=true
     ):RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
+    init {
+        reverseCollection()
+    }
     companion object {
         fun formatDate(dateString:String): String {
             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -37,7 +42,7 @@ class AdvertAdapter(
         fun bind(curAdvert: AdvertModel, clickAdvert:(AdvertModel)->Unit, position:Int){
             println(curAdvert)
             itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            Picasso.get().load("https://www.realmarketplace.shop/advert"+curAdvert.mainImageUrl)
+            Picasso.get().load("${TextModelGlobal.REAL_MARKET_URL}/advert"+curAdvert.mainImageUrl)
                 .placeholder(R.drawable.ic_baseline_image_not)
                 .into(itemBinding.imageView)
             itemBinding.advertTitleText.text = curAdvert.title
@@ -71,5 +76,15 @@ class AdvertAdapter(
     }
     fun updateAdvertList(new_list:ArrayList<AdvertModel>){
         advertList = new_list
+        reverseCollection()
+    }
+    private fun reverseCollection(){
+        if(doReverse){
+            var tempAdvertList = ArrayList<AdvertModel>()
+            for(advert in advertList.reversed()){
+                tempAdvertList.add(advert)
+            }
+            advertList=tempAdvertList
+        }
     }
 }

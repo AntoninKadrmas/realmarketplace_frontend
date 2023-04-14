@@ -3,6 +3,7 @@ package com.realmarketplace.ui.user.settings
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.realmarketplace.R
@@ -10,6 +11,7 @@ import com.realmarketplace.databinding.ActivityUserSettingsBinding
 import com.realmarketplace.model.LightUser
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.user.UserViewModel
+import com.realmarketplace.viewModel.LoadingBar
 
 class UserSettings : AppCompatActivity() {
     private lateinit var binding: ActivityUserSettingsBinding
@@ -22,6 +24,14 @@ class UserSettings : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel.endSettings.value=false
+        userViewModel.buttonEnables.value=true
+        userViewModel.buttonEnables.observe(this, Observer {
+            if(it)LoadingBar.mutableHideLoadingUserSettingsActivity.value=true
+        })
+        LoadingBar.mutableHideLoadingUserSettingsActivity.observe(this, Observer {
+            if(!it)binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        })
         LogOutAuth.logOut.observe(this, Observer {
             if(it){
                 dataIntent.putExtra("logOut",true)

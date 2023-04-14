@@ -15,6 +15,7 @@ import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.user.UserViewModel
+import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
 class UserSettingsProfile : Fragment() {
@@ -44,28 +45,30 @@ class UserSettingsProfile : Fragment() {
     }
     private fun submitForm(){
         if(submitFormVerification()){
-            if(userViewModel.buttonEnables&&!checkChanges()){
+            if(userViewModel.buttonEnables.value!!&&!checkChanges()){
                 val token: UserTokenAuth = AuthViewModel.userToken.value?: UserTokenAuth("")
                 alertBuilder.setTitle("Are you sure you want to update your profile?")
                     .setCancelable(true)
                     .setPositiveButton("YES"){_,it->
-                        userViewModel.buttonEnables=false
+                        userViewModel.buttonEnables.value=false
                         var newUser: LightUser = userViewModel.user.value!!
-                        newUser.lastName = binding.settingsLastNameInput.text.toString()
-                        newUser.firstName = binding.settingsFirstNameInput.text.toString()
-                        newUser.phone = binding.settingsPhoneInput.text.toString()
+                        newUser.lastName = binding.settingsLastNameInput.text.toString().trim()
+                        newUser.firstName = binding.settingsFirstNameInput.text.toString().trim()
+                        newUser.phone = binding.settingsPhoneInput.text.toString().trim()
                         context?.let {
+                            userViewModel.buttonEnables.value=false
+                            LoadingBar.mutableHideLoadingUserSettingsActivity.value=false
                             userViewModel.updateUser(newUser,token,it)
                         }
                     }
                     .setNegativeButton("NO"){_,it->
                     }.show()
             }else{
-                if(userViewModel.buttonEnables)context?.let { ToastObject.showToast(it,"You didn't do any changes.",
+                if(userViewModel.buttonEnables.value!!)context?.let { ToastObject.showToast(it,"You didn't do any changes.",
                     Toast.LENGTH_LONG) }
             }
         }else{
-            if(userViewModel.buttonEnables) context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,
+            if(userViewModel.buttonEnables.value!!) context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,
                 Toast.LENGTH_LONG) }
         }
     }
@@ -84,14 +87,14 @@ class UserSettingsProfile : Fragment() {
         binding.settingsEmailInput.setText(userViewModel.user.value?.email)
     }
     private fun checkAll(){
-        if(binding.settingsFirstNameInput.text?.isEmpty()==false)binding.settingsFirstNameLayout.helperText = validFirstName()
-        if(binding.settingsLastNameInput.text?.isEmpty()==false)binding.settingsLastNameLayout.helperText = validLastName()
-        if(binding.settingsPhoneInput.text?.isEmpty()==false)binding.settingsPhoneLayout.helperText = validPhone()
+        if(binding.settingsFirstNameInput.text?.trim()?.isEmpty()==false)binding.settingsFirstNameLayout.helperText = validFirstName()
+        if(binding.settingsLastNameInput.text?.trim()?.isEmpty()==false)binding.settingsLastNameLayout.helperText = validLastName()
+        if(binding.settingsPhoneInput.text?.trim()?.isEmpty()==false)binding.settingsPhoneLayout.helperText = validPhone()
     }
     private fun checkChanges():Boolean{
-        val changeFirstName = binding.settingsFirstNameInput.text.toString()==userViewModel.user.value?.firstName
-        val changeLastName = binding.settingsLastNameInput.text.toString()==userViewModel.user.value?.lastName
-        val changePhone = binding.settingsPhoneInput.text.toString()==userViewModel.user.value?.phone
+        val changeFirstName = binding.settingsFirstNameInput.text.toString().trim()==userViewModel.user.value?.firstName
+        val changeLastName = binding.settingsLastNameInput.text.toString().trim()==userViewModel.user.value?.lastName
+        val changePhone = binding.settingsPhoneInput.text.toString().trim()==userViewModel.user.value?.phone
         return changeFirstName&&
                 changeLastName&&
                 changePhone
@@ -104,7 +107,7 @@ class UserSettingsProfile : Fragment() {
         }
     }
     private fun validFirstName():String?{
-        val firstName = binding.settingsFirstNameInput.text.toString()
+        val firstName = binding.settingsFirstNameInput.text.toString().trim()
         if(firstName.isNullOrEmpty()){
             binding.settingsFirstNameInput.error = TextModelAuth.INCORRECT_FIRST_NAME_TOOLTIP
             return TextModelAuth.INCORRECT_FIRST_NAME
@@ -120,7 +123,7 @@ class UserSettingsProfile : Fragment() {
         }
     }
     private fun validLastName():String?{
-        val lastName = binding.settingsLastNameInput.text.toString()
+        val lastName = binding.settingsLastNameInput.text.toString().trim()
         if(lastName.isNullOrEmpty()){
             binding.settingsLastNameInput.error = TextModelAuth.INCORRECT_LAST_NAME_TOOLTIP
             return TextModelAuth.INCORRECT_LAST_NAME
@@ -130,13 +133,13 @@ class UserSettingsProfile : Fragment() {
     }
     private fun focusPhone(){
         binding.settingsPhoneInput.setOnFocusChangeListener(){ _, focused ->
-            if (!focused && binding.settingsPhoneInput.text?.isNotEmpty()==true) {
+            if (!focused && binding.settingsPhoneInput.text?.trim()?.isNotEmpty()==true) {
                 binding.settingsPhoneLayout.helperText = validPhone()
             }else if(!focused && binding.settingsPhoneLayout.helperText!=resources.getString(R.string.required))binding.settingsPhoneLayout.helperText = resources.getString(R.string.required)
         }
     }
     private fun validPhone():String?{
-        val phone = binding.settingsPhoneInput.text.toString()
+        val phone = binding.settingsPhoneInput.text.toString().trim()
         if(!phone.matches("[0-9]{9}".toRegex())){
             binding.settingsPhoneInput.error = TextModelAuth.INCORRECT_PHONE_NUMBER_TOOLTIP
             return TextModelAuth.INCORRECT_PHONE_NUMBER

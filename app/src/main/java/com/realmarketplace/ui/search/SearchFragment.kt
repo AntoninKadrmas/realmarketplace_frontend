@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.SearchView
+import android.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,13 +22,14 @@ import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.ui.search.advert.AdvertAdapter
+import com.realmarketplace.viewModel.LoadingBar
 
 
 class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-    private val createViewModel: SearchViewModel by activityViewModels()
     private lateinit var advertAdapter: AdvertAdapter
+    private lateinit var searchView: SearchView
     companion object {
         fun newInstance() = SearchFragment()
         const val NAME = "Search"
@@ -39,28 +40,90 @@ class SearchFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View {
         AdvertViewModel.changeToolBarState(false)
-        createViewModel.advertModel.observe(viewLifecycleOwner, Observer {
-            advertAdapter.updateAdvertList(it)
-            binding.container.isRefreshing = false
-            advertAdapter.notifyDataSetChanged()
+        SearchViewModel.advertModelSample.observe(viewLifecycleOwner, Observer {
+            if(binding.searchView.query.toString().isNullOrEmpty()) {
+                advertAdapter.updateAdvertList(it)
+                advertAdapter.notifyDataSetChanged()
+            }
         })
-        context?.let { createViewModel.loadAllAdverts(it,
-            AuthViewModel.userToken.value ?: UserTokenAuth("")
-        ) }
+        SearchViewModel.advertModelSearch.observe(viewLifecycleOwner, Observer {
+            if(!binding.searchView.query.toString().isNullOrEmpty()) {
+                advertAdapter.updateAdvertList(it)
+                advertAdapter.notifyDataSetChanged()
+            }
+        })
+        LoadingBar.mutableHideLoading.observe(viewLifecycleOwner, Observer {
+            if(it){
+                binding.container.isRefreshing = false
+            }
+        })
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         var advertList = ArrayList<AdvertModel>()
         advertAdapter = AdvertAdapter(advertList, clickAdvert = {
             advert: AdvertModel ->openAdvert(advert)
-        })
+        },false)
         binding.advertRecyclerView.adapter = advertAdapter
-        binding.advertRecyclerView.layoutManager = LinearLayoutManager(
+        binding.advertRecyclerView.adapter = advertAdapter
+        val layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
+        binding.advertRecyclerView.layoutManager = layoutManager
         binding.container.setOnRefreshListener {
-            context?.let { createViewModel.loadAllAdverts(it,
-                AuthViewModel.userToken.value ?: UserTokenAuth("")
-            ) }
+            if(binding.searchView.query.toString().isNullOrEmpty()){
+                context?.let { SearchViewModel.loadAdvertSample(
+                    AuthViewModel.userToken.value ?: UserTokenAuth(""),it
+                ) }
+            }else{
+                context?.let {
+                    SearchViewModel.loadAdvertSearch(binding.searchView.query.toString(),true,
+                        AuthViewModel.userToken.value ?: UserTokenAuth(""),
+                        it
+                    )
+                }
+            }
         }
+        searchView = binding.searchView
+        searchView.clearFocus()
+        searchView.setOnQueryTextListener(object:OnQueryTextListener{
+            override fun onQueryTextChange(text: String?): Boolean {
+                if(text=="") {
+                    if(SearchViewModel.advertModelSample.value!=null){
+                        advertAdapter.updateAdvertList(SearchViewModel.advertModelSample.value!!)
+                        advertAdapter.notifyDataSetChanged()
+                    }
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(text: String?): Boolean {
+                binding.container.isRefreshing = true
+                context?.let {
+                    SearchViewModel.loadAdvertSearch(text!!,true,AuthViewModel.userToken.value ?: UserTokenAuth(""),
+                        it
+                    )
+                }
+                return true
+            }
+        })
+        binding.advertRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    if (SearchViewModel.advertModelSearch.value != null && !binding.searchView.query.toString().isNullOrEmpty())
+                        if (SearchViewModel.advertModelSearch.value!!.size < SearchViewModel.countAdvertSearch
+                            && !binding.container.isRefreshing){
+                            binding.container.isRefreshing = true
+                            context?.let {
+                                SearchViewModel.loadAdvertSearch(
+                                    binding.searchView.query.toString(), false,
+                                    AuthViewModel.userToken.value ?: UserTokenAuth(""),
+                                    it
+                                )
+                            }
+                        }
+                }
+            }
+        })
         return binding.root
     }
     private fun openAdvert(advert: AdvertModel){
