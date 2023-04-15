@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.google.gson.Gson
+import com.realmarketplace.model.UserTokenAuth
 import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -17,6 +18,12 @@ import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
+/**
+ * A group of *view_model*.
+ *
+ * Take care of selected user selected images.
+ * Operates over some of the advert endpoints.
+ */
 class CrudAdvertViewModel : ViewModel() {
     private var crudTools = CrudAdvertTools()
     private var mutableReturnDelete = MutableLiveData<Boolean>()
@@ -30,17 +37,30 @@ class CrudAdvertViewModel : ViewModel() {
     val imagesFile: LiveData<ArrayList<File>> get() = mutableImagesFile
     val clean = MutableLiveData<AdvertModel>()
     var executed = false
-    fun appendNewFile(new_list: ArrayList<File>) {
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to add new files into image files list.
+     *
+     * @param newList list of image files that is going to be added into image files list
+     */
+    fun appendNewFile(newList: ArrayList<File>) {
         var list = ArrayList<File>()
         if (mutableImagesFile.value != null) {
             list = mutableImagesFile.value!!
         }
-        for (item in new_list) {
+        for (item in newList) {
             list.add(item)
         }
         mutableImagesFile.value = list
     }
-
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to delete file at given index.
+     *
+     * @param position index of image file that is going to be deleted
+     */
     fun removeOldFileByPos(position: Int) {
         val list = ArrayList<File>()
         var count = 0;
@@ -51,15 +71,28 @@ class CrudAdvertViewModel : ViewModel() {
             }
         mutableImagesFile.value = list
     }
-
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to clear image files list.
+     */
     fun clearFiles() {
-        mutableImagesFile.value = ArrayList<File>()
+        mutableImagesFile.value = ArrayList()
     }
 
     private var retroServiceAdvert: AdvertService = RetrofitInstance.getRetroFitInstance().create(
         AdvertService::class.java
     )
-    fun createAdvert(advertModel: AdvertModel, userToken: String, context: Context) {
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call createAdvert function and handle the response.
+     *
+     * @param advertModel advert that is going to be created viz. AdvertModel
+     * @param userToken user authentication token viz. UserTokenAuth
+     * @param context context of activity or fragment where is function called
+     */
+    fun createAdvert(advertModel: AdvertModel, userToken: UserTokenAuth, context: Context) {
         executed = true
         CoroutineScope(Dispatchers.IO).launch {
             val bodyList = crudTools.createImagesFileBody(imagesFile.value)
@@ -98,7 +131,7 @@ class CrudAdvertViewModel : ViewModel() {
                         "text/plain".toMediaTypeOrNull(),
                         advertModel.condition
                     ),
-                    userToken
+                    userToken.token
                 )
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
@@ -117,7 +150,7 @@ class CrudAdvertViewModel : ViewModel() {
                 successResponse(response,context)
             } else {
                 try {
-                    crudTools.errorResponse(response, response.code(),context)
+                    crudTools.errorResponse(response, context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -129,10 +162,19 @@ class CrudAdvertViewModel : ViewModel() {
             return@launch
         }
     }
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call updateAdvert function and handle the response.
+     *
+     * @param newAdvertModel advert with updated information's that is going to be rewrite old advert viz. AdvertModel
+     * @param deletedUrls list of deleted existing urls
+     * @param userToken user authentication token viz. UserTokenAuth
+     * @param context context of activity or fragment where is function called
+     */
     fun updateAdvert(
         newAdvertModel: AdvertModel, deletedUrls: ArrayList<String>,
-        userToken: String, context: Context
-    ) {
+        userToken: UserTokenAuth, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val bodyList = crudTools.createImagesFileBody(crudTools.getNewFileArray(imagesFile.value))
             val response = try {
@@ -176,17 +218,13 @@ class CrudAdvertViewModel : ViewModel() {
                     ),
                     RequestBody.create(
                         "text/plain".toMediaTypeOrNull(),
-                        newAdvertModel.mainImageUrl
-                    ),
-                    RequestBody.create(
-                        "text/plain".toMediaTypeOrNull(),
                         crudTools.getOldFileArray(imagesFile.value).joinToString(";;")
                     ),
                     RequestBody.create(
                         "text/plain".toMediaTypeOrNull(),
                         deletedUrls.joinToString(";")
                     ),
-                    userToken
+                    userToken.token
                 )
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
@@ -222,7 +260,7 @@ class CrudAdvertViewModel : ViewModel() {
                 }
             } else {
                 try {
-                    crudTools.errorResponse(response, response.code(),context)
+                    crudTools.errorResponse(response, context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -234,13 +272,22 @@ class CrudAdvertViewModel : ViewModel() {
             return@launch
         }
     }
-    fun deleteAdvert(advert: AdvertModel, userToken: String, context: Context) {
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call deleteAdvert function and handle the response.
+     *
+     * @param advert is advert which is going to be deleted viz. AdvertModel
+     * @param userToken user authentication token viz. UserTokenAuth
+     * @param context context of activity or fragment where is function called
+     */
+    fun deleteAdvert(advert: AdvertModel, userToken: UserTokenAuth, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val response = try {
                 retroServiceAdvert.deleteAdvert(
                     advert._id,
                     advert.imagesUrls.joinToString(";"),
-                    userToken
+                    userToken.token
                 )
             } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
@@ -259,7 +306,7 @@ class CrudAdvertViewModel : ViewModel() {
                 successResponse(response,context)
             } else {
                 try {
-                   crudTools.errorResponse(response, response.code(),context)
+                   crudTools.errorResponse(response, context)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT)
@@ -271,6 +318,14 @@ class CrudAdvertViewModel : ViewModel() {
             return@launch
         }
     }
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to handle successful response.
+     *
+     * @param response successful response from https request
+     * @param context context of activity or fragment where is function called
+     */
     private suspend fun successResponse(response: Response<Any>, context: Context){
         val body: ReturnTypeSuccessAdvert? =
             Gson().fromJson(

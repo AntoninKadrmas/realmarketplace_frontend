@@ -37,7 +37,7 @@ import com.realmarketplace.ui.auth.AuthActivity
 import com.realmarketplace.viewModel.LoadingBar
 
 /**
- * A group of *activity's*.
+ * A group of *activity*.
  *
  * Main class that is start point for all other functionalities.
  * Have three fragments createFragment, favoriteFragment, searchFragment
@@ -50,11 +50,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timeOutClear:Handler
     private val enumViewDataModel: EnumViewData by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
-    /**
-     * A group of *override_functions*.
-     *
-     * On resume override function is used to check permissions.
-     */
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -64,12 +59,6 @@ class MainActivity : AppCompatActivity() {
             permissionModel.setPermissionStorage(true)
         }
     }
-    /**
-     * A group of *override_functions*.
-     *
-     * On destroy just call cleanUser function (viz cleanUser).
-     * And set loadedSampleAdverts to false.
-     */
     override fun onDestroy() {
         super.onDestroy()
         SearchViewModel.loadedSampleAdvert=false
@@ -197,7 +186,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     /**
-     * A group of *private_functions*.
+     * A group of *activity_functions*.
      *
      * Function that clear all user data like user token or user Adverts.
      * It return application into default public mode.
@@ -226,7 +215,7 @@ class MainActivity : AppCompatActivity() {
         LogOutAuth.setLogOut(false)
     }
     /**
-     * A group of *private_functions*.
+     * A group of *activity_functions*.
      *
      * Function that show correct fragment.
      *
@@ -238,7 +227,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
     /**
-     * A group of *private_functions*.
+     * A group of *activity_functions*.
      *
      * Function used to request for STORAGE permission
      */
@@ -279,6 +268,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+/**
+ * A group of *view_model*.
+ *
+ * Object contains permission codes.
+ */
 object PermissionRequestCode{
     var READ_EXTERNAL_STORAGE = 105
     const val CAMERA = 106

@@ -5,20 +5,21 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentCreateBinding
 import com.realmarketplace.model.AdvertModel
 
-class CreateVerification(private val insert_binding: FragmentCreateBinding, private val old_resources: android.content.res.Resources) {
+/**
+ * A group of *tool*.
+ *
+ * Class contains functions used in creating request for create or update advert.
+ * @param insert_binding binding of create fragment to operate on all elements in layout
+ * @param old_resources to use getString function
+ */
+class CreateVerification(insert_binding: FragmentCreateBinding, old_resources: android.content.res.Resources) {
     var binding: FragmentCreateBinding = insert_binding
     var resources: android.content.res.Resources = old_resources
-    fun validAdvertAuthor(): String? {
-        val authorName = binding.editAdvertAuthorInput.text.toString().trim()
-        val checkAdvertAuthor = authorName.length <= binding.editAdvertAuthorLayout.counterMaxLength && authorName.isNotEmpty()
-        if (!checkAdvertAuthor) {
-            binding.editAdvertAuthorInput.error = "Limit of book author name is ${binding.editAdvertAuthorLayout.counterMaxLength} characters."
-            return "Invalid book author"
-        }
-        binding.editAdvertAuthorInput.error = null
-        return null
-    }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to set focus listener on advert author input filed.
+     */
     fun focusAdvertAuthor() {
         binding.editAdvertAuthorInput.setOnFocusChangeListener() { _, focused ->
             if (!focused && binding.editAdvertAuthorInput.text?.trim()?.isNotEmpty() == true) {
@@ -29,6 +30,27 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 )
         }
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for advert author validation.
+     * @return string if there is still some invalid part else null.
+     */
+    fun validAdvertAuthor(): String? {
+        val authorName = binding.editAdvertAuthorInput.text.toString().trim()
+        val checkAdvertAuthor = authorName.length <= binding.editAdvertAuthorLayout.counterMaxLength && authorName.isNotEmpty()
+        if (!checkAdvertAuthor) {
+            binding.editAdvertAuthorInput.error = "Limit of book author name is ${binding.editAdvertAuthorLayout.counterMaxLength} characters."
+            return "Invalid book author"
+        }
+        binding.editAdvertAuthorInput.error = null
+        return null
+    }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to set focus listener on advert name input filed.
+     */
     fun focusAdvertName() {
         binding.editAdvertNameInput.setOnFocusChangeListener() { _, focused ->
             if (!focused && binding.editAdvertNameInput.text?.trim()?.isNotEmpty() == true) {
@@ -39,7 +61,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 )
         }
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for advert name validation.
+     * @return string if there is still some invalid part else null.
+     */
     fun validAdvertName(): String? {
         val advertName = binding.editAdvertNameInput.text.toString().trim()
         val checkAdvertName = advertName.length <= binding.editAdvertNameLayout.counterMaxLength && advertName.isNotEmpty()
@@ -50,7 +77,11 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.editAdvertNameInput.error = null
         return null
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to set focus listener on advert describe input filed.
+     */
     fun focusAdvertDescription() {
         binding.editAdvertDescriptionInput.setOnFocusChangeListener() { _, focused ->
             if (!focused && binding.editAdvertDescriptionInput.text?.trim()?.isNotEmpty() == true) {
@@ -63,7 +94,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
             )
         }
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for advert describe validation.
+     * @return string if there is still some invalid part else null.
+     */
     fun validAdvertDescription(): String? {
         val advertDescription = binding.editAdvertDescriptionInput.text.toString().trim()
         val checkAdvertDescription = advertDescription.length <= binding.editAdvertDescriptionLayout.counterMaxLength && advertDescription.isNotEmpty()
@@ -75,7 +111,11 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.editAdvertDescriptionInput.error = null
         return null
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to set focus listener on price option input filed.
+     */
     fun focusPrice() {
         binding.priceInput.setOnFocusChangeListener() { _, focused ->
             if (!focused && binding.priceInput.text?.trim()?.isNotEmpty() == true) {
@@ -86,7 +126,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 )
         }
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for price option validation.
+     * @return string if there is still some invalid part else null.
+     */
     fun validPrice(): String? {
         val advertPrice = binding.priceInput.text.toString().trim()
         val checkAdvertPrice = advertPrice.length <= binding.priceLayout.counterMaxLength && advertPrice.isNotEmpty()
@@ -102,22 +147,41 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.priceInput.error = null
         return null
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to set focus listener on condition input filed.
+     */
     fun focusCondition() {
         binding.conditionInput.setOnFocusChangeListener() { _, focused ->
             if (!focused) binding.conditionLayout.helperText = validCondition()
         }
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for condition validation.
+     * @return string if there is still some invalid part else null.
+     */
     fun validCondition(): String? {
         if (binding.conditionInput.text?.trim()?.isNullOrEmpty() == true) return resources.getString(R.string.required)
         else return null
     }
-
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used for genre name validation.
+     * @return string if there is still some invalid part else null.
+     */
     fun validGenre(): String? {
         if (binding.selectGenreInput.text?.trim()?.isNullOrEmpty() == true) return resources.getString(R.string.required)
         else return null
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to check validity of all input filed.
+     */
     fun checkAll(){
         if(binding.editAdvertNameInput.text?.trim()?.isEmpty() == false)binding.editAdvertNameLayout.helperText=validAdvertName()
         if(binding.editAdvertAuthorInput.text?.trim()?.isEmpty() == false)binding.editAdvertAuthorLayout.helperText=validAdvertAuthor()
@@ -126,6 +190,11 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         if(binding.conditionInput.text?.trim()?.isEmpty() == false)binding.conditionLayout.helperText=validCondition()
         if(binding.selectGenreInput.text?.trim()?.isEmpty() == false)binding.selectGenreLayout.helperText=validGenre()
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to clear all input filed.
+     */
     fun clearInputData(){
         binding.priceInput.text=null
         binding.conditionInput.text=null
@@ -135,6 +204,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.editAdvertDescriptionInput.text= null
         checkAll()
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to create new advert used with data from input filed.
+     * @return return newly crated advert with data from input filed viz. AdvertModel
+     */
     fun createAdvert(): AdvertModel {
         return AdvertModel(
             _id="",
@@ -151,6 +226,14 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
             visible = true
         )
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to find some changes in old and new advert.
+     * @param oldAdvert old advert viz. AdvertModel
+     * @param newAdvert new advert viz. AdvertModel
+     * @return true if adverts are same else false
+     */
     fun checkOldAndNewAdvertAreSimilar(oldAdvert: AdvertModel, newAdvert: AdvertModel):Boolean{
         return oldAdvert.title==newAdvert.title
                 && oldAdvert.description == newAdvert.description
@@ -161,6 +244,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 && oldAdvert.genreName == newAdvert.genreName
                 && oldAdvert.genreType == newAdvert.genreType
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to check if all field are valid.
+     * @return true if all field are valid else false
+     */
     fun submitFormVerification():Boolean{
         val validAdvertName = binding.editAdvertNameLayout.helperText==null
         val validAdvertDescription = binding.editAdvertDescriptionLayout.helperText==null
@@ -175,6 +264,11 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
                 validAdvertGenre&&
                 validAdvertAuthor
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to clear focus from all input filed.
+     */
     fun clearFocus(){
         binding.editAdvertNameInput.clearFocus()
         binding.editAdvertDescriptionInput.clearFocus()
@@ -182,6 +276,13 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
         binding.conditionInput.clearFocus()
         checkAll()
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to handle selection of price option drop down.
+     * @param position index which option user selected. If 0 user can input number else filed would be blocked.
+     * @param priceOptions list of all price options
+     */
     fun priceOptionHandleResult(position:Int,priceOptions:ArrayList<String>){
         if(position==0){
             binding.priceInput.isEnabled=true
@@ -196,6 +297,12 @@ class CreateVerification(private val insert_binding: FragmentCreateBinding, priv
             binding.priceInput.setText(priceOptions[position])
         }
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to load information from given advert.
+     * @param advert advert model with information's that is going to be displayed
+     */
     fun uploadAdvertDataIntoForm(advert: AdvertModel){
         binding.editAdvertNameInput.setText(advert.title)
         binding.editAdvertAuthorInput.setText(advert.author)

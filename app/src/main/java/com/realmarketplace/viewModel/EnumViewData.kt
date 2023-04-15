@@ -14,6 +14,12 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
+/**
+ * A group of *view_model*.
+ *
+ * Take care of price enum, genre enum and condition enum.
+ * Operates over some of the enum endpoints.
+ */
 class EnumViewData:ViewModel() {
     private val mutablePriceEnum = MutableLiveData<ArrayList<String>>()
     private val mutableGenreEnum = MutableLiveData<ArrayList<GenreItem>>()
@@ -21,18 +27,41 @@ class EnumViewData:ViewModel() {
     val priceEnum: LiveData<ArrayList<String>> get() = mutablePriceEnum
     val genreGenreEnum: LiveData<ArrayList<GenreItem>> get() = mutableGenreEnum
     val conditionEnum: LiveData<ArrayList<String>> get() = mutableConditionEnum
-    fun updatePriceEnum(item: ArrayList<String>) {
-        mutablePriceEnum.value = item
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to update list of string in price enum.
+     * @param list is list of strings that would be set as default price enum list
+     */
+    fun updatePriceEnum(list: ArrayList<String>) {
+        mutablePriceEnum.value = list
     }
-    fun updateGenreEnum(item: ArrayList<GenreItem>) {
-        mutableGenreEnum.value = item
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to update list of string in genre enum.
+     * @param list is list of strings that would be set as default genre enum list
+     */
+    fun updateGenreEnum(list: ArrayList<GenreItem>) {
+        mutableGenreEnum.value = list
     }
-    fun updateConditionEnum(item: ArrayList<String>) {
-        mutableConditionEnum.value = item
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to update list of string in condition enum.
+     * @param list is list of strings that would be set as default condition enum list
+     */
+    fun updateConditionEnum(list: ArrayList<String>) {
+        mutableConditionEnum.value = list
     }
     private val retroServiceEnum: EnumService = RetrofitInstance.getRetroFitInstance()
         .create(EnumService::class.java)
 
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call getPrice function and handle the response.
+     */
     @SuppressLint("ResourceType")
     fun loadPriceEnum(){
          CoroutineScope(Dispatchers.IO).launch {
@@ -52,6 +81,11 @@ class EnumViewData:ViewModel() {
             return@launch
         }
     }
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call getBookCondition function and handle the response.
+     */
     @SuppressLint("ResourceType")
     fun loadConditionEnum(){
          CoroutineScope(Dispatchers.IO).launch {
@@ -71,6 +105,11 @@ class EnumViewData:ViewModel() {
             return@launch
         }
     }
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call getGenres function and handle the response.
+     */
     @SuppressLint("ResourceType")
     fun loadGenreEnum(){
          CoroutineScope(Dispatchers.IO).launch {

@@ -21,15 +21,25 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * A group of *tool*.
+ *
+ * Class contains functions used in both CreateFragment and UpdateDeleteFragment.
+ */
 class CrudShared(
     private val imageAdapter: ImageAdapter,
     private val crudAdvertViewModel:CrudAdvertViewModel,
     private var binding: FragmentCreateBinding
 ){
-    val extensionList = listOf("png","jpg","svg","jpeg")
+    private val extensionList = listOf("png","jpg","svg","jpeg")
     var deleteUrls = ArrayList<String>()
     val maxImage = 5
     var actualImage = 0
+    /**
+     * A group of *tool_function*.
+     *
+     * Object used to drag and drop functionality in image recycler view.
+     */
     private val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN or
                 ItemTouchHelper.START or
@@ -56,6 +66,13 @@ class CrudShared(
         }
     }
     var itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(binding.recyclerView)
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to delete image file on which user has clicked.
+     *
+     * @param file on which user clicked to delte it
+     */
     fun clickDelete(file:File){
         actualImage--
         binding.imageCounter.text = "${actualImage}/${maxImage}"
@@ -65,7 +82,15 @@ class CrudShared(
         imageAdapter.notifyItemRemoved(indexOfImage)
         crudAdvertViewModel.removeOldFileByPos(indexOfImage-1)
     }
-    fun clickAdd(state:Boolean,permissionModel: PermissionViewModel):Intent?{
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to delete image file on which user has clicked.
+     *
+     * @param permissionModel used to check if permission from external storage was granted viz. PermissionViewModel
+     * @return intent that is going to run image gallery selection if permission was granted
+     */
+    fun clickAdd(permissionModel: PermissionViewModel):Intent?{
         permissionModel.setPermissionStorageAsk(true)
         if(permissionModel.permissionStorage.value==true){
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
@@ -75,6 +100,15 @@ class CrudShared(
         }
         return null
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to handle output after image selection ended. Compress new selected files and add new image file into recycle view.
+     * Used zelory compressor module
+     *
+     * @param uris list of uris of newly selected image files
+     * @param context context of activity or fragment
+     */
     fun handleOutput(uris:List<Uri>,context:Context){
         if (uris.isNotEmpty()) {
             var actualMaximum:Int = maxImage-actualImage
@@ -104,7 +138,16 @@ class CrudShared(
             }
         }
     }
-    fun updateDropDown(context: Context,priceOptions:ArrayList<String>,condition:ArrayList<String>){//stejny
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to update drop down with loaded enums.
+     *
+     * @param priceOptions price option enum that is going to be inserted in one of the drop downs
+     * @param condition condition enum that is going to be inserted in one of the drop downs
+     * @param context context of activity or fragment
+     */
+    fun updateDropDown(priceOptions:ArrayList<String>,condition:ArrayList<String>,context: Context){
         val priceArrayAdapter =
             context?.let { ArrayAdapter(it, R.layout.adapter_drop_down_price_option,priceOptions) }
         val conditionArrayAdapter =
@@ -116,6 +159,11 @@ class CrudShared(
         binding.priceOptionInput.setAdapter(priceArrayAdapter)
         binding.conditionInput.setAdapter(conditionArrayAdapter)
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to load image files into recycle view if there didn't be already.
+     */
     fun loadImages(){
         if(crudAdvertViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/${maxImage}"){
             actualImage=crudAdvertViewModel.imagesFile.value!!.size

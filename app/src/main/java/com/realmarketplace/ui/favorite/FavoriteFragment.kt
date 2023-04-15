@@ -23,6 +23,11 @@ import com.realmarketplace.viewModel.EnumViewData
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.google.android.material.tabs.TabLayout
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_favorite layout and logic there.
+ */
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
@@ -127,6 +132,12 @@ class FavoriteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for start new activity with given advert content.
+     * @param advert advert that going to be displayed in new activity viz. AdvertModel
+     */
     private fun openAdvert(advert: AdvertModel){
         var intent:Intent
         if(FavoriteViewModel.favoriteTab.value==null|| FavoriteViewModel.favoriteTab.value==0){
@@ -164,6 +175,12 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to delete advert by give string Id.
+     * @param advertId id of advert that would be deleted
+     */
     private fun deleteAdvertById(advertId:String){
         val position:Int =advertViewModel.myAdverts.value?.indexOf(advertViewModel.myAdverts.value!!.filter {
                 it->it._id==advertId
@@ -172,8 +189,14 @@ class FavoriteFragment : Fragment() {
         if(FavoriteObject.existsAdvertId(advertId)) FavoriteObject.removeAdvertId(advertId)
         advertAdapter.notifyItemRemoved(advertAdapter.itemCount-position)
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to update advert with given id.
+     * @param previousAdvert id of previous advert
+     * @param newAdvert advert contains new updated data that would replace the old one
+     */
     private fun updateAdvertById(previousAdvert:String,newAdvert: AdvertModel){
-        println("$previousAdvert $newAdvert")
         val position = advertViewModel.updateNewMyAdvert(previousAdvert,newAdvert)
         advertAdapter.updateAdvertList(advertViewModel.myAdverts.value!!)
         advertAdapter.notifyItemChanged(advertAdapter.itemCount-position)

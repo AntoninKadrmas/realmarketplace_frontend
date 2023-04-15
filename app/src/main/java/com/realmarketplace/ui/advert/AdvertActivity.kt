@@ -23,7 +23,11 @@ import com.realmarketplace.viewModel.ToastObject
 import com.squareup.picasso.Picasso
 import me.relex.circleindicator.CircleIndicator3
 
-
+/**
+ * A group of *activity*.
+ *
+ * Class for activity_advert layout and logic there.
+ */
 class AdvertActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdvertBinding
     private lateinit var advert: AdvertModel
@@ -61,7 +65,7 @@ class AdvertActivity : AppCompatActivity() {
                 LoadingBar.mutableHideLoadingAdvertActivity.value=false
                 AdvertViewModel.addFavoriteAdvert(advert, token, this)
                 binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).isEnabled=false
-                FavoriteObject.addNewAdvertId(advert._id,advert,advert.visible)
+                FavoriteObject.addNewAdvertId(advert)
             }
             else{
                 ToastObject.showToast(this,"For this action you have to login.",Toast.LENGTH_SHORT)
@@ -93,6 +97,13 @@ class AdvertActivity : AppCompatActivity() {
         })
         init()
     }
+    /**
+     * A group of *advert_functions*.
+     *
+     * Function used to switch between favorite icons.
+     *
+     * @param state boolean variable that decide if favorite state should be in true (favorite) or false (not favorite) state
+     */
     private fun switchFavorite(state:Boolean){
         if(state){
             favorite=true
@@ -114,6 +125,13 @@ class AdvertActivity : AppCompatActivity() {
             }
         }
     }
+    /**
+     * A group of *advert_functions*.
+     *
+     * Function used to load all information about advert into layout.
+     * Used Picasso module for displaying images by https url.
+
+     */
     private fun init(){
         adapterPager = AdapterViewPager(advert.imagesUrls)
         binding.viewPager.adapter = adapterPager

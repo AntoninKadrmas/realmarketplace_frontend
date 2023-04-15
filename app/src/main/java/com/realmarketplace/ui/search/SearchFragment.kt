@@ -24,7 +24,11 @@ import com.realmarketplace.ui.favorite.FavoriteObject
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.viewModel.LoadingBar
 
-
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_search layout and logic there.
+ */
 class SearchFragment : Fragment(){
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -126,6 +130,12 @@ class SearchFragment : Fragment(){
         })
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for start new activity with given advert content.
+     * @param advert advert that going to be displayed in new activity viz. AdvertModel
+     */
     private fun openAdvert(advert: AdvertModel){
         val intent = Intent(context, AdvertActivity::class.java)
         intent.putExtra("advertModel",advert)

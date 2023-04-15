@@ -7,10 +7,26 @@ import com.realmarketplace.databinding.AdapterImageSlideBinding
 import com.realmarketplace.model.text.TextModelGlobal
 import com.squareup.picasso.Picasso
 
+/**
+ * A group of *adapter*.
+ *
+ * Class used as adapter for image view pager.
+ *
+ * @param imageUrls list of string urls of advert images
+ */
 class AdapterViewPager(
     private val imageUrls:ArrayList<String>
 ):RecyclerView.Adapter<AdapterViewPager.AdvertViewHolder>() {
     class AdvertViewHolder(private val itemBinding:AdapterImageSlideBinding):RecyclerView.ViewHolder(itemBinding.root){
+        /**
+         * A group of *adapter_function*.
+         *
+         * Function used to bind properties into specific items in view pager.
+         * Used Picasso module for displaying images by https url.
+         *
+         * @param curImageUrl url of actual image that would be displayed
+         * @param position position of actual item
+         */
         fun bind(curImageUrl:String,position: Int){
             Picasso
                 .get()

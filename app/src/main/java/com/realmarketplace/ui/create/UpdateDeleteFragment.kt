@@ -35,6 +35,11 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_create layout and logic there.
+ */
 class UpdateDeleteFragment : Fragment() {
     private lateinit var createVerification: CreateVerification
     private lateinit var imageAdapter: ImageAdapter
@@ -54,11 +59,11 @@ class UpdateDeleteFragment : Fragment() {
     companion object {
         fun newInstance() = UpdateDeleteFragment()
     }
-    override fun onResume() {//stejny
+    override fun onResume() {
         super.onResume()
         if(this::priceOptions.isInitialized&&this::condition.isInitialized) context?.let {
             crudShared.updateDropDown(
-                it,priceOptions,condition)
+                priceOptions,condition,it)
         }
         crudShared.loadImages()
         createVerification.checkAll()
@@ -146,26 +151,36 @@ class UpdateDeleteFragment : Fragment() {
         createVerification.focusAdvertAuthor()
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle delete onclick button delete advert.
+     */
     private fun submitFormDelete(){
         if(buttonEnables){
-            val token: UserTokenAuth = AuthViewModel.userToken.value!!
+            val token: UserTokenAuth = AuthViewModel.userToken.value?:UserTokenAuth("")
             alertBuilder.setTitle("Are you sure you want to delete this advert. It will be deleted permanently.")
                 .setCancelable(true)
                 .setPositiveButton("YES"){_,it->
                     buttonEnables=false
                     LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
-                    context?.let { crudAdvertViewModel.deleteAdvert(advert,token.token, it) }
+                    context?.let { crudAdvertViewModel.deleteAdvert(advert,token, it) }
                 }
                 .setNegativeButton("NO"){_,it->
             }.show()
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle update onclick button and update advert if all filed are valid.
+     */
     private fun submitFormUpdate(){
         var newAdvert: AdvertModel = createVerification.createAdvert()
         val filesChanged = originalFiles==crudAdvertViewModel.imagesFile.value
         if(createVerification.submitFormVerification()){
             if((!createVerification.checkOldAndNewAdvertAreSimilar(advert,newAdvert)||!filesChanged)&&buttonEnables){
-                val token: UserTokenAuth = AuthViewModel.userToken.value!!
+                val token: UserTokenAuth = AuthViewModel.userToken.value?:UserTokenAuth("")
                 val useUrls = advert.imagesUrls
                 if(crudAdvertViewModel.imagesFile.value!=null){
                     if(crudAdvertViewModel.imagesFile.value?.size!!>0){
@@ -177,14 +192,13 @@ class UpdateDeleteFragment : Fragment() {
                     }
                 }
                 newAdvert._id=advert._id
-                newAdvert.userId=advert.userId
                 newAdvert.createdIn=advert.createdIn
                 alertBuilder.setTitle("Are you sure you want to update advert?")
                     .setCancelable(true)
                     .setPositiveButton("YES"){_,it->
                         buttonEnables=true
                         LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
-                        context?.let { crudAdvertViewModel.updateAdvert(newAdvert,crudShared.deleteUrls,token.token, it) }
+                        context?.let { crudAdvertViewModel.updateAdvert(newAdvert,crudShared.deleteUrls,token, it) }
                     }
                     .setNegativeButton("NO"){_,it->
                 }.show()
@@ -232,8 +246,13 @@ class UpdateDeleteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun imageClickAdd(state:Boolean){//stejne
-        val intent = crudShared.clickAdd(state,permissionModel)
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to run intent for images selection.
+     */
+    private fun imageClickAdd(state:Boolean){
+        val intent = crudShared.clickAdd(permissionModel)
         if(intent!=null) startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
     }
 }

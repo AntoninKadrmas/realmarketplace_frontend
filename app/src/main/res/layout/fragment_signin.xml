@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
         <com.google.android.material.textfield.TextInputLayout
             app:helperText="@string/required"
-            app:helperTextTextColor="@color/error"
+            app:helperTextTextColor="?attr/colorPrimary"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:id="@+id/first_name_layout"
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
         </com.google.android.material.textfield.TextInputLayout>
    <com.google.android.material.textfield.TextInputLayout
        app:helperText="@string/required"
-       app:helperTextTextColor="@color/error"
+       app:helperTextTextColor="?attr/colorPrimary"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:id="@+id/last_name_layout"
             android:layout_width="match_parent"
@@ -79,7 +79,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             app:helperText="@string/required"
-            app:helperTextTextColor="@color/error"
+            app:helperTextTextColor="?attr/colorPrimary"
             app:counterEnabled="true"
             app:counterMaxLength="9"
             android:layout_marginBottom="@dimen/input_element_margin_create"
@@ -109,7 +109,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             app:helperText="@string/required"
-            app:helperTextTextColor="@color/error"
+            app:helperTextTextColor="?attr/colorPrimary"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:id="@+id/email_layout"
             android:layout_width="match_parent"
@@ -137,7 +137,7 @@
         </com.google.android.material.textfield.TextInputLayout>
    <com.google.android.material.textfield.TextInputLayout
            app:helperText="@string/required"
-           app:helperTextTextColor="@color/error"
+           app:helperTextTextColor="?attr/colorPrimary"
            app:passwordToggleEnabled="true"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:layout_marginHorizontal="@dimen/input_element_margin_side"
@@ -166,7 +166,7 @@
 
    <com.google.android.material.textfield.TextInputLayout
        app:helperText="@string/required"
-       app:helperTextTextColor="@color/error"
+       app:helperTextTextColor="?attr/colorPrimary"
        app:passwordToggleEnabled="true"
             android:layout_marginBottom="@dimen/input_element_margin_create"
             android:id="@+id/password_second_layout"

@@ -15,7 +15,11 @@ import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
-
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_login layout and logic there.
+ */
 class LoginFragment : Fragment() {
     companion object {
         fun newInstance() = LoginFragment()
@@ -26,10 +30,6 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkAll()
-    }
-    private fun checkAll(){
-        if(binding.emailInput.text?.trim()?.isEmpty() == false)binding.emailLayout.helperText = validEmail()
-        if(binding.passwordInput.text?.trim()?.isEmpty() == false)binding.passwordLayout.helperText = validPassword()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +55,20 @@ class LoginFragment : Fragment() {
         focusPassword()
         return root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check validity of all input filed.
+     */
+    private fun checkAll(){
+        if(binding.emailInput.text?.trim()?.isEmpty() == false)binding.emailLayout.helperText = validEmail()
+        if(binding.passwordInput.text?.trim()?.isEmpty() == false)binding.passwordLayout.helperText = validPassword()
+    }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle login onclick button and if everything is valid then send login request.
+     */
     private fun submitForm(){
         val validIdNumber = binding.emailLayout.helperText==null
         val validPassword = binding.passwordLayout.helperText==null
@@ -70,6 +84,11 @@ class LoginFragment : Fragment() {
             context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on email input filed.
+     */
     private fun focusEmail(){
         binding.emailInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.emailInput.text?.isNotEmpty()==true) {
@@ -77,6 +96,12 @@ class LoginFragment : Fragment() {
             }else if(!focused && binding.emailLayout.helperText!=resources.getString(R.string.required))binding.emailLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for email validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validEmail():String?{
         val email = binding.emailInput.text.toString().trim()
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -86,6 +111,11 @@ class LoginFragment : Fragment() {
         binding.emailInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on password input filed.
+     */
     private fun focusPassword(){
         binding.passwordInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordInput.text?.isNotEmpty()==true) {
@@ -93,6 +123,12 @@ class LoginFragment : Fragment() {
             }else if(!focused && binding.passwordLayout.helperText!=resources.getString(R.string.required))binding.passwordLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for password validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPassword():String?{
         val passwordText = binding.passwordInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){

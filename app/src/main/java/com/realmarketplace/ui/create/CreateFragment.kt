@@ -32,6 +32,11 @@ import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
 import java.io.File
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_create layout and logic there.
+ */
 class CreateFragment : Fragment() {
     private lateinit var createVerification: CreateVerification
     private lateinit var imageAdapter: ImageAdapter
@@ -55,7 +60,7 @@ class CreateFragment : Fragment() {
         super.onResume()
         if(this::priceOptions.isInitialized&&this::condition.isInitialized) context?.let {
             crudShared.updateDropDown(
-                it,priceOptions,condition)
+                priceOptions,condition,it)
         }
         crudShared.loadImages()
         createVerification.checkAll()
@@ -124,9 +129,14 @@ class CreateFragment : Fragment() {
         AdvertViewModel.changeToolBarState(true)
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle create onclick button and create new advert if all filed are valid.
+     */
     private fun submitForm(){
         if(createVerification.submitFormVerification()&&buttonEnables){
-            val token: UserTokenAuth = AuthViewModel.userToken.value!!
+            val token: UserTokenAuth = AuthViewModel.userToken.value?:UserTokenAuth("")
             var noImage = ""
             if(crudShared.actualImage==0)noImage=" without any image"
             alertBuilder.setTitle("Are you sure you want to create new advert$noImage.")
@@ -134,7 +144,7 @@ class CreateFragment : Fragment() {
                 .setPositiveButton("YES"){_,_->
                     buttonEnables=false
                     LoadingBar.mutableHideLoadingMainActivity.value=false
-                    context?.let { crudAdvertViewModel.createAdvert(createVerification.createAdvert(),token.token, it) }
+                    context?.let { crudAdvertViewModel.createAdvert(createVerification.createAdvert(),token, it) }
                 }
                 .setNegativeButton("NO"){_,_->
                 }.show()
@@ -178,10 +188,21 @@ class CreateFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to run intent for images selection.
+     */
     private fun imageClickAdd(state:Boolean){
-        val intent = crudShared.clickAdd(state,permissionModel)
+        val intent = crudShared.clickAdd(permissionModel)
         if(intent!=null) startActivityForResult(Intent.createChooser(intent,"Select Picture"), 15)
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to clean all data in all input filed and recycle view.
+     * @param advert advert that was created and now can be stored into my adverts
+     */
     private fun clearAllData(advert: AdvertModel){
         if(crudAdvertViewModel.imagesFile.value!=null){
             for(uri in crudAdvertViewModel.imagesFile.value!!){
@@ -194,7 +215,7 @@ class CreateFragment : Fragment() {
             crudAdvertViewModel.executed=false
         }
         crudAdvertViewModel.clearFiles()
-        context?.let { crudShared.updateDropDown(it,priceOptions,condition) }
+        context?.let { crudShared.updateDropDown(priceOptions,condition,it) }
         createVerification.clearInputData()
     }
 }

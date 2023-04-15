@@ -4,8 +4,15 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 
-// originally from Handy Opinion
-// https://handyopinion.com/get-path-from-uri-in-kotlin-android/
+
+/**
+ * A group of *vendor*.
+ *
+ * Object used as uri to file converter.
+ *
+ * originally from Handy Opinion
+ * https://handyopinion.com/get-path-from-uri-in-kotlin-android/
+ */
 object UriToFileConvertor {
     fun getRealPathFromURI_API19(context: Context, uri: Uri?): String? {
         var filePath = ""
@@ -26,7 +33,15 @@ object UriToFileConvertor {
         cursor.close()
         return filePath
     }
-
+    /**
+     * A group of *vendor_function*.
+     *
+     * Function used to get real path from uri
+     *
+     * @param context context of activity or fragment where is function called
+     * @param contentUri uri which real path is going to be crated
+     * @return string real path that can be used as parameter into File object
+     */
     fun getRealPathFromURI(context: Context, contentUri: Uri?): String? {
         var cursor: Cursor? = null
         return try {

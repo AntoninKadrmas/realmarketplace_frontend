@@ -17,7 +17,18 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+/**
+ * A group of *adapter*.
+ *
+ * Class used as adapter for image files recycle view.
+ *
+ * @param images list of image file that is going to be displayed
+ * @param urls list of string urls that already exists when the advert is going to be updated or deleted
+ * @param uri image of camera with text add photo that is first item in recycle view
+ * @param clickDelete function that delete specific advert
+ * @param clickAdd function that open images selection when you click on first item in recycle view
+ * @param life life cycle owner so each advert can listen on change
+ */
 class ImageAdapter(
     private var images:ArrayList<File>,
     private var urls:ArrayList<String>,
@@ -28,6 +39,20 @@ class ImageAdapter(
 ): RecyclerView.Adapter<ImageAdapter.ImageAdapterHolder>() {
     var checkFirst:MutableLiveData<File> = MutableLiveData()
     class ImageAdapterHolder(private val itemBinding: AdapterCreateImageBinding):RecyclerView.ViewHolder(itemBinding.root) {
+        /**
+         * A group of *adapter_function*.
+         *
+         * Function used to bind properties into specific items in recycle view.
+         * Used Picasso module for displaying images by https url.
+         *
+         * @param curImage current file that is going to be displayed if uri and all urls are already displayed
+         * @param urls list of string urls that already exists when the advert is going to be updated or deleted
+         * @param uri image of camera with text add photo that is first item in recycle view
+         * @param clickDelete function that delete specific advert
+         * @param clickAdd function that open images selection when you click on first item in recycle view
+         * @param checkFirst live data used as subscription for checking if advert is first to display cover advert water mark
+         * @param life life cycle owner so each advert can listen on change
+         */
         fun bind(curImage: File,urls:ArrayList<String>,uri:Uri, clickDelete: (File) -> Unit, clickAdd: (Boolean) -> Unit, position: Int,checkFirst:MutableLiveData<File>,life:LifecycleOwner) {
             itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             checkFirst.observe(life, Observer{
@@ -81,22 +106,59 @@ class ImageAdapter(
     override fun onBindViewHolder(holder: ImageAdapterHolder, position: Int) {
         holder.bind(images[position],urls,uri,clickDelete,clickAdd,position,checkFirst,life)
     }
+    /**
+     * A group of *adapter_function*.
+     *
+     * Function used to add new image.
+     *
+     * @param image image file that is going to be added into image file list
+     */
     fun addNewImage(image:File){
         images.add(image)
     }
+    /**
+     * A group of *adapter_function*.
+     *
+     * Function used to delete new image.
+     *
+     * @param image image file that is going to be deleted from image file list
+     */
     fun removeNewImage(image:File){
         images.remove(image)
         if(urls.size>0) urls.remove(image.path)
         if(images.size>1)checkFirst.value=images[1]
     }
+    /**
+     * A group of *adapter_function*.
+     *
+     * Function used to change position of two adverts.
+     *
+     * @param from index of advert previous position
+     * @param to index of advert new position
+     */
     fun swap(from:Int,to:Int){
         Collections.swap(images,from,to)
         checkFirst.value=images[1]
     }
+    /**
+     * A group of *adapter_function*.
+     *
+     * Function used find out position of specific image file
+     *
+     * @param image specific image file which position am I interested in
+     * @return index position of specific image
+     */
     fun positionOfImage(image:File):Int{
         return images.indexOf(image)
     }
-    fun addUrls(new_urls:ArrayList<String>){
-        urls=new_urls
+    /**
+     * A group of *adapter_function*.
+     *
+     * Function used to change urls list of https urls
+     *
+     * @param newUrls list of urls strings
+     */
+    fun addUrls(newUrls:ArrayList<String>){
+        urls=newUrls
     }
 }

@@ -17,7 +17,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_marginTop="20dp"
         app:helperText="@string/required"
-        app:helperTextTextColor="@color/error"
+        app:helperTextTextColor="?attr/colorPrimary"
         android:layout_marginBottom="@dimen/input_element_margin_create"
         android:id="@+id/settings_first_name_layout"
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         app:helperText="@string/required"
-        app:helperTextTextColor="@color/error"
+        app:helperTextTextColor="?attr/colorPrimary"
         android:layout_marginBottom="@dimen/input_element_margin_create"
         android:id="@+id/settings_last_name_layout"
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         app:helperText="@string/required"
-        app:helperTextTextColor="@color/error"
+        app:helperTextTextColor="?attr/colorPrimary"
         app:counterEnabled="true"
         app:counterMaxLength="9"
         android:layout_marginBottom="@dimen/input_element_margin_create"

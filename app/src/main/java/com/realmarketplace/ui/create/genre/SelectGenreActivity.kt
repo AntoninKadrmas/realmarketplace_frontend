@@ -11,6 +11,11 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.ActivitySelectGenreBinding
 import com.realmarketplace.rest.GenreItem
 
+/**
+ * A group of *activity*.
+ *
+ * Class used as genre selector when someone want to create or update advert.
+ */
 class SelectGenreActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySelectGenreBinding
     private lateinit var genreItemAdapter: GenreItemAdapter
@@ -62,12 +67,25 @@ class SelectGenreActivity : AppCompatActivity() {
             finish()
         }
     }
+    /**
+     * A group of *activity_function*.
+     *
+     * Function used to change subtitle of toolbar.
+     * @param fiction boolean variable decide if fiction would be in the subtitle
+     * @param nonFiction boolean variable decide if nonfiction would be in the subtitle
+     */
     private fun setSubtitle(fiction:Boolean, nonFiction:Boolean){
         if(fiction && nonFiction)binding.myToolbar.subtitle="Fiction or NonFiction"
         else if(fiction && !nonFiction)binding.myToolbar.subtitle="Fiction"
         else if(!fiction && nonFiction)binding.myToolbar.subtitle="NonFiction"
         else binding.myToolbar.subtitle=""
     }
+    /**
+     * A group of *activity_function*.
+     *
+     * Function used to filter genres in recycle view by given text.
+     * @param text string text that is used as filter in regex
+     */
     private fun filterList(text:String){
         if(text=="")genreItemAdapter.updateGenreList(genreListItems)
         val filterGenreListItem = ArrayList<GenreItem>()
@@ -81,6 +99,12 @@ class SelectGenreActivity : AppCompatActivity() {
             genreItemAdapter.updateGenreList(filterGenreListItem)
         }
     }
+    /**
+     * A group of *activity_function*.
+     *
+     * Function used to return selected genre as result of intent.
+     * @param genre genre selected by user viz. GenreItem
+     */
     private fun returnGenre(genre: GenreItem){
         val data = Intent()
         data.putExtra("name", genre.name)

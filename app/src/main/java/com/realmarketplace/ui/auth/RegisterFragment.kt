@@ -16,6 +16,11 @@ import com.realmarketplace.model.Validated
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_signin layout and logic there.
+ */
 class RegisterFragment : Fragment() {
     companion object {
         fun newInstance() = RegisterFragment()
@@ -26,14 +31,6 @@ class RegisterFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkAll()
-    }
-    private fun checkAll(){
-        if (binding.passwordSecondInput.text?.trim()?.isEmpty() == false) binding.passwordSecondLayout.helperText = validPasswordSecond()
-        if (binding.passwordFirstInput.text?.trim()?.isEmpty() == false) binding.passwordFirstLayout.helperText = validPasswordFirst()
-        if (binding.firstNameInput.text?.trim()?.isEmpty() == false) binding.firstNameLayout.helperText = validFirstName()
-        if (binding.lastNameInput.text?.trim()?.isEmpty() == false) binding.lastNameLayout.helperText = validLastName()
-        if (binding.emailInput.text?.trim()?.isEmpty() == false) binding.emailLayout.helperText = validEmail()
-        if (binding.phoneInput.text?.trim()?.isEmpty() == false) binding.phoneLayout.helperText = validPhone()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +62,24 @@ class RegisterFragment : Fragment() {
         focusPhone()
         return root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check validity of all input filed.
+     */
+    private fun checkAll(){
+        if (binding.passwordSecondInput.text?.trim()?.isEmpty() == false) binding.passwordSecondLayout.helperText = validPasswordSecond()
+        if (binding.passwordFirstInput.text?.trim()?.isEmpty() == false) binding.passwordFirstLayout.helperText = validPasswordFirst()
+        if (binding.firstNameInput.text?.trim()?.isEmpty() == false) binding.firstNameLayout.helperText = validFirstName()
+        if (binding.lastNameInput.text?.trim()?.isEmpty() == false) binding.lastNameLayout.helperText = validLastName()
+        if (binding.emailInput.text?.trim()?.isEmpty() == false) binding.emailLayout.helperText = validEmail()
+        if (binding.phoneInput.text?.trim()?.isEmpty() == false) binding.phoneLayout.helperText = validPhone()
+    }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle register onclick button and if everything is valid then send register request.
+     */
     private fun submitForm(){
         val validPasswordSecond= binding.passwordSecondLayout.helperText==null
         val validPasswordFirst = binding.passwordFirstLayout.helperText==null
@@ -94,6 +109,11 @@ class RegisterFragment : Fragment() {
             context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS, Toast.LENGTH_LONG) }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on first name input filed.
+     */
     private fun focusFirstName(){
         binding.firstNameInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused) {
@@ -101,6 +121,12 @@ class RegisterFragment : Fragment() {
             }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for first name validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validFirstName():String?{
         val firstName = binding.firstNameInput.text.toString().trim()
         if(firstName.isNullOrEmpty()){
@@ -110,6 +136,11 @@ class RegisterFragment : Fragment() {
         binding.firstNameInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on last name input filed.
+     */
     private fun focusLastName(){
         binding.lastNameInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused) {
@@ -117,6 +148,12 @@ class RegisterFragment : Fragment() {
             }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for last name validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validLastName():String?{
         val lastName = binding.lastNameInput.text.toString().trim()
         if(lastName.isNullOrEmpty()){
@@ -126,6 +163,11 @@ class RegisterFragment : Fragment() {
         binding.lastNameInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on email input filed.
+     */
     private fun focusEmail(){
         binding.emailInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.emailInput.text?.trim()?.isNotEmpty()==true) {
@@ -133,6 +175,12 @@ class RegisterFragment : Fragment() {
             }else if(!focused && binding.emailLayout.helperText!=resources.getString(R.string.required))binding.emailLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for email validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validEmail():String?{
         val email = binding.emailInput.text.toString().trim()
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -142,6 +190,11 @@ class RegisterFragment : Fragment() {
         binding.emailInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on phone number input filed.
+     */
     private fun focusPhone(){
         binding.phoneInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.phoneInput.text?.trim()?.isNotEmpty()==true) {
@@ -149,6 +202,12 @@ class RegisterFragment : Fragment() {
             }else if(!focused && binding.phoneLayout.helperText!=resources.getString(R.string.required))binding.phoneLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for phone number validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPhone():String?{
         val phone = binding.phoneInput.text.toString().trim()
         if(!phone.matches("[0-9]{9}".toRegex())){
@@ -158,6 +217,11 @@ class RegisterFragment : Fragment() {
         binding.phoneInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on first password input filed.
+     */
     private fun focusPasswordFirst(){
         binding.passwordFirstInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordFirstInput.text?.trim()?.isNotEmpty()==true) {
@@ -165,6 +229,12 @@ class RegisterFragment : Fragment() {
             }else if(!focused && binding.passwordFirstLayout.helperText!=resources.getString(R.string.required))binding.passwordFirstLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for first password validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPasswordFirst():String?{
         val passwordText = binding.passwordFirstInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){
@@ -175,6 +245,11 @@ class RegisterFragment : Fragment() {
         binding.passwordFirstInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on second password input filed.
+     */
     private fun focusPasswordSecond(){
         binding.passwordSecondInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordSecondInput.text?.trim()?.isNotEmpty()==true) {
@@ -182,6 +257,12 @@ class RegisterFragment : Fragment() {
             }else if(!focused && binding.passwordSecondLayout.helperText!=resources.getString(R.string.required))binding.passwordSecondLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for second password validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPasswordSecond():String?{
         val passwordText = binding.passwordSecondInput.text.toString().trim()
         val checkSamePassword = binding.passwordFirstInput.text.toString().trim()==passwordText

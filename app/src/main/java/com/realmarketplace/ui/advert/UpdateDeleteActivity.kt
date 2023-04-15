@@ -27,6 +27,11 @@ import com.realmarketplace.viewModel.EnumViewData
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 
+/**
+ * A group of *activity*.
+ *
+ * Class for activity_update_delete layout and logic there.
+ */
 class UpdateDeleteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUpdateDeleteBinding
     private lateinit var advert: AdvertModel
@@ -107,7 +112,7 @@ class UpdateDeleteActivity : AppCompatActivity() {
                 switchFavorite(true)
                 LoadingBar.mutableHideLoadingUpdateDeleteActivity.value=false
                 AdvertViewModel.addFavoriteAdvert(advert, token, this)
-                FavoriteObject.addNewAdvertId(advert._id,advert,advert.visible)
+                FavoriteObject.addNewAdvertId(advert)
             }
             else finish()
             true
@@ -146,11 +151,24 @@ class UpdateDeleteActivity : AppCompatActivity() {
             else binding.progressBar.visibility = View.GONE
         })
     }
+    /**
+     * A group of *activity_functions*.
+     *
+     * Function used to load update delete fragment.
+     */
     private fun loadFragment(){
         supportFragmentManager.beginTransaction()
             .replace(R.id.create_update_frame_layout, UpdateDeleteFragment.newInstance())
             .commit()
     }
+    /**
+     * A group of *advert_functions*.
+     *
+     * Function used to switch between favorite icons.
+     *
+     * @param state boolean variable that decide if favorite state should be in true (favorite) or false (not favorite) state
+     * @param init used when value is changed in initialization so button would not be disabled when true
+     */
     private fun switchFavorite(state:Boolean,init:Boolean=false){
         if(!init){
             binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).isEnabled=false
@@ -167,6 +185,14 @@ class UpdateDeleteActivity : AppCompatActivity() {
             binding.myToolbar.menu.getItem(AdvertViewModel.FAVORITE_ON).isVisible = false
         }
     }
+    /**
+     * A group of *advert_functions*.
+     *
+     * Function used to switch between visibility icons.
+     *
+     * @param state boolean variable that decide if visibility state should be in true (visible) or false (not visible) state
+     * @param init used when value is changed in initialization so button would not be disabled when true
+     */
     private fun switchVisible(state:Boolean,init: Boolean=false){
         if(!init){
             binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).isEnabled=false

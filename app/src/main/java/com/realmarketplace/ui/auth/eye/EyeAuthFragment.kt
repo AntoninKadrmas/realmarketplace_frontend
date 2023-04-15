@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import com.realmarketplace.ui.auth.AuthActivity
 import com.realmarketplace.databinding.FragmentEyeFeatureBinding
 
-
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_eye_feature layout and logic there.
+ */
 class EyeAuthFragment : Fragment() {
     private var _binding: FragmentEyeFeatureBinding? = null
     private val binding get() = _binding!!

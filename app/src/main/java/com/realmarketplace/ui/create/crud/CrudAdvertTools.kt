@@ -13,12 +13,25 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.File
 
+/**
+ * A group of *tool*.
+ *
+ * Class contains functions used in creating request for create or update advert.
+ */
 class CrudAdvertTools {
-    fun createImagesFileBody(imagesFile:ArrayList<File>?):ArrayList<MultipartBody.Part>{
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to create request body from given image files.
+     *
+     * @param imagesFiles list of image files that is going to be inserted intoRequestBody
+     * @return list of MultipartBody.Part file images
+     */
+    fun createImagesFileBody(imagesFiles:ArrayList<File>?):ArrayList<MultipartBody.Part>{
         val bodyList = ArrayList<MultipartBody.Part>()
-        if (!imagesFile.isNullOrEmpty()) {
+        if (!imagesFiles.isNullOrEmpty()) {
             var counter=0
-            for (file in imagesFile!!) {
+            for (file in imagesFiles!!) {
                 counter++
                 val requestFile: RequestBody =
                     RequestBody.create("image/${file?.absolutePath.toString()
@@ -31,23 +44,49 @@ class CrudAdvertTools {
         }
         return bodyList
     }
-    fun createImageFileBody(file:File?):MultipartBody.Part{
+
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to create request body from given image file.
+     *
+     * @param imageFile list of image file that is going to be inserted intoRequestBody
+     * @return MultipartBody.Part file image
+     */
+    fun createImageFileBody(imageFile: File?): MultipartBody.Part {
         val requestFile: RequestBody =
-            RequestBody.create("image/${file?.absolutePath.toString()
-                .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
-            }".toMediaTypeOrNull(), file!!
+            RequestBody.create(
+                "image/${
+                    imageFile?.absolutePath.toString()
+                        .substring(imageFile?.absolutePath.toString().lastIndexOf(".") + 1)
+                }".toMediaTypeOrNull(), imageFile!!
             )
-        val body = MultipartBody.Part.createFormData("uploaded_file", file?.name, requestFile)
-        return body
+        return MultipartBody.Part.createFormData("uploaded_file", imageFile?.name, requestFile)
     }
-    fun getOldFileArray(imagesFile: ArrayList<File>?):ArrayList<String>{
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to create key pair of old url and their position in list.
+     *
+     * @param imageFiles all new and old image files list
+     * @return list of string url and position pair
+     */
+    fun getOldFileArray(imageFiles: ArrayList<File>?):ArrayList<String>{
         var oldFiles = ArrayList<String>()
-        if (imagesFile != null)
-            for (file in imagesFile) {
-                if (!file.path.contains("/compressor/")) oldFiles.add("${file.path};${imagesFile.indexOf(file)}")
+        if (imageFiles != null)
+            for (file in imageFiles) {
+                if (!file.path.contains("/compressor/")||file.path.count{it=='/'}<=1) oldFiles.add("${file.path};${imageFiles.indexOf(file)}")
             }
         return oldFiles
     }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to return newly added image files.
+     *
+     * @param imagesFile all new and old image files list
+     * @return list of newly added image files
+     */
     fun getNewFileArray(imagesFile: ArrayList<File>?):ArrayList<File>{
         var newFiles = ArrayList<File>()
         if (imagesFile != null)
@@ -56,12 +95,20 @@ class CrudAdvertTools {
             }
         return newFiles
     }
-    suspend fun errorResponse(response: Response<Any>, code: Int, context: Context) {
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to handle error response.
+     *
+     * @param response error response from https request
+     * @param context context of activity or fragment
+     */
+    suspend fun errorResponse(response: Response<Any>, context: Context) {
         val errorBody = response.errorBody()
         val errorResponse: ReturnTypeError? =
             Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
         withContext(Dispatchers.Main) {
-            if (code == 401) LogOutAuth.setLogOut(true)
+            if (response.code() == 401) LogOutAuth.setLogOut(true)
             Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
         }
     }

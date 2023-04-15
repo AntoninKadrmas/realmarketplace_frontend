@@ -11,7 +11,12 @@ import com.realmarketplace.R
 import com.realmarketplace.databinding.ActivityAuthBinding
 import com.realmarketplace.viewModel.LoadingBar
 
-
+/**
+ * A group of *activity*.
+ *
+ * Class for activity_auth layout and logic there.
+ * Have two fragments loginFragment and registerFragment
+ */
 class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
 
@@ -54,6 +59,11 @@ class AuthActivity : AppCompatActivity() {
             else binding.progressBar.visibility = View.GONE
         })
     }
+    /**
+     * A group of *activity_functions*.
+     *
+     * Function that switch between two fragments.
+     */
     private fun rotateFragment(){
         if(actual==0)binding.myToolbar.subtitle="Login"
         else binding.myToolbar.subtitle="Register"
