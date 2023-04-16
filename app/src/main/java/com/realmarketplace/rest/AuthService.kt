@@ -21,11 +21,14 @@ interface AuthService {
      *
      * Endpoint **post(/user/register)**
      *
+     * @param credential string contains email password string pair in basic format
      * @param user viz. UserModel
      * @return viz. UserTokenAuth or viz. ReturnTypeError
      */
     @POST(value="/user/register")
-    suspend fun registerUser(@Body user: UserModel):Response<Any>
+    suspend fun registerUser(
+        @Header("Authorization") credential:String,
+        @Body user: UserModel):Response<Any>
     /**
      * A group of *api_function*.
      *
@@ -56,7 +59,6 @@ interface AuthService {
     @POST(value="/user/image")
     suspend fun uploadProfileImage(
         @Part body:MultipartBody.Part,
-        @Part("oldUrl")  deletedUrls: RequestBody,
         @Header("Authentication") token:String): Response<Any>
     /**
      * A group of *api_function*.

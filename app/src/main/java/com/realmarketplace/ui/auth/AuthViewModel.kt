@@ -56,14 +56,17 @@ object AuthViewModel{
      * A group of *view_model_function*.
      *
      * Function used to call registerUser function and handle the response.
-     *
+     * @param email email user write into input field
+     * @param password password user write into input filed
      * @param userModel user information's needed to create new user account viz. UserModel
      * @param context context of activity or fragment where is function called
      */
-    fun register(userModel: UserModel, context: Context){
+    fun register(email:String,password:String,userModel: UserModel, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
-                retroServiceAuth.registerUser(userModel)
+                retroServiceAuth.registerUser(
+                    okhttp3.Credentials.basic(email, password),
+                    userModel)
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()

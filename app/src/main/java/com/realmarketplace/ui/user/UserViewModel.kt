@@ -145,21 +145,16 @@ class UserViewModel:ViewModel() {
      *
      * Function used to call uploadProfileImage function and handle the response.
      *
-     * @param userOld old user information's that contains old user image url
      * @param imageFile new image file that would be used as new one
      * @param userToken user authentication token viz. UserTokenAuth
      * @param context context of activity or fragment where is function called
      */
-    fun uploadUserImage(userOld: LightUser, imageFile:File, userToken: UserTokenAuth, context: Context) {
+    fun uploadUserImage(imageFile:File, userToken: UserTokenAuth, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val body = crudTools.createImageFileBody( imageFile)
             val response = try {
                 retroServiceUser.uploadProfileImage(
                     body,
-                    RequestBody.create(
-                        "text/plain".toMediaTypeOrNull(),
-                        userOld.mainImageUrl
-                    ),
                     userToken.token
                 )
             } catch (e: IOException) {
@@ -183,6 +178,7 @@ class UserViewModel:ViewModel() {
                     )
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, body?.success.toString(), Toast.LENGTH_LONG).show()
+                    val userOld = userMutable.value!!
                     userOld.mainImageUrl = body!!.imageUrls[0]
                     userMutable.value=userOld
                     buttonEnables.value=true

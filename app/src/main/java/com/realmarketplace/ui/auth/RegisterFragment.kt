@@ -93,18 +93,20 @@ class RegisterFragment : Fragment() {
             validLastName&&
             validEmail&&
             validPhone){
+            val email = binding.emailInput.text.toString().trim()
+            val password = binding.passwordFirstInput.text.toString().trim()
             val newUser= UserModel(
                 createdIn= "",
-                email= binding.emailInput.text.toString().trim(),
+                email= "",
                 firstName= binding.firstNameInput.text.toString().trim(),
                 lastName= binding.lastNameInput.text.toString().trim(),
-                password= binding.passwordFirstInput.text.toString().trim(),
+                password= "",
                 phone= binding.phoneInput.text.toString().trim(),
                 validated= Validated(false,false,false)
             )
             buttonEnables=false
             LoadingBar.mutableHideLoadingAuthActivity.value=false
-            context?.let { AuthViewModel.register(newUser, it) }
+            context?.let { AuthViewModel.register(email,password,newUser, it) }
         }else{
             context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS, Toast.LENGTH_LONG) }
         }
