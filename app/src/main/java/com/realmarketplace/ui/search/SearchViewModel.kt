@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.AdvertSearchModel
 import com.realmarketplace.rest.*
+import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.viewModel.LoadingBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

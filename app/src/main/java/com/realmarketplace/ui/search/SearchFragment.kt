@@ -149,7 +149,7 @@ class SearchFragment : Fragment(){
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
-                if(logOut!!) LogOutAuth.setLogOut(true)
+                if(logOut!!) LogOutAuth.mutableLogOutMain.value= true
             }
         }
     }

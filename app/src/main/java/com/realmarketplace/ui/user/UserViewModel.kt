@@ -323,7 +323,7 @@ class UserViewModel:ViewModel() {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
-                         LogOutAuth.setLogOut(true)
+                        LogOutAuth.mutableLogOutUser.value = true
                     }
                 }
             }else{
@@ -350,7 +350,7 @@ class UserViewModel:ViewModel() {
         val errorBody = response.errorBody()
         val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
         withContext(Dispatchers.Main){
-            if (response.code() == 401) LogOutAuth.setLogOut(true)
+            if (response.code() == 401) LogOutAuth.mutableLogOutUser.value = true
             Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
             buttonEnables.value=true
         }

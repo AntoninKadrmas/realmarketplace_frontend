@@ -217,7 +217,7 @@ class UpdateDeleteFragment : Fragment() {
                 val name: String? = data?.getStringExtra("name")
                 val type: String? = data?.getStringExtra("type")
                 val logOut:Boolean? = data?.getBooleanExtra("logOut",false)
-                LogOutAuth.setLogOut(logOut!!)
+                if(logOut!!)LogOutAuth.mutableLogOutAdvert.value=true
                 if (name?.isNotEmpty()==true && type?.isNotEmpty()==true){
                     binding.selectGenreInput.setText("$name/$type")
                 }

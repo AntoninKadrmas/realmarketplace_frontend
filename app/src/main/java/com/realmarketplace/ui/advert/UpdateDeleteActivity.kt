@@ -42,9 +42,12 @@ class UpdateDeleteActivity : AppCompatActivity() {
     private lateinit var dataIntent: Intent
     private var favorite = false
     private var visibility = true
-
+    override fun onDestroy() {
+        super.onDestroy()
+        LogOutAuth.mutableLogOutAdvert.value=false
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
-        LogOutAuth.logOut.observe(this, Observer {
+        LogOutAuth.mutableLogOutAdvert.observe(this, Observer {
             if(it){
                 dataIntent = Intent()
                 dataIntent.putExtra("prevAdvertId",advert._id)

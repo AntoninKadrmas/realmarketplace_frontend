@@ -61,7 +61,7 @@ class PrivateUserFragment : Fragment() {
             loadUserInformation()
         })
         binding.privateLogout.setOnClickListener(){
-            LogOutAuth.setLogOut(true)
+            LogOutAuth.mutableLogOutUser.value = true
         }
         binding.privateUpdateImage.setOnClickListener(){
             imageClickAdd()
@@ -190,7 +190,7 @@ class PrivateUserFragment : Fragment() {
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
                 val user: LightUser = data?.getSerializableExtra("user") as LightUser
                 userViewModel.updateUserInfo        (user)
-                if(logOut!!) LogOutAuth.setLogOut(true)
+                if(logOut!!) LogOutAuth.mutableLogOutUser.value = true
             }
         }
     }

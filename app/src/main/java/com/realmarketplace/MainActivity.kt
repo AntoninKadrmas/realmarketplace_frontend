@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         permissionModel.permissionStorageAsk.observe(this, Observer {
             requestPermissionStorage()
         })
-        LogOutAuth.logOut.observe(this, Observer {
+        LogOutAuth.mutableLogOutMain.observe(this, Observer {
             if(it) {
                 cleanUser()
                 SearchViewModel.loadedSampleAdvert=false
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
             putString(userAuthTokenString,null)
             apply()
         }
-        LogOutAuth.setLogOut(false)
+        LogOutAuth.mutableLogOutMain.value = false
     }
     /**
      * A group of *activity_functions*.
@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
-                if(logOut!!) LogOutAuth.setLogOut(true)
+                if(logOut!!) LogOutAuth.mutableLogOutMain.value = true
             }
         }
     }

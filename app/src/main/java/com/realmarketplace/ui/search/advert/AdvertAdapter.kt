@@ -75,7 +75,6 @@ class AdvertAdapter(
          * @param position position of set item in recycle view
          */
         fun bind(curAdvert: AdvertModel, clickAdvert:(AdvertModel)->Unit, position:Int){
-            println(curAdvert)
             itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             Picasso.get().load("${TextModelGlobal.REAL_MARKET_URL}/advert"+curAdvert.mainImageUrl)
                 .placeholder(R.drawable.ic_baseline_image_not)

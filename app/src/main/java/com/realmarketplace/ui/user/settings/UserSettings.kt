@@ -38,7 +38,7 @@ class UserSettings : AppCompatActivity() {
             if(!it)binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         })
-        LogOutAuth.logOut.observe(this, Observer {
+        LogOutAuth.mutableLogOutUser.observe(this, Observer {
             if(it){
                 dataIntent.putExtra("logOut",true)
                 dataIntent.putExtra("user",userViewModel.user.value)

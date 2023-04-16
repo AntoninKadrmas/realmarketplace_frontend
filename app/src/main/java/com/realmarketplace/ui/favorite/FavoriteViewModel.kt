@@ -15,6 +15,7 @@ import com.realmarketplace.rest.AdvertService
 import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnListFavoriteAdvertModel
 import com.realmarketplace.rest.ReturnTypeError
+import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.viewModel.LoadingBar
 import retrofit2.HttpException
 import java.io.IOException
@@ -140,6 +141,7 @@ object FavoriteViewModel {
                     val errorResponse: ReturnTypeError? =
                         Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main) {
+                        if(response.code()==401)LogOutAuth.mutableLogOutMain.value=true
                         Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                         LoadingBar.mutableHideLoadingMainActivity.value=true
                     }

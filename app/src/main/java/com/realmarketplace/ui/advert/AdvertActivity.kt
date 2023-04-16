@@ -34,9 +34,13 @@ class AdvertActivity : AppCompatActivity() {
     private lateinit var adapterPager: AdapterViewPager
     private lateinit var token: UserTokenAuth
     private var favorite = false
+    override fun onDestroy() {
+        super.onDestroy()
+        LogOutAuth.mutableLogOutAdvert.value=false
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogOutAuth.logOut.observe(this, Observer {
+        LogOutAuth.mutableLogOutAdvert.observe(this, Observer {
             if(it){
                 val dataIntent = Intent()
                 dataIntent.putExtra("prevAdvertId",advert._id)
@@ -121,7 +125,7 @@ class AdvertActivity : AppCompatActivity() {
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 val logOut: Boolean? = data?.getBooleanExtra("logOut",false)
-                if(logOut!!) LogOutAuth.setLogOut(true)
+                if(logOut!!) LogOutAuth.mutableLogOutAdvert.value = true
             }
         }
     }
@@ -137,7 +141,7 @@ class AdvertActivity : AppCompatActivity() {
         binding.viewPager.adapter = adapterPager
         val indicator: CircleIndicator3 = binding.indicator
         indicator.setViewPager(binding.viewPager)
-        adapterPager.registerAdapterDataObserver(indicator.getAdapterDataObserver());
+        adapterPager.registerAdapterDataObserver(indicator.adapterDataObserver);
         binding.myToolbar.title=advert.title
         binding.advertGenreText.text = "${advert.genreName}/${advert.genreType}"
         binding.advertTitleText.text=advert.title
@@ -148,10 +152,9 @@ class AdvertActivity : AppCompatActivity() {
         binding.advertCreatedInText.text = AdvertAdapter.formatDate(advert.createdIn!!)
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_OFF).isVisible = false
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).isVisible = false
-        if(advert.user==null){
-            if(AuthViewModel.userToken.value==null)binding.userInfoLayout.visibility= View.GONE
-            else if(AuthViewModel.userToken.value!!.token=="")binding.userInfoLayout.visibility= View.GONE
-        }
+        if(advert.user==null) binding.userInfoLayout.visibility= View.GONE
+        else if(AuthViewModel.userToken.value==null) binding.userInfoLayout.visibility= View.GONE
+        else if(AuthViewModel.userToken.value!!.token=="") binding.userInfoLayout.visibility= View.GONE
         else{
             binding.userInfoLayout.visibility= View.VISIBLE
             binding.lastNameText.text= advert.user?.lastName ?: ""

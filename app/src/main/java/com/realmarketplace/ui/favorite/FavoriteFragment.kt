@@ -162,7 +162,7 @@ class FavoriteFragment : Fragment() {
                 val previousAdvert: String? = data?.getStringExtra("prevAdvertId")
                 val newAdvert: AdvertModel? = data?.getSerializableExtra("newAdvert") as AdvertModel?
                 if(logOut!!){
-                    LogOutAuth.setLogOut(true)
+                    LogOutAuth.mutableLogOutMain.value=true
                 }
                 else if(newAdvert==null){//delete
                     deleteAdvertById(previousAdvert!!)

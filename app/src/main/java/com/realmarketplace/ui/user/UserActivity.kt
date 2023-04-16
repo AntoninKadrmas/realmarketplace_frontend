@@ -38,13 +38,17 @@ class UserActivity : AppCompatActivity() {
         PublicUserFragment.newInstance(),
         PrivateUserFragment.newInstance(),
     )
+    override fun onDestroy() {
+        super.onDestroy()
+        LogOutAuth.mutableLogOutUser.value=false
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LoadingBar.mutableHideLoadingUserActivity.observe(this, Observer {
             if(!it)binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         })
-        LogOutAuth.logOut.observe(this, Observer {
+        LogOutAuth.mutableLogOutUser.observe(this, Observer {
             if(it){
                 val dataIntent = Intent()
                 if(intent.getBooleanExtra("publicUserProfile",false))dataIntent.putExtra("prevAdvertId",advert._id)

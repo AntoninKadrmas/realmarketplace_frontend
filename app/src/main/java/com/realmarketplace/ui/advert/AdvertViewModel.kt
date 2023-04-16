@@ -160,7 +160,7 @@ object AdvertViewModel {
                 try {
                     val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
+                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
                         loadedMyAdverts =false
                         Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
                     }
@@ -212,7 +212,7 @@ object AdvertViewModel {
                 try {
                     val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
+                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
                         Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
                         enableButton.value= FAVORITE_ON
                     }
@@ -264,7 +264,7 @@ object AdvertViewModel {
                 try {
                     val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
+                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
                         Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
                         enableButton.value= FAVORITE_OFF
                     }
@@ -320,7 +320,7 @@ object AdvertViewModel {
                 try {
                     val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
                     withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.setLogOut(true)
+                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
                         Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
                         if(state) enableButton.value= VISIBLE_ON
                         else enableButton.value= VISIBLE_OFF

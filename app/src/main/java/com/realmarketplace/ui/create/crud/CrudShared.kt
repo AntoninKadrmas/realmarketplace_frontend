@@ -118,6 +118,7 @@ class CrudShared(
             val fileArray = ArrayList<File>()
             CoroutineScope(Dispatchers.Main).launch {
                 for(value in 0..actualMaximum){
+                    println(uris[value])
                     var file = context?.let { UriToFileConvertor.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
                     file = context?.let { Compressor.compress(it, file!!) }!!
                     val extension = file?.absolutePath.toString()

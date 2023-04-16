@@ -102,13 +102,17 @@ class CrudAdvertTools {
      *
      * @param response error response from https request
      * @param context context of activity or fragment
+     * @param main if function is called in main activity
      */
-    suspend fun errorResponse(response: Response<Any>, context: Context) {
+    suspend fun errorResponse(response: Response<Any>, context: Context,main:Boolean=false) {
         val errorBody = response.errorBody()
         val errorResponse: ReturnTypeError? =
             Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
         withContext(Dispatchers.Main) {
-            if (response.code() == 401) LogOutAuth.setLogOut(true)
+            if (response.code() == 401) {
+                if(main)LogOutAuth.mutableLogOutMain.value=true
+                else LogOutAuth.mutableLogOutAdvert.value=true
+            }
             Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
         }
     }
