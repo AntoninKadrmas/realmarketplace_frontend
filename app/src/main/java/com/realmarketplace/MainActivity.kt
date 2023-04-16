@@ -39,7 +39,7 @@ import com.realmarketplace.viewModel.LoadingBar
 /**
  * A group of *activity*.
  *
- * Main class that is start point for all other functionalities.
+ * Class for activity_main layout and logic there..
  * Have three fragments createFragment, favoriteFragment, searchFragment
  */
 class MainActivity : AppCompatActivity() {
@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * A group of *activity_functions*.
      *
-     * Function used to request for STORAGE permission
+     * Function used to request right way for external storage permission.
      */
     private fun requestPermissionStorage(){
         val permission = Manifest.permission.READ_EXTERNAL_STORAGE

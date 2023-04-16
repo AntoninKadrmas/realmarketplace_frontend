@@ -26,6 +26,11 @@ import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.viewModel.LoadingBar
 import com.squareup.picasso.Picasso
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_public_user layout and logic there.
+ */
 class PublicUserFragment : Fragment() {
     private var _binding: FragmentPublicUserBinding? = null
     private val binding get() = _binding!!
@@ -70,12 +75,23 @@ class PublicUserFragment : Fragment() {
         loadUser()
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for copy information's into clip board.
+     */
     private fun addToClipBoard(text:String,label:String){
         val myClipboard: ClipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText(label,text)
         myClipboard.setPrimaryClip(myClip)
         Toast.makeText(context,"Copied.",Toast.LENGTH_SHORT).show()
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for start new activity with given advert content.
+     * @param advert advert that going to be displayed in new activity viz. AdvertModel
+     */
     private fun openAdvert(advert: AdvertModel){
         var intent = Intent(context, AdvertActivity::class.java)
         if(FavoriteObject.existsAdvertId(advert._id))intent.putExtra("favorite",true)
@@ -83,6 +99,12 @@ class PublicUserFragment : Fragment() {
         intent.putExtra("advertModel",advert)
         startActivityForResult(intent,10)
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to load all user information's into fragment layout.
+     * Used Picasso module for displaying images by https url.
+     */
     private fun loadUser(){
         Picasso.get()
             .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")

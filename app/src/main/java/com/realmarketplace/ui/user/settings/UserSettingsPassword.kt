@@ -17,16 +17,16 @@ import com.realmarketplace.ui.user.UserViewModel
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_user_settings_password layout and logic there.
+ */
 class UserSettingsPassword : Fragment() {
     private var _binding: FragmentUserSettingsPasswordBinding? = null
     private val binding get() = _binding!!
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var alertBuilder:AlertDialog.Builder
-    private fun checkAll(){
-        if(binding.passwordNewSecondInput.text?.trim()?.isEmpty() == false)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
-        if(binding.passwordNewFirstInput.text?.trim()?.isEmpty() == false)binding.passwordNewFirstLayout.helperText = validPasswordFirst()
-        if(binding.passwordPreviousInput.text?.trim()?.isEmpty() == false)binding.passwordPreviousLayout.helperText = validPasswordPrevious()
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,6 +45,21 @@ class UserSettingsPassword : Fragment() {
         }
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check validity of all input filed.
+     */
+    private fun checkAll(){
+        if(binding.passwordNewSecondInput.text?.trim()?.isEmpty() == false)binding.passwordNewSecondLayout.helperText = validPasswordSecond()
+        if(binding.passwordNewFirstInput.text?.trim()?.isEmpty() == false)binding.passwordNewFirstLayout.helperText = validPasswordFirst()
+        if(binding.passwordPreviousInput.text?.trim()?.isEmpty() == false)binding.passwordPreviousLayout.helperText = validPasswordPrevious()
+    }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle change onclick button and if everything is valid then send change password request.
+     */
     private fun submitForm(){
         if(submitFormVerification()){
             if(userViewModel.buttonEnables.value!!){
@@ -69,6 +84,12 @@ class UserSettingsPassword : Fragment() {
                 TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check if all input filed are valid.
+     * @return true if all field are valid else false
+     */
     private fun submitFormVerification():Boolean{
         val validPasswordPrevious = binding.passwordPreviousLayout.helperText==null
         val validPasswordFirst = binding.passwordNewFirstLayout.helperText==null
@@ -77,6 +98,11 @@ class UserSettingsPassword : Fragment() {
                 validPasswordFirst&&
                 validPasswordSecond
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on password previous input filed.
+     */
     private fun focusPasswordPrevious(){
         binding.passwordPreviousInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordPreviousInput.text?.trim()?.isNotEmpty()==true) {
@@ -84,6 +110,12 @@ class UserSettingsPassword : Fragment() {
             }else if(!focused && binding.passwordPreviousLayout.helperText!=resources.getString(R.string.required))binding.passwordPreviousLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for password previous validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPasswordPrevious():String?{
         val passwordText = binding.passwordPreviousInput.text.toString().trim()
         if(AuthViewModel.checkPassword(passwordText)){
@@ -93,6 +125,11 @@ class UserSettingsPassword : Fragment() {
         binding.passwordPreviousInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on password first input filed.
+     */
     private fun focusPasswordFirst(){
         binding.passwordNewFirstInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordNewFirstInput.text?.trim()?.isNotEmpty()==true) {
@@ -100,6 +137,12 @@ class UserSettingsPassword : Fragment() {
             }else if(!focused && binding.passwordNewFirstLayout.helperText!=resources.getString(R.string.required))binding.passwordNewFirstLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for password first validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPasswordFirst():String?{
         val passwordText = binding.passwordNewFirstInput.text.toString().trim()
         val checkSamePasswordPrevious = binding.passwordPreviousInput.text.toString().trim()==passwordText
@@ -112,6 +155,11 @@ class UserSettingsPassword : Fragment() {
         binding.passwordNewFirstInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on password second input filed.
+     */
     private fun focusPasswordSecond(){
         binding.passwordNewSecondInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.passwordNewSecondInput.text?.trim()?.isNotEmpty()==true) {
@@ -119,6 +167,12 @@ class UserSettingsPassword : Fragment() {
             }else if(!focused && binding.passwordNewSecondLayout.helperText!=resources.getString(R.string.required))binding.passwordNewSecondLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for password second validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPasswordSecond():String?{
         val passwordText = binding.passwordNewSecondInput.text.toString().trim()
         val checkSamePassword = binding.passwordNewFirstInput.text.toString().trim()==passwordText

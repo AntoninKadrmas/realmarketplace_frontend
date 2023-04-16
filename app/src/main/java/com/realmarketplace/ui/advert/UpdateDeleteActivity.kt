@@ -209,6 +209,11 @@ class UpdateDeleteActivity : AppCompatActivity() {
             binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_OFF).isVisible = true
         }
     }
+    /**
+     * A group of *activity_functions*.
+     *
+     * Function used to request right way for external storage permission.
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun requestPermissionStorage(){
         val permission = Manifest.permission.READ_EXTERNAL_STORAGE

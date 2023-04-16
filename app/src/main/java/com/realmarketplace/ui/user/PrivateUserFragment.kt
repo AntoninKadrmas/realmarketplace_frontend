@@ -35,6 +35,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_private_user layout and logic there.
+ */
 class PrivateUserFragment : Fragment() {
     private var _binding: FragmentPrivateUserBinding? = null
     private val userViewModel: UserViewModel by activityViewModels()
@@ -105,6 +110,12 @@ class PrivateUserFragment : Fragment() {
     companion object {
         fun newInstance() = PrivateUserFragment()
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to load all user information's into fragment layout.
+     * Used Picasso module for displaying images by https url.
+     */
     private fun loadUserInformation(){
         Picasso.get()
             .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")
@@ -116,6 +127,11 @@ class PrivateUserFragment : Fragment() {
         binding.privatePhone.text = user.phone
         binding.privateCreatedIn.text = AdvertAdapter.formatDate(user.createdIn)
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to run intent for images selection.
+     */
     private fun imageClickAdd(){
         permissionModel.setPermissionStorageAsk(true)
         if(permissionModel.permissionStorage.value==true){

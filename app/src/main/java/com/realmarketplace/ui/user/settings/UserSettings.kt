@@ -13,6 +13,12 @@ import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.user.UserViewModel
 import com.realmarketplace.viewModel.LoadingBar
 
+/**
+ * A group of *activity*.
+ *
+ * Class for activity_user_settings layout and logic there.
+ * Have two fragments userSettingsPassword and userSettingsProfile.
+ */
 class UserSettings : AppCompatActivity() {
     private lateinit var binding: ActivityUserSettingsBinding
     private val userViewModel: UserViewModel by viewModels()

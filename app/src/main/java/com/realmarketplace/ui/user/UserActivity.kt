@@ -21,6 +21,12 @@ import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 
+/**
+ * A group of *activity*.
+ *
+ * Class for activity_user layout and logic there.
+ * Have two fragments publicUserFragment and privateUserFragment.
+ */
 class UserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserBinding
     private lateinit var advert: AdvertModel
@@ -77,11 +83,23 @@ class UserActivity : AppCompatActivity() {
             requestPermissionStorage()
         })
     }
+    /**
+     * A group of *activity_functions*.
+     *
+     * Function that show correct fragment.
+     *
+     * @param index used to decide which fragment is going to be show
+     */
     private fun showFragment(index:Int){
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_user_private_public_frame, listOfFragments[index])
             .commit()
     }
+    /**
+     * A group of *activity_functions*.
+     *
+     * Function used to request right way for external storage permission.
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun requestPermissionStorage(){
         val permission = Manifest.permission.READ_EXTERNAL_STORAGE

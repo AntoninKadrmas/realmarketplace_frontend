@@ -18,6 +18,11 @@ import com.realmarketplace.ui.user.UserViewModel
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
+/**
+ * A group of *fragment*.
+ *
+ * Class for fragment_user_settings_profile layout and logic there.
+ */
 class UserSettingsProfile : Fragment() {
     private var _binding: FragmentUserSettingsProfileBinding? = null
     private val binding get() = _binding!!
@@ -43,6 +48,11 @@ class UserSettingsProfile : Fragment() {
         }
         return binding.root
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for handle change onclick button and if everything is valid then send change user profile request.
+     */
     private fun submitForm(){
         if(submitFormVerification()){
             if(userViewModel.buttonEnables.value!!&&!checkChanges()){
@@ -72,6 +82,12 @@ class UserSettingsProfile : Fragment() {
                 Toast.LENGTH_LONG) }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check if all input filed are valid.
+     * @return true if all field are valid else false
+     */
     private fun submitFormVerification():Boolean{
         val validFirstName = binding.settingsFirstNameLayout.helperText==null
         val validLastName = binding.settingsLastNameLayout.helperText==null
@@ -80,17 +96,33 @@ class UserSettingsProfile : Fragment() {
                 validLastName&&
                 validPhone
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to load all user information into input filed.
+     */
     private fun loadUser(){
         binding.settingsFirstNameInput.setText(userViewModel.user.value?.firstName)
         binding.settingsLastNameInput.setText(userViewModel.user.value?.lastName)
         binding.settingsPhoneInput.setText(userViewModel.user.value?.phone)
         binding.settingsEmailInput.setText(userViewModel.user.value?.email)
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check validity of all input filed.
+     */
     private fun checkAll(){
         if(binding.settingsFirstNameInput.text?.trim()?.isEmpty()==false)binding.settingsFirstNameLayout.helperText = validFirstName()
         if(binding.settingsLastNameInput.text?.trim()?.isEmpty()==false)binding.settingsLastNameLayout.helperText = validLastName()
         if(binding.settingsPhoneInput.text?.trim()?.isEmpty()==false)binding.settingsPhoneLayout.helperText = validPhone()
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to check if some changes were made.
+     * @return true if input filed are not edited so hold still same information's else false
+     */
     private fun checkChanges():Boolean{
         val changeFirstName = binding.settingsFirstNameInput.text.toString().trim()==userViewModel.user.value?.firstName
         val changeLastName = binding.settingsLastNameInput.text.toString().trim()==userViewModel.user.value?.lastName
@@ -99,6 +131,11 @@ class UserSettingsProfile : Fragment() {
                 changeLastName&&
                 changePhone
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on first name input filed.
+     */
     private fun focusFirstName(){
         binding.settingsFirstNameInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused) {
@@ -106,6 +143,12 @@ class UserSettingsProfile : Fragment() {
             }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for first name previous validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validFirstName():String?{
         val firstName = binding.settingsFirstNameInput.text.toString().trim()
         if(firstName.isNullOrEmpty()){
@@ -115,6 +158,11 @@ class UserSettingsProfile : Fragment() {
         binding.settingsFirstNameInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on last name input filed.
+     */
     private fun focusLastName(){
         binding.settingsLastNameInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused) {
@@ -122,6 +170,12 @@ class UserSettingsProfile : Fragment() {
             }
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for last name validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validLastName():String?{
         val lastName = binding.settingsLastNameInput.text.toString().trim()
         if(lastName.isNullOrEmpty()){
@@ -131,6 +185,11 @@ class UserSettingsProfile : Fragment() {
         binding.settingsLastNameInput.error = null
         return null
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used to set focus listener on phone number input filed.
+     */
     private fun focusPhone(){
         binding.settingsPhoneInput.setOnFocusChangeListener(){ _, focused ->
             if (!focused && binding.settingsPhoneInput.text?.trim()?.isNotEmpty()==true) {
@@ -138,6 +197,12 @@ class UserSettingsProfile : Fragment() {
             }else if(!focused && binding.settingsPhoneLayout.helperText!=resources.getString(R.string.required))binding.settingsPhoneLayout.helperText = resources.getString(R.string.required)
         }
     }
+    /**
+     * A group of *fragment_function*.
+     *
+     * Function used for phone number validation.
+     * @return string if there is still some invalid part else null.
+     */
     private fun validPhone():String?{
         val phone = binding.settingsPhoneInput.text.toString().trim()
         if(!phone.matches("[0-9]{9}".toRegex())){
