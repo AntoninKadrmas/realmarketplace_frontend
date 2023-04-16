@@ -39,20 +39,20 @@
                 app:shapeAppearanceOverlay="@style/Circular"
                 android:adjustViewBounds="true"/>
 
-            <TextView
-                android:id="@+id/public_user_first_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Firstname"
-                android:textAlignment="center"
-                android:textSize="25dp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/public_user_lastname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Lastname"
+                android:textAlignment="center"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/public_user_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Firstname"
                 android:textAlignment="center"
                 android:textSize="25dp"
                 android:textStyle="bold" />
@@ -82,9 +82,9 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/public_mail"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
+                    android:layout_weight="1"
                     android:text="example@gmail.com"
                     android:textSize="25dp"
                     android:textStyle="bold" />
@@ -124,9 +124,9 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/public_phone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
+                    android:layout_weight="1"
                     android:text="123456789"
                     android:textSize="25dp"
                     android:textStyle="bold" />

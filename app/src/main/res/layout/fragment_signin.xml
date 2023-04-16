@@ -17,11 +17,12 @@
         <Button
             android:layout_marginTop="20dp"
             android:id="@+id/switch_to_login"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Switch To LogIn"
             android:textSize="15dp"
             android:layout_marginBottom="0.1in"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
             app:layout_constraintBottom_toTopOf="@+id/first_name_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

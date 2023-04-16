@@ -161,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         LogOutAuth.logOut.observe(this, Observer {
             if(it) {
                 cleanUser()
+                SearchViewModel.loadedSampleAdvert=false
                 navView.selectedItemId = navView.selectedItemId
             }
         })

@@ -148,8 +148,9 @@ class AdvertActivity : AppCompatActivity() {
         binding.advertCreatedInText.text = AdvertAdapter.formatDate(advert.createdIn!!)
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_OFF).isVisible = false
         binding.myToolbar.menu.getItem(AdvertViewModel.VISIBLE_ON).isVisible = false
-        if(advert.user==null&&AuthViewModel.userToken.value!=null){
-            if(AuthViewModel.userToken.value!!.token!="")binding.userInfoLayout.visibility= View.GONE
+        if(advert.user==null){
+            if(AuthViewModel.userToken.value==null)binding.userInfoLayout.visibility= View.GONE
+            else if(AuthViewModel.userToken.value!!.token=="")binding.userInfoLayout.visibility= View.GONE
         }
         else{
             binding.userInfoLayout.visibility= View.VISIBLE

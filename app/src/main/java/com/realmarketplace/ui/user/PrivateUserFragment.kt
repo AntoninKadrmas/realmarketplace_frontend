@@ -166,7 +166,7 @@ class PrivateUserFragment : Fragment() {
                         file = context?.let { Compressor.compress(it, file!!) }!!
                         if (extensionList.contains(extension)) {
                             AuthViewModel.userToken.value?.let {
-                                userViewModel.uploadUserImage(user,file,
+                                userViewModel.uploadUserImage(file,
                                     it, requireContext()
                                 )
                             }

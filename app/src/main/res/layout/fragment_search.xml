@@ -13,6 +13,7 @@
             android:backgroundTint="?attr/colorPrimary"
             >
             <LinearLayout
+                android:layout_marginHorizontal="@dimen/input_element_margin_create"
                 android:id="@+id/my_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tool_bar_height"
@@ -27,7 +28,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_margin="10dp"
                     android:background="@drawable/search_view_bg"
                     android:iconifiedByDefault="false"
                     android:queryHint="Search Advert ..."

@@ -323,6 +323,7 @@ class UserViewModel:ViewModel() {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
+                         LogOutAuth.setLogOut(true)
                     }
                 }
             }else{

@@ -11,6 +11,7 @@ import com.realmarketplace.rest.AuthService
 import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnTypeError
 import com.google.gson.Gson
+import com.realmarketplace.ui.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -86,6 +87,7 @@ object AuthViewModel{
                     if (body != null) {
                         println(body)
                         updateUserToken(body)
+                        SearchViewModel.loadedSampleAdvert=false
                     }
                     buttonsEnabled.value=true
                 }
@@ -139,6 +141,7 @@ object AuthViewModel{
                     if (body != null) {
                         println(body)
                         updateUserToken(body)
+                        SearchViewModel.loadedSampleAdvert=false
                     }
                     buttonsEnabled.value=true
                 }
