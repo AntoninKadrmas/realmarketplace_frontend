@@ -1,6 +1,14 @@
 # realmarketplace_frontend google play link
 https://play.google.com/store/apps/details?id=com.realmarketplace
 
+## used Modules
+- https://github.com/zetbaitsu/Compressor<br />
+- https://github.com/square/picasso<br />
+- https://square.github.io/retrofit/<br />
+- https://mvnrepository.com/artifact/com.squareup.okhttp3<br />
+- https://github.com/ongakuer/CircleIndicator<br />
+- https://mvnrepository.com/artifact/org.jetbrains.kotlinx<br />
+- https://mvnrepository.com/artifact/junit/junit/4.13.2<br />
 ## set up on your device
 Clone realmarketplace_frontend repository on your device.<br />
 Open the projec in andorid studio. <br />
