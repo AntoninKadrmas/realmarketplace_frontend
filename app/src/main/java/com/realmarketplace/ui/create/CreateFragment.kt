@@ -158,7 +158,6 @@ class CreateFragment : Fragment() {
             if (resultCode == Activity.RESULT_OK) {
                 val name: String? = data?.getStringExtra("name")
                 val type: String? = data?.getStringExtra("type")
-                LogOutAuth.mutableLogOutMain.value=true
                 if (name?.isNotEmpty()==true && type?.isNotEmpty()==true){
                     binding.selectGenreInput.setText("$name/$type")
                 }
