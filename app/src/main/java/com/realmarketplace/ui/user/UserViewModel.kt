@@ -12,6 +12,7 @@ import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.ui.favorite.FavoriteViewModel
 import com.google.gson.Gson
+import com.realmarketplace.model.UserModelLogin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import com.realmarketplace.rest.*
+import com.realmarketplace.ui.auth.AuthViewModel
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
@@ -88,7 +90,12 @@ class UserViewModel:ViewModel() {
                     buttonEnables.value=true
                 }
             } else {
-                try { errorResponse(response,context) } catch (e: Exception) {
+                try {
+                    errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
                     }
@@ -130,7 +137,12 @@ class UserViewModel:ViewModel() {
                     buttonEnables.value=true
                 }
             } else {
-                try { errorResponse(response,context) } catch (e: Exception) {
+                try {
+                    errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
                         buttonEnables.value=true
@@ -184,7 +196,12 @@ class UserViewModel:ViewModel() {
                     buttonEnables.value=true
                 }
             } else {
-                try { errorResponse(response,context) } catch (e: Exception) {
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                }catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Server dose not respond.", Toast.LENGTH_SHORT).show()
                         buttonEnables.value=true
@@ -228,10 +245,19 @@ class UserViewModel:ViewModel() {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
                         endSettings.value=true
+                        AuthViewModel.guestUser.value?.let {
+                            UserModelLogin(
+                                it.email,newPassword)
+                        }?.let { AuthViewModel.updateUserCredentials(it) }
                     }
                 }
             }else{
-                try { errorResponse(response,context) }
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
@@ -279,7 +305,12 @@ class UserViewModel:ViewModel() {
                     }
                 }
             }else{
-                try { errorResponse(response,context) }
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                }
                 catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
@@ -323,12 +354,17 @@ class UserViewModel:ViewModel() {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
+                        AuthViewModel.updateUserCredentials(UserModelLogin("",""))
                         LogOutAuth.mutableLogOutUser.value = true
                     }
                 }
             }else{
-                try { errorResponse(response,context) }
-                catch (e:Exception){
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main){
+                        buttonEnables.value=true
+                    }
+                } catch (e:Exception){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
                         buttonEnables.value=true

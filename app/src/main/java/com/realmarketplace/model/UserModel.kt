@@ -49,6 +49,18 @@ data class UserTokenAuth(
 /**
  * A group of *models*.
  *
+ * Model for Guest Authentication User Token with Email.
+ *
+ * @param email created guest user email
+ * @param token validation token user use to verify himself
+ */
+data class  GuestUserTokenAuth(
+    val email:String,
+    val token:String
+):java.io.Serializable
+/**
+ * A group of *models*.
+ *
  * Model for public (Light) User.
  *
  * @param createdIn time when the user was created

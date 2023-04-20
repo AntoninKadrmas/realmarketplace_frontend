@@ -1,6 +1,7 @@
 package com.realmarketplace.ui.user
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -45,6 +46,7 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LoadingBar.mutableHideLoadingUserActivity.observe(this, Observer {
+            println("$it --activity")
             if(!it)binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         })
@@ -86,6 +88,11 @@ class UserActivity : AppCompatActivity() {
         permissionModel.permissionStorageAsk.observe(this, Observer {
             requestPermissionStorage()
         })
+        AuthViewModel.guestUser.observe(this, Observer {
+            if (it.email.isNullOrEmpty() || it.password.isNullOrEmpty()) {
+                deleteUserCredential()
+            }
+        })
     }
     /**
      * A group of *activity_functions*.
@@ -113,6 +120,15 @@ class UserActivity : AppCompatActivity() {
             )
         }
         else ContextCompat.checkSelfPermission(this,permission)
+    }
+    private fun deleteUserCredential(){
+        val mainKeyValueString = getString(R.string.real_market_place_key_value)
+        val userAuthCredential = getString(R.string.user_auth_credential)
+        val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+        mainKeyValue.edit().apply() {
+            remove(userAuthCredential)
+            apply()
+        }
     }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {

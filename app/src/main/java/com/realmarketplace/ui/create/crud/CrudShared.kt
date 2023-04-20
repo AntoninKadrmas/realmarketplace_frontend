@@ -20,7 +20,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
+import android.os.Build
+import android.os.ext.SdkExtensions.getExtensionVersion
 
+private const val ANDROID_R_REQUIRED_EXTENSION_VERSION = 2
 /**
  * A group of *tool*.
  *
@@ -93,10 +96,11 @@ class CrudShared(
     fun clickAdd(permissionModel: PermissionViewModel):Intent?{
         permissionModel.setPermissionStorageAsk(true)
         if(permissionModel.permissionStorage.value==true){
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            return intent
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                intent.type = "image/*"
+                intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 5)
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                return intent
         }
         return null
     }
@@ -113,24 +117,23 @@ class CrudShared(
         if (uris.isNotEmpty()) {
             var actualMaximum:Int = maxImage-actualImage
             if(uris.size<=actualMaximum)actualMaximum = uris.size
-            else context?.let { ToastObject.showToast(it,"You can use just 5 photos", Toast.LENGTH_SHORT) }
+            else context?.let { ToastObject.makeText(it,"You can use just 5 photos", Toast.LENGTH_SHORT) }
             actualMaximum--
             val fileArray = ArrayList<File>()
             CoroutineScope(Dispatchers.Main).launch {
                 for(value in 0..actualMaximum){
-                    println(uris[value])
                     var file = context?.let { UriToFileConvertor.getRealPathFromURI(it,uris[value])?.let { File(it) } }!!
                     file = context?.let { Compressor.compress(it, file!!) }!!
                     val extension = file?.absolutePath.toString()
                         .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
-                    if(extensionList.contains(extension)){
+                    if(extensionList.contains(extension.toLowerCase())){
                         actualImage++
                         binding.imageCounter.text = "${actualImage}/${maxImage}"
                         imageAdapter.addNewImage(file!!)
                         imageAdapter.notifyItemInserted(actualImage)
                         fileArray.add(file!!)
                     }
-                    else ToastObject.showToast(context,"($extension)Allowed file extensions are ${extensionList.joinToString(", ")}.",
+                    else ToastObject.makeText(context,"($extension)Allowed file extensions are ${extensionList.joinToString(", ")}.",
                         Toast.LENGTH_LONG)
                 }
                 if(fileArray.size>0){
@@ -142,23 +145,31 @@ class CrudShared(
     /**
      * A group of *tool_function*.
      *
-     * Function used to update drop down with loaded enums.
+     * Function used to update drop down with loaded condition enum.
      *
-     * @param priceOptions price option enum that is going to be inserted in one of the drop downs
      * @param condition condition enum that is going to be inserted in one of the drop downs
      * @param context context of activity or fragment
      */
-    fun updateDropDown(priceOptions:ArrayList<String>,condition:ArrayList<String>,context: Context){
-        val priceArrayAdapter =
-            context?.let { ArrayAdapter(it, R.layout.adapter_drop_down_price_option,priceOptions) }
+    fun updateDropDownCondition(condition:ArrayList<String>,context: Context){
         val conditionArrayAdapter =
             context?.let { ArrayAdapter(it, R.layout.adapter_drop_down_price_option,condition) }
-        if(binding.priceInput.text.toString()==""){
-            binding.priceOptionInput.setText(priceOptions[0])
-            binding.priceInput.setText("")
-        }
-        binding.priceOptionInput.setAdapter(priceArrayAdapter)
+        if(binding.priceInput.text.toString()=="") binding.priceInput.setText("")
         binding.conditionInput.setAdapter(conditionArrayAdapter)
+    }
+    /**
+     * A group of *tool_function*.
+     *
+     * Function used to update drop down with loaded price option enum.
+     *
+     * @param priceOptions price option enum that is going to be inserted in one of the drop downs
+     * @param context context of activity or fragment
+     */
+    fun updateDropDownPrice(priceOptions:ArrayList<String>,context: Context){
+        val priceArrayAdapter =
+            context?.let { ArrayAdapter(it, R.layout.adapter_drop_down_price_option,priceOptions) }
+        binding.priceOptionInput.setText(priceOptions[0])
+        binding.priceOptionInput.setAdapter(priceArrayAdapter)
+
     }
     /**
      * A group of *tool_function*.

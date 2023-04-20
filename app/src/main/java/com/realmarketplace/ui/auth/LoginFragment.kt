@@ -81,7 +81,7 @@ class LoginFragment : Fragment() {
             LoadingBar.mutableHideLoadingAuthActivity.value=false
             context?.let { AuthViewModel.login(userModel, it) }
         }else{
-            context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
+            context?.let { ToastObject.makeText(it, TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
         }
     }
     /**

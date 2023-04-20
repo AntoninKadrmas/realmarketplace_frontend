@@ -11,7 +11,10 @@ import com.realmarketplace.rest.AuthService
 import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnTypeError
 import com.google.gson.Gson
+import com.realmarketplace.model.GuestUserTokenAuth
+import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.ui.search.SearchViewModel
+import com.realmarketplace.viewModel.LoadingBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +33,11 @@ object AuthViewModel{
     val selectedItem: LiveData<Int> get() = mutableSelectedItem
     private val mutableUserToken = MutableLiveData<UserTokenAuth>()
     val userToken: LiveData<UserTokenAuth> get() = mutableUserToken
+    //guest user feature
+    private val mutableGuestUser = MutableLiveData<UserModelLogin>()
+    val guestUser: LiveData<UserModelLogin> get() = mutableGuestUser
     var buttonsEnabled=MutableLiveData<Boolean>()
+    val crudTools = CrudAdvertTools()
     /**
      * A group of *view_model_function*.
      *
@@ -50,6 +57,10 @@ object AuthViewModel{
      */
     fun updateUserToken(token: UserTokenAuth) {
         mutableUserToken.value = token
+    }
+    //guest user feature
+    fun updateUserCredentials(login: UserModelLogin) {
+        mutableGuestUser.value = login
     }
     private var retroServiceAuth: AuthService = RetrofitInstance.getRetroFitInstance().create(
         AuthService::class.java)
@@ -92,11 +103,9 @@ object AuthViewModel{
                     buttonsEnabled.value=true
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
                         buttonsEnabled.value=true
                     }
                 }
@@ -146,11 +155,54 @@ object AuthViewModel{
                     buttonsEnabled.value=true
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
+                        buttonsEnabled.value=true
+                    }
+                }
+                catch (e:Exception){
                     withContext(Dispatchers.Main){
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
+                        buttonsEnabled.value=true
+                    }
+                }
+            }
+            return@launch
+        }
+    }
+    //guest user feature
+    fun loginAsGuest(context: Context){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = try{
+                retroServiceAuth.guestUserLogin()
+            }catch (e: IOException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value=true
+                }
+                return@launch
+            }catch (e: HttpException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value=true
+                }
+                return@launch
+            }
+            if(response.isSuccessful && response.body()!=null){
+                val body: GuestUserTokenAuth? = Gson().fromJson(Gson().toJson(response.body()), GuestUserTokenAuth::class.java)
+                withContext(Dispatchers.Main) {
+                    if (body != null) {
+                        updateUserToken(UserTokenAuth(body.token))
+                        updateUserCredentials(UserModelLogin(body.email,"Guest1234!"))
+                        SearchViewModel.loadedSampleAdvert=false
+                    }
+                    buttonsEnabled.value=true
+                }
+            }else{
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
                         buttonsEnabled.value=true
                     }
                 }

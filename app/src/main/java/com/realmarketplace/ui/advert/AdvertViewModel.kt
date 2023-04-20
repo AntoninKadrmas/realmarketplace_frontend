@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.realmarketplace.rest.*
+import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -27,6 +28,7 @@ object AdvertViewModel {
     const val VISIBLE_OFF=1
     const val FAVORITE_OFF=2
     const val FAVORITE_ON=3
+    val crudTools = CrudAdvertTools()
     private val mutableMyAdverts = MutableLiveData<ArrayList<AdvertModel>>()
     val myAdverts:LiveData<ArrayList<AdvertModel>> get() = mutableMyAdverts
     val showAdvert = MutableLiveData<AdvertModel>()
@@ -156,13 +158,10 @@ object AdvertViewModel {
                     }
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
                         loadedMyAdverts =false
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_LONG).show()
                     }
                 }
                 catch (e:Exception){
@@ -208,12 +207,10 @@ object AdvertViewModel {
                     enableButton.value= FAVORITE_ON
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
+                        loadedMyAdverts =false
                         enableButton.value= FAVORITE_ON
                     }
                 }
@@ -260,12 +257,10 @@ object AdvertViewModel {
                     enableButton.value= FAVORITE_OFF
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
+                        loadedMyAdverts =false
                         enableButton.value= FAVORITE_OFF
                     }
                 }
@@ -316,12 +311,9 @@ object AdvertViewModel {
                     else enableButton.value= VISIBLE_OFF
                 }
             }else{
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? = Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
-                    withContext(Dispatchers.Main){
-                        if(response.code()==401) LogOutAuth.mutableLogOutAdvert.value=true
-                        Toast.makeText(context,"${errorResponse?.error}", Toast.LENGTH_SHORT).show()
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
                         if(state) enableButton.value= VISIBLE_ON
                         else enableButton.value= VISIBLE_OFF
                     }

@@ -33,6 +33,7 @@ import com.realmarketplace.ui.search.SearchFragment
 import com.realmarketplace.ui.search.SearchViewModel
 import com.realmarketplace.ui.user.UserActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.realmarketplace.model.UserModelLogin
 import com.realmarketplace.ui.auth.AuthActivity
 import com.realmarketplace.viewModel.LoadingBar
 
@@ -59,6 +60,11 @@ class MainActivity : AppCompatActivity() {
             permissionModel.setPermissionStorage(true)
         }
     }
+    private fun loadEnums(){
+        if(enumViewDataModel.conditionEnum.value.isNullOrEmpty()) enumViewDataModel.loadConditionEnum()
+        if(enumViewDataModel.priceEnum.value.isNullOrEmpty()) enumViewDataModel.loadPriceEnum()
+        if(enumViewDataModel.genreGenreEnum.value.isNullOrEmpty()) enumViewDataModel.loadGenreEnum()
+    }
     override fun onDestroy() {
         super.onDestroy()
         SearchViewModel.loadedSampleAdvert=false
@@ -66,9 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enumViewDataModel.loadConditionEnum()
-        enumViewDataModel.loadPriceEnum()
-        enumViewDataModel.loadGenreEnum()
+        loadEnums()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         actionBar?.hide();
@@ -78,80 +82,115 @@ class MainActivity : AppCompatActivity() {
             CreateFragment.newInstance(),
             EyeAuthFragment.newInstance()
         )
-        LoadingBar.mutableHideLoadingMainActivity.observe(this,Observer{
-            if(!it)binding.progressBar.visibility = View.VISIBLE
+        LoadingBar.mutableHideLoadingMainActivity.observe(this, Observer {
+            if (!it) binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         })
-        AdvertViewModel.showToolBar.observe(this,Observer{
-            if(it){
-                binding.myToolbar.visibility= View.VISIBLE
-                binding.progressBarLayout.visibility=View.VISIBLE
-            }
-            else {
-                binding.myToolbar.visibility= View.GONE
-                binding.progressBarLayout.visibility=View.GONE
+        AdvertViewModel.showToolBar.observe(this, Observer {
+            if (it) {
+                binding.myToolbar.visibility = View.VISIBLE
+                binding.progressBarLayout.visibility = View.VISIBLE
+            } else {
+                binding.myToolbar.visibility = View.GONE
+                binding.progressBarLayout.visibility = View.GONE
             }
         })
         timeOutClear = Handler(Looper.getMainLooper())
         navView = binding.navView
-        navView.setOnItemSelectedListener {item->
+        navView.setOnItemSelectedListener { item ->
             val mainKeyValueString = R.string.real_market_place_key_value.toString()
             val userAuthTokenString = R.string.user_auth_token.toString()
-            val mainKeyValue = getSharedPreferences(mainKeyValueString,Context.MODE_PRIVATE)
-            when(item.itemId){
-                R.id.navigation_favorite ->{
-                    val token = mainKeyValue.getString(userAuthTokenString,"")
-                    if(token==""){
+            val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+            when (item.itemId) {
+                R.id.navigation_favorite -> {
+                    loadEnums()
+                    val token = mainKeyValue.getString(userAuthTokenString, "")
+                    if (token == "") {
                         showFragment(3)
-                        binding.myToolbar.subtitle= EyeAuthFragment.NAME
-                    }
-                    else {
+                        binding.myToolbar.subtitle = EyeAuthFragment.NAME
+                    } else {
                         val newToken = AuthViewModel.userToken.value ?: UserTokenAuth(
                             token = token.toString()
                         )
-                        if(!AdvertViewModel.loadedMyAdverts)AdvertViewModel.loadAllUserAdverts(newToken,this)
-                        if(!FavoriteViewModel.loadedFavoriteAdvert)FavoriteViewModel.loadAllFavoriteAdverts(newToken,this)
-                        if(!SearchViewModel.loadedSampleAdvert)SearchViewModel.loadAdvertSample(newToken,this)
-                        if(AuthViewModel.userToken.value==null) AuthViewModel.updateUserToken(newToken)
+                        if (!AdvertViewModel.loadedMyAdverts) AdvertViewModel.loadAllUserAdverts(
+                            newToken,
+                            this
+                        )
+                        if (!FavoriteViewModel.loadedFavoriteAdvert) FavoriteViewModel.loadAllFavoriteAdverts(
+                            newToken,
+                            this
+                        )
+                        if (!SearchViewModel.loadedSampleAdvert) SearchViewModel.loadAdvertSample(
+                            newToken,
+                            this
+                        )
+                        if (AuthViewModel.userToken.value == null) AuthViewModel.updateUserToken(
+                            newToken
+                        )
                         showFragment(0)
-                        binding.myToolbar.subtitle= FavoriteFragment.NAME
+                        binding.myToolbar.subtitle = FavoriteFragment.NAME
                     }
                     true
                 }
-                R.id.navigation_search ->{
-                    val token = mainKeyValue.getString(userAuthTokenString,"")
-                    if(token!=""){
+                R.id.navigation_search -> {
+                    loadEnums()
+                    val token = mainKeyValue.getString(userAuthTokenString, "")
+                    if (token != "") {
                         val newToken = AuthViewModel.userToken.value ?: UserTokenAuth(
                             token = token.toString()
                         )
-                        if(!AdvertViewModel.loadedMyAdverts)AdvertViewModel.loadAllUserAdverts(newToken,this)
-                        if(!FavoriteViewModel.loadedFavoriteAdvert)FavoriteViewModel.loadAllFavoriteAdverts(newToken,this)
-                        if(AuthViewModel.userToken.value==null) AuthViewModel.updateUserToken(newToken)
+                        if (!AdvertViewModel.loadedMyAdverts) AdvertViewModel.loadAllUserAdverts(
+                            newToken,
+                            this
+                        )
+                        if (!FavoriteViewModel.loadedFavoriteAdvert) FavoriteViewModel.loadAllFavoriteAdverts(
+                            newToken,
+                            this
+                        )
+                        if (AuthViewModel.userToken.value == null) AuthViewModel.updateUserToken(
+                            newToken
+                        )
                     }
-                    if(!SearchViewModel.loadedSampleAdvert)SearchViewModel.loadAdvertSample(UserTokenAuth(token?:""),this)
+                    if (!SearchViewModel.loadedSampleAdvert) SearchViewModel.loadAdvertSample(
+                        UserTokenAuth(token ?: ""),
+                        this
+                    )
                     showFragment(1)
                     true
                 }
-                R.id.navigation_create ->{
-                    val token = mainKeyValue.getString(userAuthTokenString,"")
-                    if(token==""){
+                R.id.navigation_create -> {
+                    loadEnums()
+                    val token = mainKeyValue.getString(userAuthTokenString, "")
+                    if (token == "") {
                         showFragment(3)
-                        binding.myToolbar.subtitle= EyeAuthFragment.NAME
-                    }
-                    else {
+                        binding.myToolbar.subtitle = EyeAuthFragment.NAME
+                    } else {
                         val newToken = AuthViewModel.userToken.value ?: UserTokenAuth(
                             token = token.toString()
                         )
-                        if(!AdvertViewModel.loadedMyAdverts)AdvertViewModel.loadAllUserAdverts(newToken,this)
-                        if(!FavoriteViewModel.loadedFavoriteAdvert)FavoriteViewModel.loadAllFavoriteAdverts(newToken,this)
-                        if(!SearchViewModel.loadedSampleAdvert)SearchViewModel.loadAdvertSample(newToken,this)
-                        if(AuthViewModel.userToken.value==null) AuthViewModel.updateUserToken(newToken)
+                        if (!AdvertViewModel.loadedMyAdverts) AdvertViewModel.loadAllUserAdverts(
+                            newToken,
+                            this
+                        )
+                        if (!FavoriteViewModel.loadedFavoriteAdvert) FavoriteViewModel.loadAllFavoriteAdverts(
+                            newToken,
+                            this
+                        )
+                        if (!SearchViewModel.loadedSampleAdvert) SearchViewModel.loadAdvertSample(
+                            newToken,
+                            this
+                        )
+                        if (AuthViewModel.userToken.value == null) AuthViewModel.updateUserToken(
+                            newToken
+                        )
                         showFragment(2)
-                        binding.myToolbar.subtitle= CreateFragment.NAME
+                        binding.myToolbar.subtitle = CreateFragment.NAME
                     }
                     true
                 }
-                else->{false}
+                else -> {
+                    false
+                }
             }
         }
         navView.selectedItemId = R.id.navigation_search
@@ -159,31 +198,68 @@ class MainActivity : AppCompatActivity() {
             requestPermissionStorage()
         })
         LogOutAuth.mutableLogOutMain.observe(this, Observer {
-            if(it) {
+            if (it) {
                 cleanUser()
-                SearchViewModel.loadedSampleAdvert=false
+                SearchViewModel.loadedSampleAdvert = false
                 navView.selectedItemId = navView.selectedItemId
             }
         })
         binding.myToolbar.menu.getItem(0).setOnMenuItemClickListener {
-            if(AuthViewModel.userToken.value!=null){
-                if(AuthViewModel.userToken.value!!.token!=""){
+            if (AuthViewModel.userToken.value != null) {
+                if (AuthViewModel.userToken.value!!.token != "") {
                     val intent = Intent(this, UserActivity::class.java)
-                    intent.putExtra("publicUserProfile",false)
-                    intent.putExtra("permissionStorage",permissionModel.permissionStorage.value)
-                    startActivityForResult(intent,10)
-                }
-                else if(AuthViewModel.userToken.value!!.token==""){
+                    intent.putExtra("publicUserProfile", false)
+                    intent.putExtra("permissionStorage", permissionModel.permissionStorage.value)
+                    startActivityForResult(intent, 10)
+                } else if (AuthViewModel.userToken.value!!.token == "") {
                     startActivity(Intent(this, AuthActivity::class.java))
 
-                }
-                else{
+                } else {
                     startActivity(Intent(this, AuthActivity::class.java))
                 }
-            }else{
+            } else {
                 startActivity(Intent(this, AuthActivity::class.java))
             }
             true
+        }
+        //guest user feature
+        AuthViewModel.guestUser.observe(this, Observer {
+            if (!it.email.isNullOrEmpty() && !it.password.isNullOrEmpty()) {
+                val mainKeyValueString = getString(R.string.real_market_place_key_value)
+                val userAuthCredential = getString(R.string.user_auth_credential)
+                val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+                mainKeyValue.edit().apply() {
+                    putString(userAuthCredential, "${it.email};${it.password}")
+                    apply()
+                }
+            }
+        })
+        AuthViewModel.userToken.observe(this, Observer {
+            if (!it.token.isNullOrEmpty()) {
+                val mainKeyValueString = R.string.real_market_place_key_value.toString()
+                val userAuthTokenString = R.string.user_auth_token.toString()
+                val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+                mainKeyValue.edit().apply() {
+                    putString(userAuthTokenString, it.token)
+                    apply()
+                }
+            }
+            navView.selectedItemId = navView.selectedItemId
+
+        })
+    }
+    //guest user feature
+    fun guestLogin(){
+        val mainKeyValueString = getString(R.string.real_market_place_key_value)
+        val userAuthCredential = getString(R.string.user_auth_credential)
+        val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+        val userCredential = mainKeyValue.getString(userAuthCredential,";")?.split(';')
+        val email = userCredential?.get(0)
+        val password = userCredential?.get(1)
+        if(email==""||password==""){
+            AuthViewModel.loginAsGuest(this)
+        }else{
+            AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this)
         }
     }
     /**

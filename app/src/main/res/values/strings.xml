@@ -25,4 +25,5 @@
     <string name="saved_enum_genre">SavedEnumGenre</string>
     <string name="genre_type_fiction">Fiction</string>
     <string name="genre_type_non_fiction">Non Fiction</string>
+    <string name="user_auth_credential">UserAuthCredential</string>
 </resources>
