@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.realmarketplace.rest.ReturnTypeError
 import com.realmarketplace.ui.auth.LogOutAuth
+import com.realmarketplace.viewModel.ToastObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -35,7 +36,7 @@ class CrudAdvertTools {
                 counter++
                 val requestFile: RequestBody =
                     RequestBody.create("image/${file?.absolutePath.toString()
-                        .substring(file?.absolutePath.toString().lastIndexOf(".") + 1)
+                        .substring(file?.absolutePath.toString().lastIndexOf(".") + 1).lowercase()
                     }".toMediaTypeOrNull(), file!!
                     )
                 val body = MultipartBody.Part.createFormData("uploaded_file", file?.name, requestFile)
@@ -58,7 +59,7 @@ class CrudAdvertTools {
             RequestBody.create(
                 "image/${
                     imageFile?.absolutePath.toString()
-                        .substring(imageFile?.absolutePath.toString().lastIndexOf(".") + 1)
+                        .substring(imageFile?.absolutePath.toString().lastIndexOf(".") + 1).toLowerCase()
                 }".toMediaTypeOrNull(), imageFile!!
             )
         return MultipartBody.Part.createFormData("uploaded_file", imageFile?.name, requestFile)
@@ -104,16 +105,15 @@ class CrudAdvertTools {
      * @param context context of activity or fragment
      * @param main if function is called in main activity
      */
-    suspend fun errorResponse(response: Response<Any>, context: Context,main:Boolean=false) {
+    suspend fun errorResponse(response: Response<Any>, context: Context,main:Boolean=true) {
         val errorBody = response.errorBody()
         val errorResponse: ReturnTypeError? =
             Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
         withContext(Dispatchers.Main) {
             if (response.code() == 401) {
                 if(main)LogOutAuth.mutableLogOutMain.value=true
-                else LogOutAuth.mutableLogOutAdvert.value=true
             }
-            Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
+            ToastObject.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG)
         }
     }
 

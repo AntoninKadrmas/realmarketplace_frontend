@@ -19,7 +19,6 @@ import com.realmarketplace.viewModel.LoadingBar
  */
 class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
-
     private var actual = 0
     private lateinit var listOfFragments:List<Fragment>
     override fun onCreate(savedInstanceState: Bundle?) {

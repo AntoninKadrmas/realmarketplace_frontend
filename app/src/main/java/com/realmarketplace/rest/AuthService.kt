@@ -120,6 +120,8 @@ interface AuthService {
     suspend fun deleteUser(
         @Header("Authorization") credential:String,
         @Header("Authentication") token:String):Response<Any>
+    @POST(value="/user/guest")
+    suspend fun guestUserLogin():Response<Any>
 }
 /**
  * A group of *api_return_class*.

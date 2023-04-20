@@ -10,6 +10,7 @@ import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.AdvertSearchModel
 import com.realmarketplace.rest.*
 import com.realmarketplace.ui.auth.LogOutAuth
+import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.viewModel.LoadingBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ object SearchViewModel {
     var pageAdvertSearch = 0
     private var mutableAdvertModelSearch = MutableLiveData<ArrayList<AdvertModel>>()
     val advertModelSearch: LiveData<ArrayList<AdvertModel>> get() = mutableAdvertModelSearch
+    val crudTools = CrudAdvertTools()
     /**
      * A group of *view_model_function*.
      *
@@ -118,12 +120,9 @@ object SearchViewModel {
                     }
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
+                    crudTools.errorResponse(response,context)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                         LoadingBar.mutableHideLoading.value=true
                     }
                 } catch (e: Exception) {
@@ -179,12 +178,9 @@ object SearchViewModel {
                     }
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
+                    crudTools.errorResponse(response,context)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                         LoadingBar.mutableHideLoading.value=true
                     }
                 } catch (e: Exception) {

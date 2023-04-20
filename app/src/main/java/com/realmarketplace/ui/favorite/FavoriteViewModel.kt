@@ -16,6 +16,7 @@ import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnListFavoriteAdvertModel
 import com.realmarketplace.rest.ReturnTypeError
 import com.realmarketplace.ui.auth.LogOutAuth
+import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.viewModel.LoadingBar
 import retrofit2.HttpException
 import java.io.IOException
@@ -32,6 +33,8 @@ object FavoriteViewModel {
     var loadedFavoriteAdvert=false
     private var mutableFavoriteTab = MutableLiveData<Int>()
     val favoriteTab: LiveData<Int> get()= mutableFavoriteTab
+    val crudTools = CrudAdvertTools()
+
     /**
      * A group of *view_model_function*.
      *
@@ -136,13 +139,9 @@ object FavoriteViewModel {
                     LoadingBar.mutableHideLoadingMainActivity.value=true
                 }
             } else {
-                val errorBody = response.errorBody()
                 try {
-                    val errorResponse: ReturnTypeError? =
-                        Gson().fromJson(errorBody?.charStream(), ReturnTypeError::class.java)
+                    crudTools.errorResponse(response,context)
                     withContext(Dispatchers.Main) {
-                        if(response.code()==401)LogOutAuth.mutableLogOutMain.value=true
-                        Toast.makeText(context, "${errorResponse?.error}", Toast.LENGTH_LONG).show()
                         LoadingBar.mutableHideLoadingMainActivity.value=true
                     }
                 } catch (e: Exception) {

@@ -58,9 +58,13 @@ class CreateFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        if(this::priceOptions.isInitialized&&this::condition.isInitialized) context?.let {
-            crudShared.updateDropDown(
-                priceOptions,condition,it)
+        if(this::priceOptions.isInitialized) context?.let {
+            crudShared.updateDropDownPrice(
+                priceOptions,it)
+        }
+        if(this::condition.isInitialized) context?.let {
+            crudShared.updateDropDownCondition(
+                condition,it)
         }
         crudShared.loadImages()
         createVerification.checkAll()
@@ -73,8 +77,22 @@ class CreateFragment : Fragment() {
     ): View {
         alertBuilder = AlertDialog.Builder(context)
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
-        priceOptions = enumViewDataModel.priceEnum.value!!
-        condition = enumViewDataModel.conditionEnum.value!!
+        enumViewDataModel.priceEnum.observe(viewLifecycleOwner, Observer {
+            priceOptions = it
+            context?.let { it1 ->
+                crudShared.updateDropDownPrice(
+                    priceOptions, it1
+                )
+            }
+        })
+        enumViewDataModel.conditionEnum.observe(viewLifecycleOwner, Observer {
+            condition = it
+            context?.let { it1 ->
+                crudShared.updateDropDownCondition(
+                    priceOptions, it1
+                )
+            }
+        })
         createVerification = CreateVerification(binding,resources)
         imageAdapter = ImageAdapter(ArrayList(),
             ArrayList(),
@@ -149,7 +167,7 @@ class CreateFragment : Fragment() {
                 .setNegativeButton("NO"){_,_->
                 }.show()
         }else{
-            if(buttonEnables) context?.let { ToastObject.showToast(it,"Some of the input fields are still invalid!",Toast.LENGTH_LONG) }
+            if(buttonEnables) context?.let { ToastObject.makeText(it,"Some of the input fields are still invalid!",Toast.LENGTH_LONG) }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -169,15 +187,23 @@ class CreateFragment : Fragment() {
         }
         if(requestCode==15){
             if(resultCode==Activity.RESULT_OK){
+                val uris = ArrayList<Uri>()
                 try{
-                    val uris = ArrayList<Uri>()
-                    val length:Int = data?.clipData?.itemCount!!
-                    for(value in 0 until length){
-                        data?.clipData?.getItemAt(value)?.let { uris.add(it.uri) }
+                    if(data?.data!=null){
+                        val uri = data.data
+                        if (uri != null) {
+                            uris.add(uri)
+                            context?.let { crudShared.handleOutput(uris, it) }
+                        }
+                    }else{
+                        val length:Int = data?.clipData?.itemCount!!
+                        for(value in 0 until length){
+                            data?.clipData?.getItemAt(value)?.let { uris.add(it.uri) }
+                        }
+                        if(uris.size>0) context?.let { crudShared.handleOutput(uris, it) }
                     }
-                    if(uris.size>0) context?.let { crudShared.handleOutput(uris, it) }
                 }catch (e:Exception){
-                    context?.let { ToastObject.showToast(it,"Image type is not supported.",Toast.LENGTH_LONG) }
+                        context?.let { ToastObject.makeText(it,"Image type is not supported.",Toast.LENGTH_LONG) }
                 }
             }
         }
@@ -213,7 +239,9 @@ class CreateFragment : Fragment() {
             crudAdvertViewModel.executed=false
         }
         crudAdvertViewModel.clearFiles()
-        context?.let { crudShared.updateDropDown(priceOptions,condition,it) }
+        context?.let { crudShared.updateDropDownPrice(priceOptions,it) }
+        context?.let { crudShared.updateDropDownCondition(condition,it) }
         createVerification.clearInputData()
+        createVerification.setDefaultRequired()
     }
 }

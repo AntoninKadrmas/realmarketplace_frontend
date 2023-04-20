@@ -1,5 +1,6 @@
 package com.realmarketplace.ui.user.settings
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.realmarketplace.R
 import com.realmarketplace.databinding.ActivityUserSettingsBinding
 import com.realmarketplace.model.LightUser
+import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.user.UserViewModel
 import com.realmarketplace.viewModel.LoadingBar
@@ -65,6 +67,16 @@ class UserSettings : AppCompatActivity() {
         binding.myToolbar.setNavigationOnClickListener(){
             finish()
         }
-
+        AuthViewModel.guestUser.observe(this, Observer {
+            if (!it.email.isNullOrEmpty() && !it.password.isNullOrEmpty()) {
+                val mainKeyValueString = getString(R.string.real_market_place_key_value)
+                val userAuthCredential = getString(R.string.user_auth_credential)
+                val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+                mainKeyValue.edit().apply() {
+                    putString(userAuthCredential, "${it.email};${it.password}")
+                    apply()
+                }
+            }
+        })
     }
 }

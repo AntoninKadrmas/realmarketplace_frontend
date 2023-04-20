@@ -18,7 +18,7 @@ object ToastObject {
      * @param message message that would be displayed in toast
      * @param timer is code how long would take the toast to disappear
      */
-    fun showToast(context: Context,message: String,timer:Int){
+    fun makeText(context: Context,message: String,timer:Int){
         try {
             myToast.view?.isShown // true if visible
             myToast.setText(message)

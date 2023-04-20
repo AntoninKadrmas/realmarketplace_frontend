@@ -1,11 +1,14 @@
 package com.realmarketplace.ui.auth.eye
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.realmarketplace.MainActivity
+import com.realmarketplace.R
 import com.realmarketplace.ui.auth.AuthActivity
 import com.realmarketplace.databinding.FragmentEyeFeatureBinding
 
@@ -27,8 +30,12 @@ class EyeAuthFragment : Fragment() {
     ): View? {
         _binding = FragmentEyeFeatureBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        binding.button.setOnClickListener(){
+        binding.loginButton.setOnClickListener(){
             startActivity(Intent(activity, AuthActivity::class.java))
+        }
+        //guest user feature
+        binding.guestLoginButton.setOnClickListener(){
+            (activity as MainActivity).guestLogin()
         }
         return root
     }

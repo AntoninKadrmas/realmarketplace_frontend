@@ -61,9 +61,13 @@ class UpdateDeleteFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        if(this::priceOptions.isInitialized&&this::condition.isInitialized) context?.let {
-            crudShared.updateDropDown(
-                priceOptions,condition,it)
+        if(this::priceOptions.isInitialized) context?.let {
+            crudShared.updateDropDownPrice(
+                priceOptions,it)
+        }
+        if(this::condition.isInitialized) context?.let {
+            crudShared.updateDropDownCondition(
+                condition,it)
         }
         crudShared.loadImages()
         createVerification.checkAll()
@@ -79,8 +83,22 @@ class UpdateDeleteFragment : Fragment() {
         binding.createLayout.visibility=View.GONE
         binding.updateLayout.visibility=View.VISIBLE
         binding.deleteLayout.visibility=View.VISIBLE
-        priceOptions = enumViewDataModel.priceEnum.value!!
-        condition = enumViewDataModel.conditionEnum.value!!
+        enumViewDataModel.priceEnum.observe(viewLifecycleOwner, Observer {
+            priceOptions = it
+            context?.let { it1 ->
+                crudShared.updateDropDownPrice(
+                    priceOptions, it1
+                )
+            }
+        })
+        enumViewDataModel.conditionEnum.observe(viewLifecycleOwner, Observer {
+            condition = it
+            context?.let { it1 ->
+                crudShared.updateDropDownCondition(
+                    priceOptions, it1
+                )
+            }
+        })
         createVerification = CreateVerification(binding,resources)
         imageAdapter = ImageAdapter(ArrayList(),
             ArrayList(),
@@ -203,10 +221,10 @@ class UpdateDeleteFragment : Fragment() {
                     .setNegativeButton("NO"){_,it->
                 }.show()
             }else{
-                if(buttonEnables) context?.let { ToastObject.showToast(it,"You didn't do any changes.",Toast.LENGTH_SHORT) }
+                if(buttonEnables) context?.let { ToastObject.makeText(it,"You didn't do any changes.",Toast.LENGTH_SHORT) }
             }
         }else{
-            if(buttonEnables) context?.let { ToastObject.showToast(it,
+            if(buttonEnables) context?.let { ToastObject.makeText(it,
                 TextModelAuth.SOME_INVALID_FIELDS,Toast.LENGTH_LONG) }
         }
     }
@@ -237,7 +255,7 @@ class UpdateDeleteFragment : Fragment() {
                     }
                     if(uris.size>0) context?.let { crudShared.handleOutput(uris, it) }
                 }catch (e:Exception){
-                    context?.let { ToastObject.showToast(it,"Image type is not supported.",Toast.LENGTH_LONG) }
+                    context?.let { ToastObject.makeText(it,"Image type is not supported.",Toast.LENGTH_LONG) }
                 }
             }
         }

@@ -74,11 +74,11 @@ class UserSettingsProfile : Fragment() {
                     .setNegativeButton("NO"){_,it->
                     }.show()
             }else{
-                if(userViewModel.buttonEnables.value!!)context?.let { ToastObject.showToast(it,"You didn't do any changes.",
+                if(userViewModel.buttonEnables.value!!)context?.let { ToastObject.makeText(it,"You didn't do any changes.",
                     Toast.LENGTH_LONG) }
             }
         }else{
-            if(userViewModel.buttonEnables.value!!) context?.let { ToastObject.showToast(it, TextModelAuth.SOME_INVALID_FIELDS,
+            if(userViewModel.buttonEnables.value!!) context?.let { ToastObject.makeText(it, TextModelAuth.SOME_INVALID_FIELDS,
                 Toast.LENGTH_LONG) }
         }
     }

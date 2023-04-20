@@ -72,7 +72,7 @@ class AdvertActivity : AppCompatActivity() {
                 FavoriteObject.addNewAdvertId(advert)
             }
             else{
-                ToastObject.showToast(this,"For this action you have to login.",Toast.LENGTH_SHORT)
+                ToastObject.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT)
             }
             true
         }
@@ -85,7 +85,7 @@ class AdvertActivity : AppCompatActivity() {
                 FavoriteObject.removeAdvertId(advert._id)
             }
             else{
-                ToastObject.showToast(this,"For this action you have to login.",Toast.LENGTH_SHORT)
+                ToastObject.makeText(this,"For this action you have to login.",Toast.LENGTH_SHORT)
             }
             true
         }

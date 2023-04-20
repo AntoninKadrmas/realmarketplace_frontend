@@ -84,8 +84,10 @@ class ImageAdapter(
                 }
                 if(position ==1)itemBinding.coverImage.visibility = View.VISIBLE
                 else itemBinding.coverImage.visibility = View.GONE
+                var deleteClicked=false
                 itemBinding.deleteText.setOnClickListener() {
-                    clickDelete(curImage)
+                    if(!deleteClicked)clickDelete(curImage)
+                    deleteClicked=true
                 }
             }
         }

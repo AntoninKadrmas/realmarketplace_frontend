@@ -193,6 +193,19 @@ class CreateVerification(insert_binding: FragmentCreateBinding, old_resources: a
     /**
      * A group of *tool_function*.
      *
+     * Function used to set required error to all fields.
+     */
+    fun setDefaultRequired(){
+        binding.editAdvertNameLayout.helperText=resources.getString(R.string.required)
+        binding.editAdvertAuthorLayout.helperText=resources.getString(R.string.required)
+        binding.editAdvertDescriptionLayout.helperText=resources.getString(R.string.required)
+        binding.priceLayout.helperText=resources.getString(R.string.required)
+        binding.conditionLayout.helperText=resources.getString(R.string.required)
+        binding.selectGenreLayout.helperText=resources.getString(R.string.required)
+    }
+    /**
+     * A group of *tool_function*.
+     *
      * Function used to clear all input filed.
      */
     fun clearInputData(){
@@ -316,4 +329,5 @@ class CreateVerification(insert_binding: FragmentCreateBinding, old_resources: a
         binding.conditionInput.setText(advert.condition)
         binding.selectGenreInput.setText("${advert.genreName}/${advert.genreType}")
     }
+
 }
