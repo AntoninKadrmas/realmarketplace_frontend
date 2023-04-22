@@ -12,6 +12,7 @@ import com.realmarketplace.databinding.ActivityAdvertBinding
 import com.realmarketplace.model.AdvertModel
 import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.model.text.TextModelGlobal
+import com.realmarketplace.ui.advert.fullscreen.ShowFullScreenActivity
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.favorite.FavoriteObject
@@ -128,16 +129,38 @@ class AdvertActivity : AppCompatActivity() {
                 if(logOut!!) LogOutAuth.mutableLogOutAdvert.value = true
             }
         }
+        else if (requestCode == 20) {
+            if (resultCode == Activity.RESULT_OK) {
+                val position: Int? = data?.getIntExtra("showPosition",0)
+                if(position!=null)
+                    binding.viewPager.post {
+                        binding.viewPager.setCurrentItem(position, false)
+                    }
+            }
+        }
+    }
+    /**
+     * A group of *advert_functions*.
+     *
+     * Function used to show images in full screen in ShowFullScreenActivity.
+     * @param position the position of image that would be displayed as default.
+     */
+    private fun showImageInFullScreen(position:Int){
+        val intent = Intent(this, ShowFullScreenActivity::class.java)
+        intent.putExtra("advertModel",advert)
+        intent.putExtra("showPosition",position)
+        startActivityForResult(intent,20)
     }
     /**
      * A group of *advert_functions*.
      *
      * Function used to load all information about advert into layout.
      * Used Picasso module for displaying images by https url.
-
      */
     private fun init(){
-        adapterPager = AdapterViewPager(advert.imagesUrls)
+        adapterPager = AdapterViewPager(advert.imagesUrls, showImage = {
+            position:Int -> showImageInFullScreen(position)
+        })
         binding.viewPager.adapter = adapterPager
         val indicator: CircleIndicator3 = binding.indicator
         indicator.setViewPager(binding.viewPager)

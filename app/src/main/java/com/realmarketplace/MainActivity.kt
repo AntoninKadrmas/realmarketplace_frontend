@@ -33,9 +33,13 @@ import com.realmarketplace.ui.search.SearchFragment
 import com.realmarketplace.ui.search.SearchViewModel
 import com.realmarketplace.ui.user.UserActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.realmarketplace.model.UserModel
 import com.realmarketplace.model.UserModelLogin
+import com.realmarketplace.model.Validated
 import com.realmarketplace.ui.auth.AuthActivity
+import com.realmarketplace.ui.user.UserViewModel
 import com.realmarketplace.viewModel.LoadingBar
+import java.util.UUID
 
 /**
  * A group of *activity*.
@@ -51,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timeOutClear:Handler
     private val enumViewDataModel: EnumViewData by viewModels()
     private val permissionModel: PermissionViewModel by viewModels()
+    private val userViewModel:UserViewModel by viewModels()
     override fun onResume() {
         super.onResume()
         navView.selectedItemId = navView.selectedItemId
@@ -223,7 +228,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
         //guest user feature
-        AuthViewModel.guestUser.observe(this, Observer {
+        userViewModel.guestUser.observe(this, Observer {
             if (!it.email.isNullOrEmpty() && !it.password.isNullOrEmpty()) {
                 val mainKeyValueString = getString(R.string.real_market_place_key_value)
                 val userAuthCredential = getString(R.string.user_auth_credential)
@@ -254,10 +259,21 @@ class MainActivity : AppCompatActivity() {
         val userAuthCredential = getString(R.string.user_auth_credential)
         val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
         val userCredential = mainKeyValue.getString(userAuthCredential,";")?.split(';')
-        val email = userCredential?.get(0)
-        val password = userCredential?.get(1)
+        var email = userCredential?.get(0)
+        var password = userCredential?.get(1)
         if(email==""||password==""){
-            AuthViewModel.loginAsGuest(this)
+            email = "${UUID.randomUUID()}@gmail.com"
+            password = "Pas${UUID.randomUUID()}!"
+            val newUser= UserModel(
+                createdIn= "",
+                email= "",
+                firstName= "First",
+                lastName= "Last",
+                password= "",
+                phone= "123456789",
+                validated= Validated(false,false,false)
+            )
+            AuthViewModel.register(email,password,newUser,this,true)
         }else{
             AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this)
         }

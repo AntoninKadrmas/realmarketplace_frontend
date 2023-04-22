@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.realmarketplace.R
 import com.realmarketplace.databinding.ActivityUserSettingsBinding
 import com.realmarketplace.model.LightUser
+import com.realmarketplace.model.UserModelLogin
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.user.UserViewModel
@@ -31,6 +32,7 @@ class UserSettings : AppCompatActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loadGuestCredentials()
         userViewModel.endSettings.value=false
         userViewModel.buttonEnables.value=true
         userViewModel.buttonEnables.observe(this, Observer {
@@ -67,7 +69,7 @@ class UserSettings : AppCompatActivity() {
         binding.myToolbar.setNavigationOnClickListener(){
             finish()
         }
-        AuthViewModel.guestUser.observe(this, Observer {
+        userViewModel.guestUser.observe(this, Observer {
             if (!it.email.isNullOrEmpty() && !it.password.isNullOrEmpty()) {
                 val mainKeyValueString = getString(R.string.real_market_place_key_value)
                 val userAuthCredential = getString(R.string.user_auth_credential)
@@ -78,5 +80,15 @@ class UserSettings : AppCompatActivity() {
                 }
             }
         })
+    }
+    //guest function
+    fun loadGuestCredentials(){
+        val mainKeyValueString = getString(R.string.real_market_place_key_value)
+        val userAuthCredential = getString(R.string.user_auth_credential)
+        val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
+        val userPas = mainKeyValue.getString(userAuthCredential, ";")?.split(";")
+        if(!userPas?.get(0)?.isNullOrEmpty()!! && !userPas?.get(1)?.isNullOrEmpty()!!){
+            userViewModel.updateUserCredentials(UserModelLogin(userPas[0], userPas[1]))
+        }
     }
 }

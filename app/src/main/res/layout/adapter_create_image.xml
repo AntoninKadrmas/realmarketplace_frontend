@@ -13,6 +13,7 @@
         android:layout_margin="5dp"
         app:strokeColor="#7E7E7E"
         app:strokeWidth="2dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

@@ -84,7 +84,10 @@ class PrivateUserFragment : Fragment() {
             val dialogLayout = layoutInflater.inflate(R.layout.adapter_edit_text,null)
             val editText = dialogLayout.findViewById<EditText>(R.id.edit_text_alert)
             editText.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
-            println("----------------------------------------------------------------")
+            if(userViewModel.guestUser.value!=null){
+                if(!userViewModel.guestUser.value!!.password.isNullOrEmpty())
+                    editText.setText(userViewModel.guestUser.value!!.password)
+            }
             alertBuilder.setTitle("Are you sure you want to delete your account permanently?")
                 .setPositiveButton("YES"){_,_->
                     val password = editText.text.toString().trim()
@@ -92,7 +95,6 @@ class PrivateUserFragment : Fragment() {
                     else{
                         val token = AuthViewModel.userToken.value?: UserTokenAuth("")
                         context?.let { it1 ->
-                            println("avuoivfbiofdbiofbhfdsbuiovfouibavbuiofvbhibjiidfi")
                             LoadingBar.mutableHideLoadingUserActivity.value=false
                             userViewModel.buttonEnables.value=false
                             this.userViewModel.deleteUser(password,token,
@@ -107,7 +109,6 @@ class PrivateUserFragment : Fragment() {
                 .show()
         }
         userViewModel.buttonEnables.observe(viewLifecycleOwner, Observer {
-            println(it)
             if(it) LoadingBar.mutableHideLoadingUserActivity.value=true
         })
         return binding.root

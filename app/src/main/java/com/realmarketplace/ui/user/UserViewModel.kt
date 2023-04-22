@@ -34,6 +34,9 @@ import java.io.IOException
  */
 class UserViewModel:ViewModel() {
     private var crudTools= CrudAdvertTools()
+    //guest user feature
+    private val mutableGuestUser = MutableLiveData<UserModelLogin>()
+    val guestUser: LiveData<UserModelLogin> get() = mutableGuestUser
     private val userAdvertsMutable = MutableLiveData<ArrayList<AdvertModel>>()
     val userAdverts: LiveData<ArrayList<AdvertModel>> get() = userAdvertsMutable
     private val userMutable = MutableLiveData<LightUser>()
@@ -46,6 +49,10 @@ class UserViewModel:ViewModel() {
     private var retroServiceUser: AuthService = RetrofitInstance.getRetroFitInstance().create(
         AuthService::class.java
     )
+    //guest user feature
+    fun updateUserCredentials(login: UserModelLogin) {
+        mutableGuestUser.value = login
+    }
     /**
      * A group of *view_model_function*.
      *
@@ -245,10 +252,10 @@ class UserViewModel:ViewModel() {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
                         endSettings.value=true
-                        AuthViewModel.guestUser.value?.let {
+                        guestUser.value?.let {
                             UserModelLogin(
                                 it.email,newPassword)
-                        }?.let { AuthViewModel.updateUserCredentials(it) }
+                        }?.let { updateUserCredentials(it) }
                     }
                 }
             }else{
@@ -336,7 +343,6 @@ class UserViewModel:ViewModel() {
                 retroServiceUser.deleteUser(okhttp3.Credentials.basic(password, ""), userToken.token)
             }catch (e: IOException){
                 withContext(Dispatchers.Main) {
-                    println(e)
                     Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
                     buttonEnables.value=true
                 }
@@ -354,7 +360,7 @@ class UserViewModel:ViewModel() {
                     if (body != null) {
                         Toast.makeText(context,"${body?.success}", Toast.LENGTH_LONG).show()
                         buttonEnables.value=true
-                        AuthViewModel.updateUserCredentials(UserModelLogin("",""))
+                        updateUserCredentials(UserModelLogin("",""))
                         LogOutAuth.mutableLogOutUser.value = true
                     }
                 }

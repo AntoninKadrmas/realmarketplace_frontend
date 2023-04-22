@@ -54,7 +54,6 @@ class ImageAdapter(
          * @param life life cycle owner so each advert can listen on change
          */
         fun bind(curImage: File,urls:ArrayList<String>,uri:Uri, clickDelete: (File) -> Unit, clickAdd: (Boolean) -> Unit, position: Int,checkFirst:MutableLiveData<File>,life:LifecycleOwner) {
-            itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             checkFirst.observe(life, Observer{
                 if(curImage==it) itemBinding.coverImage.visibility = View.VISIBLE
                 else itemBinding.coverImage.visibility = View.GONE
@@ -73,7 +72,6 @@ class ImageAdapter(
             }
             else{
                 if(urls.size+1>position){
-                    println("${urls.size+1}>$position ${urls[position-1]}")
                     Picasso.get()
                         .load("${TextModelGlobal.REAL_MARKET_URL}/advert"+urls[position-1])
                         .into(itemBinding.imageView)

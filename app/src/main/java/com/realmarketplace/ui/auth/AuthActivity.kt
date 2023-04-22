@@ -23,7 +23,6 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var listOfFragments:List<Fragment>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("there")
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
         listOfFragments = listOf(

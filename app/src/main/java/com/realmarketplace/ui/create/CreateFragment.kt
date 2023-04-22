@@ -114,11 +114,16 @@ class CreateFragment : Fragment() {
                     MotionEvent.ACTION_DOWN -> {
                         val intent = Intent(context, SelectGenreActivity::class.java)
                         val list = ArrayList<String>()
-                        for(item in enumViewDataModel.genreGenreEnum.value!!){
-                            list.add("${item.name}|${item.type}")
+                        if(enumViewDataModel.genreGenreEnum.value!=null){
+                            for(item in enumViewDataModel.genreGenreEnum.value!!){
+                                list.add("${item.name}|${item.type}")
+                            }
+                            intent.putStringArrayListExtra("genreArray",list)
+                            startActivityForResult(intent,10)
+                        }else{
+                            context?.let { ToastObject.makeText(it,"Genre did not loaded.",Toast.LENGTH_SHORT) }
+                            enumViewDataModel.loadGenreEnum()
                         }
-                        intent.putStringArrayListExtra("genreArray",list)
-                        startActivityForResult(intent,10)
                     }
                 }
                 return v?.onTouchEvent(event) ?: true

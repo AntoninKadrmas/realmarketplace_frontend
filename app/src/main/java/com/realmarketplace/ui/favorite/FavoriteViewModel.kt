@@ -75,7 +75,6 @@ object FavoriteViewModel {
      */
     fun removeAdvert(advertId: String){
         if(mutableFavoriteAdverts.value!=null){
-            println(mutableFavoriteAdverts.value)
             var newList = mutableFavoriteAdverts.value!!
             val selected =newList!!.filter {
                 it._id == advertId
@@ -86,7 +85,6 @@ object FavoriteViewModel {
                     newList.removeAt(position)
                     mutableFavoriteAdverts.value = newList
                 }
-                println(mutableFavoriteAdverts.value)
             }
         }
     }

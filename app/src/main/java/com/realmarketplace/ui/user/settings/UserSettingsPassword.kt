@@ -33,6 +33,10 @@ class UserSettingsPassword : Fragment() {
     ): View? {
         _binding = FragmentUserSettingsPasswordBinding.inflate(inflater, container, false)
         alertBuilder = AlertDialog.Builder(context)
+        if(userViewModel.guestUser.value!=null){
+            if(!userViewModel.guestUser.value!!.password.isNullOrEmpty())
+                binding.passwordPreviousInput.setText(userViewModel.guestUser.value!!.password)
+        }
         focusPasswordFirst()
         focusPasswordSecond()
         focusPasswordPrevious()

@@ -1,11 +1,15 @@
-package com.realmarketplace.ui.search.advert
+package com.realmarketplace.ui.advert.fullscreen
 
+import android.R
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.realmarketplace.databinding.AdapterImageSlideBinding
+import com.realmarketplace.databinding.AdapterImageSlideNoSpaceBinding
 import com.realmarketplace.model.text.TextModelGlobal
 import com.squareup.picasso.Picasso
+
 
 /**
  * A group of *adapter*.
@@ -13,13 +17,13 @@ import com.squareup.picasso.Picasso
  * Class used as adapter for image view pager.
  *
  * @param imageUrls list of string urls of advert images
- * @param showImage function to show image in fullscreen by showFullScreenActivity
+ * @param blockMoving function for disable or enable functionality of viewPager2
  */
-class AdapterViewPager(
+class AdapterViewPagerFullScreen(
     private val imageUrls:ArrayList<String>,
-    private val showImage:(Int)->Unit
-):RecyclerView.Adapter<AdapterViewPager.AdvertViewHolder>() {
-    class AdvertViewHolder(private val itemBinding:AdapterImageSlideBinding):RecyclerView.ViewHolder(itemBinding.root){
+    private val blockMoving:(Float)->Unit
+):RecyclerView.Adapter<AdapterViewPagerFullScreen.AdvertViewHolder>() {
+    class AdvertViewHolder(private val itemBinding:AdapterImageSlideNoSpaceBinding):RecyclerView.ViewHolder(itemBinding.root){
         /**
          * A group of *adapter_function*.
          *
@@ -27,21 +31,24 @@ class AdapterViewPager(
          * Used Picasso module for displaying images by https url.
          *
          * @param curImageUrl url of actual image that would be displayed
-         * @param position position of actual item
-         * @param showImage function to show image in fullscreen by showFullScreenActivity
+         * @param blockMoving function for disable or enable functionality of viewPager2
          */
-        fun bind(curImageUrl:String,position: Int,showImage:(Int)->Unit){
+        fun bind(curImageUrl:String,blockMoving:(Float)->Unit){
             Picasso
                 .get()
                 .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl")
                 .into(itemBinding.slideImageView)
-            itemBinding.slideImageView.setOnClickListener(){
-                showImage(position)
-            }
+            itemBinding.slideImageView.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    if(event?.action==MotionEvent.ACTION_UP&&itemBinding.slideImageView.currentZoom<=1)blockMoving(1f)
+                    else blockMoving(itemBinding.slideImageView.currentZoom)
+                    return true
+                }
+            })
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdvertViewHolder {
-        val advertBinding:AdapterImageSlideBinding=AdapterImageSlideBinding.inflate(
+        val advertBinding:AdapterImageSlideNoSpaceBinding=AdapterImageSlideNoSpaceBinding.inflate(
             LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -54,6 +61,6 @@ class AdapterViewPager(
         return imageUrls.size
     }
     override fun onBindViewHolder(holder: AdvertViewHolder, position: Int) {
-        holder.bind(imageUrls[position],position,showImage)
+        holder.bind(imageUrls[position],blockMoving)
     }
 }
