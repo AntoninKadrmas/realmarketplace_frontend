@@ -40,6 +40,7 @@ class UserSettingsPassword : Fragment() {
         focusPasswordFirst()
         focusPasswordSecond()
         focusPasswordPrevious()
+        checkAll()
         binding.changePassword.setOnClickListener(){
             binding.passwordNewSecondInput.clearFocus()
             binding.passwordNewFirstInput.clearFocus()

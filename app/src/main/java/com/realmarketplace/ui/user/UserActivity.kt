@@ -44,6 +44,11 @@ class UserActivity : AppCompatActivity() {
         super.onDestroy()
         LogOutAuth.mutableLogOutUser.value=false
     }
+
+    override fun onResume() {
+        super.onResume()
+        loadGuestCredentials()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadGuestCredentials()

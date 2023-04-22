@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
                 phone= "123456789",
                 validated= Validated(false,false,false)
             )
-            AuthViewModel.register(email,password,newUser,this,true)
+            AuthViewModel.register(email,password,newUser,this,true,userViewModel)
         }else{
             AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this)
         }

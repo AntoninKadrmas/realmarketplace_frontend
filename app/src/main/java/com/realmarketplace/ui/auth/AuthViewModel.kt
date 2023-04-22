@@ -2,6 +2,9 @@ package com.realmarketplace.ui.auth
 
 import android.content.Context
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.realmarketplace.model.UserModel
@@ -29,12 +32,11 @@ import java.io.IOException
  * Object hold user token and selected fragment (register/login).
  * Operates over some of the auth user endpoints.
  */
-object AuthViewModel{
+object AuthViewModel {
     private val mutableSelectedItem = MutableLiveData<Int>()
     val selectedItem: LiveData<Int> get() = mutableSelectedItem
     private val mutableUserToken = MutableLiveData<UserTokenAuth>()
     val userToken: LiveData<UserTokenAuth> get() = mutableUserToken
-    val userViewModel:UserViewModel = UserViewModel()
     var buttonsEnabled=MutableLiveData<Boolean>()
     val crudTools = CrudAdvertTools()
     /**
@@ -68,7 +70,7 @@ object AuthViewModel{
      * @param userModel user information's needed to create new user account viz. UserModel
      * @param context context of activity or fragment where is function called
      */
-    fun register(email:String,password:String,userModel: UserModel, context: Context,guest:Boolean=false){
+    fun register(email:String,password:String,userModel: UserModel, context: Context,guest:Boolean=false,userViewModel:UserViewModel?=null){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
                 retroServiceAuth.registerUser(
@@ -94,7 +96,8 @@ object AuthViewModel{
                         updateUserToken(body)
                         SearchViewModel.loadedSampleAdvert=false
                     }
-                    if(guest) userViewModel.updateUserCredentials(UserModelLogin(email,password))
+                    if(guest)
+                        userViewModel?.updateUserCredentials(UserModelLogin(email,password))
                     buttonsEnabled.value=true
                 }
             }else{

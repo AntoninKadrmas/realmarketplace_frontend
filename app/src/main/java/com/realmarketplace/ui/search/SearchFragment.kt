@@ -67,7 +67,6 @@ class SearchFragment : Fragment(){
             advert: AdvertModel ->openAdvert(advert)
         },false)
         binding.advertRecyclerView.adapter = advertAdapter
-        binding.advertRecyclerView.adapter = advertAdapter
         val layoutManager = LinearLayoutManager(
             FragmentActivity(),
             LinearLayoutManager.VERTICAL,false)
