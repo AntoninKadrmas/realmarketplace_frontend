@@ -67,9 +67,8 @@
             app:helperText="@string/required"
             app:helperTextTextColor="?attr/colorPrimary"
             android:orientation="vertical"
-            android:layout_marginBottom="@dimen/input_element_margin_create"
             app:passwordToggleEnabled="true"
-            app:layout_constraintBottom_toTopOf="@+id/login_button"
+            app:layout_constraintBottom_toTopOf="@+id/switch_to_recover"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,11 +87,27 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/switch_to_recover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot password"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="@dimen/input_element_margin_side"
+            app:layout_constraintBottom_toTopOf="@+id/login_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginVertical="@dimen/input_element_margin_create"
+            app:layout_constraintTop_toBottomOf="@+id/password_layout"/>
+
         <Button
-            android:layout_marginBottom="20dp"
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:paddingHorizontal="50dp"
             android:paddingVertical="20dp"
             android:text="LogIn"
@@ -100,7 +115,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_layout"
+            app:layout_constraintTop_toBottomOf="@+id/switch_to_recover"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

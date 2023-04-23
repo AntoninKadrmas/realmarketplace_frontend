@@ -14,6 +14,7 @@ import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.user.UserViewModel
+import com.realmarketplace.viewModel.Guest
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 
@@ -34,7 +35,7 @@ class UserSettingsPassword : Fragment() {
         _binding = FragmentUserSettingsPasswordBinding.inflate(inflater, container, false)
         alertBuilder = AlertDialog.Builder(context)
         if(userViewModel.guestUser.value!=null){
-            if(!userViewModel.guestUser.value!!.password.isNullOrEmpty())
+            if(!userViewModel.guestUser.value!!.password.isNullOrEmpty()&&Guest.loadAsGuest)
                 binding.passwordPreviousInput.setText(userViewModel.guestUser.value!!.password)
         }
         focusPasswordFirst()

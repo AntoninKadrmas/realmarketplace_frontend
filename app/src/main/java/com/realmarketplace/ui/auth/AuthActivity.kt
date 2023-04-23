@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.realmarketplace.R
 
 import com.realmarketplace.databinding.ActivityAuthBinding
+import com.realmarketplace.ui.auth.recover.RecoverPasswordFragment
 import com.realmarketplace.viewModel.LoadingBar
 
 /**
@@ -27,7 +28,8 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
         listOfFragments = listOf(
             LoginFragment.newInstance(),
-            RegisterFragment.newInstance()
+            RegisterFragment.newInstance(),
+            RecoverPasswordFragment.newInstance()
         )
         rotateFragment()
         AuthViewModel.selectedItem.observe(this, Observer { value->
@@ -47,7 +49,10 @@ class AuthActivity : AppCompatActivity() {
             }
         })
         binding.myToolbar.setNavigationOnClickListener(){
-            finish()
+            if(AuthViewModel.selectedItem.value!=null)
+                if(AuthViewModel.selectedItem.value==2)
+                    AuthViewModel.selectItem(0)
+            else finish()
         }
         AuthViewModel.buttonsEnabled.observe(this, Observer {
             if(it)LoadingBar.mutableHideLoadingAuthActivity.value=true
@@ -56,6 +61,8 @@ class AuthActivity : AppCompatActivity() {
             if(!it)binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         })
+        if(AuthViewModel.selectedItem.value!=null)
+            if(AuthViewModel.selectedItem.value==2)AuthViewModel.selectItem(0)
     }
     /**
      * A group of *activity_functions*.
@@ -64,7 +71,8 @@ class AuthActivity : AppCompatActivity() {
      */
     private fun rotateFragment(){
         if(actual==0)binding.myToolbar.subtitle="Login"
-        else binding.myToolbar.subtitle="Register"
+        else if(actual==1) binding.myToolbar.subtitle="Register"
+        else binding.myToolbar.subtitle="Reset Password"
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_auth_layout, listOfFragments[actual])
             .commitNow()

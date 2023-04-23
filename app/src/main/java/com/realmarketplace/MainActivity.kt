@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity() {
         var password = userCredential?.get(1)
         if(email==""||password==""){
             email = "${UUID.randomUUID()}@gmail.com"
-            password = "Pas${UUID.randomUUID()}!"
+            password = "Pas-${UUID.randomUUID()}-!"
             val newUser= UserModel(
                 createdIn= "",
                 email= "",
@@ -275,7 +275,7 @@ class MainActivity : AppCompatActivity() {
             )
             AuthViewModel.register(email,password,newUser,this,true,userViewModel)
         }else{
-            AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this)
+            AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this,true)
         }
     }
     /**

@@ -26,6 +26,7 @@ import com.realmarketplace.ui.auth.LogOutAuth
 import com.realmarketplace.ui.create.crud.CrudShared
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.ui.user.settings.UserSettings
+import com.realmarketplace.viewModel.Guest
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
@@ -85,7 +86,7 @@ class PrivateUserFragment : Fragment() {
             val editText = dialogLayout.findViewById<EditText>(R.id.edit_text_alert)
             editText.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
             if(userViewModel.guestUser.value!=null){
-                if(!userViewModel.guestUser.value!!.password.isNullOrEmpty())
+                if(!userViewModel.guestUser.value!!.password.isNullOrEmpty()&& Guest.loadAsGuest)
                     editText.setText(userViewModel.guestUser.value!!.password)
             }
             alertBuilder.setTitle("Are you sure you want to delete your account permanently?")

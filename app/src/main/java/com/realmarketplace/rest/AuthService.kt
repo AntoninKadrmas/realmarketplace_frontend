@@ -120,8 +120,19 @@ interface AuthService {
     suspend fun deleteUser(
         @Header("Authorization") credential:String,
         @Header("Authentication") token:String):Response<Any>
-    @POST(value="/user/guest")
-    suspend fun guestUserLogin():Response<Any>
+    /**
+     * A group of *api_function*.
+     *
+     * Function is used for reset user password.
+     *
+     * Endpoint **post(/email/passwordRecovery)**
+     *
+     * @param email email which temporary password would be generated
+     * @return viz. ReturnTypeSuccess or viz. ReturnTypeError
+     */
+    @POST(value="/email/passwordRecovery")
+    suspend fun resetPassword(
+        @Query("email") email:String):Response<Any>
 }
 /**
  * A group of *api_return_class*.

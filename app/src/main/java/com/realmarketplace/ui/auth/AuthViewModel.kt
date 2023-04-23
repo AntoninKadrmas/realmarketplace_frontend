@@ -15,10 +15,13 @@ import com.realmarketplace.rest.RetrofitInstance
 import com.realmarketplace.rest.ReturnTypeError
 import com.google.gson.Gson
 import com.realmarketplace.model.GuestUserTokenAuth
+import com.realmarketplace.rest.ReturnTypeSuccess
 import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.ui.search.SearchViewModel
 import com.realmarketplace.ui.user.UserViewModel
+import com.realmarketplace.viewModel.Guest
 import com.realmarketplace.viewModel.LoadingBar
+import com.realmarketplace.viewModel.ToastObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +41,9 @@ object AuthViewModel {
     private val mutableUserToken = MutableLiveData<UserTokenAuth>()
     val userToken: LiveData<UserTokenAuth> get() = mutableUserToken
     var buttonsEnabled=MutableLiveData<Boolean>()
-    val crudTools = CrudAdvertTools()
+    private val crudTools = CrudAdvertTools()
+    val mutableSuccessRestart = MutableLiveData<Boolean>()
+
     /**
      * A group of *view_model_function*.
      *
@@ -96,8 +101,10 @@ object AuthViewModel {
                         updateUserToken(body)
                         SearchViewModel.loadedSampleAdvert=false
                     }
-                    if(guest)
+                    if(guest){
                         userViewModel?.updateUserCredentials(UserModelLogin(email,password))
+                        Guest.loadAsGuest=true
+                    }else Guest.loadAsGuest=false
                     buttonsEnabled.value=true
                 }
             }else{
@@ -125,7 +132,7 @@ object AuthViewModel {
      * @param userModel user login information viz. UserModelLogin
      * @param context context of activity or fragment where is function called
      */
-    fun login(userModel: UserModelLogin, context: Context){
+    fun login(userModel: UserModelLogin, context: Context,guest:Boolean=false){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
                 retroServiceAuth.loginUser(okhttp3.Credentials.basic(userModel.email, userModel.password))
@@ -149,6 +156,56 @@ object AuthViewModel {
                         updateUserToken(body)
                         SearchViewModel.loadedSampleAdvert=false
                     }
+                    buttonsEnabled.value=true
+                }
+            }else{
+                try {
+                    crudTools.errorResponse(response,context)
+                    withContext(Dispatchers.Main) {
+                        buttonsEnabled.value=true
+                        Guest.loadAsGuest = guest
+                    }
+                }
+                catch (e:Exception){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context,"Server dose not respond.", Toast.LENGTH_SHORT).show()
+                        buttonsEnabled.value=true
+                    }
+                }
+            }
+            return@launch
+        }
+    }
+    /**
+     * A group of *view_model_function*.
+     *
+     * Function used to call loginUser function and handle the response.
+     *
+     * @param email email which temporary password would be generated
+     * @param context context of activity or fragment where is function called
+     */
+    fun resetPassword(email: String, context: Context){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = try{
+                retroServiceAuth.resetPassword(email)
+            }catch (e: IOException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value=true
+                }
+                return@launch
+            }catch (e: HttpException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Http request rejected.", Toast.LENGTH_SHORT).show()
+                    buttonsEnabled.value=true
+                }
+                return@launch
+            }
+            if(response.isSuccessful && response.body()!=null){
+                val body: ReturnTypeSuccess? = Gson().fromJson(Gson().toJson(response.body()), ReturnTypeSuccess::class.java)
+                withContext(Dispatchers.Main) {
+                    if (body != null) ToastObject.makeText(context,body.success,Toast.LENGTH_SHORT)
+                    mutableSelectedItem.value=0
                     buttonsEnabled.value=true
                 }
             }else{

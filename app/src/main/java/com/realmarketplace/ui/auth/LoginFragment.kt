@@ -46,6 +46,9 @@ class LoginFragment : Fragment() {
             checkAll()
             submitForm()
         }
+        binding.switchToRecover.setOnClickListener(){
+            AuthViewModel.selectItem(2)
+        }
         AuthViewModel.buttonsEnabled.observe(viewLifecycleOwner,Observer{
             buttonEnables=true
         })
