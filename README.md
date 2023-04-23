@@ -1,4 +1,4 @@
-# realmarketplace_frontend google play link
+# realmarketplace_frontend
 Screenshots from application<br /><br />
 <img src="https://github.com/AntoninKadrmas/realmarketplace_resources/blob/master/new_screens/signal-2023-04-23-194215.png" width="200">
 <img src="https://github.com/AntoninKadrmas/realmarketplace_resources/blob/master/new_screens/signal-2023-04-23-001603_002.png" width="200">
@@ -23,8 +23,8 @@ Change all optionts to get your parameters satisfied.<br />
 Most likely you have to change verion of android librarys so navigate your self into build.gradle (Project)<br />
 plugins{<br />
 &emsp;...<br />
-&emsp;    id 'com.android.application' version 'your_version' apply false<br />
-&emsp;    id 'com.android.library' version 'your_version' apply false<br />
+&emsp;id 'com.android.application' version 'your_version' apply false<br />
+&emsp;id 'com.android.library' version 'your_version' apply false<br />
 &emsp;...<br />
 }<br />
 Try to build the project.
