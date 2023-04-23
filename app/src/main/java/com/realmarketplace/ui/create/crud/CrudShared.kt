@@ -175,9 +175,10 @@ class CrudShared(
      * A group of *tool_function*.
      *
      * Function used to load image files into recycle view if there didn't be already.
+     * @param forceReload used to call code in if condition all the time if it is true
      */
-    fun loadImages(){
-        if(crudAdvertViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/${maxImage}"){
+    fun loadImages(forceReload:Boolean=false){
+        if(crudAdvertViewModel.imagesFile.value!=null&&binding.imageCounter.text=="0/${maxImage}"||forceReload){
             actualImage=crudAdvertViewModel.imagesFile.value!!.size
             for(uri in crudAdvertViewModel.imagesFile.value!!){
                 imageAdapter.addNewImage(uri)

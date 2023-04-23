@@ -244,6 +244,7 @@ class CreateFragment : Fragment() {
             crudAdvertViewModel.executed=false
         }
         crudAdvertViewModel.clearFiles()
+        crudShared.loadImages(true)
         context?.let { crudShared.updateDropDownPrice(priceOptions,it) }
         context?.let { crudShared.updateDropDownCondition(condition,it) }
         createVerification.clearInputData()

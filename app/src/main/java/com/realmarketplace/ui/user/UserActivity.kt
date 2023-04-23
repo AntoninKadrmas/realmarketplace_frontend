@@ -164,5 +164,4 @@ class UserActivity : AppCompatActivity() {
             userViewModel.updateUserCredentials(UserModelLogin(userPas[0], userPas[1]))
         }
     }
-
 }
