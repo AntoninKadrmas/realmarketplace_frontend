@@ -9,6 +9,7 @@ https://play.google.com/store/apps/details?id=com.realmarketplace
 - https://github.com/ongakuer/CircleIndicator<br />
 - https://mvnrepository.com/artifact/org.jetbrains.kotlinx<br />
 - https://mvnrepository.com/artifact/junit/junit/4.13.2<br />
+- https://github.com/MikeOrtiz/TouchImageView<br />
 ## set up on your device
 Clone realmarketplace_frontend repository on your device.<br />
 Open the projec in andorid studio. <br />
@@ -16,9 +17,9 @@ There is a huge chance that you are using different version of gradle and veriso
 Change all optionts to get your parameters satisfied.<br />
 Most likely you have to change verion of android librarys so navigate your self into build.gradle (Project)<br />
 plugins{<br />
-...<br />
-    id 'com.android.application' version 'your_version' apply false<br />
-    id 'com.android.library' version 'your_version' apply false<br />
-...<br />
+&emsp;...<br />
+&emsp;&emsp;    id 'com.android.application' version 'your_version' apply false<br />
+&emsp;&emsp;    id 'com.android.library' version 'your_version' apply false<br />
+&emsp;...<br />
 }<br />
 Try to build the project.
