@@ -18,8 +18,8 @@ Change all optionts to get your parameters satisfied.<br />
 Most likely you have to change verion of android librarys so navigate your self into build.gradle (Project)<br />
 plugins{<br />
 &emsp;...<br />
-&emsp;&emsp;    id 'com.android.application' version 'your_version' apply false<br />
-&emsp;&emsp;    id 'com.android.library' version 'your_version' apply false<br />
+&emsp;    id 'com.android.application' version 'your_version' apply false<br />
+&emsp;    id 'com.android.library' version 'your_version' apply false<br />
 &emsp;...<br />
 }<br />
 Try to build the project.
