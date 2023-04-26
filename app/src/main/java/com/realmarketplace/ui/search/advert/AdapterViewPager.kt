@@ -31,9 +31,8 @@ class AdapterViewPager(
          * @param showImage function to show image in fullscreen by showFullScreenActivity
          */
         fun bind(curImageUrl:String,position: Int,showImage:(Int)->Unit){
-            Picasso
-                .get()
-                .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl")
+            Picasso.get()
+                .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl"+"?Admin=b326b5062b2f0e69046810717534cb09")
                 .into(itemBinding.slideImageView)
             itemBinding.slideImageView.setOnClickListener(){
                 showImage(position)

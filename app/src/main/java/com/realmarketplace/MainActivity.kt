@@ -227,18 +227,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        //guest user feature
-        userViewModel.guestUser.observe(this, Observer {
-            if (!it.email.isNullOrEmpty() && !it.password.isNullOrEmpty()) {
-                val mainKeyValueString = getString(R.string.real_market_place_key_value)
-                val userAuthCredential = getString(R.string.user_auth_credential)
-                val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
-                mainKeyValue.edit().apply() {
-                    putString(userAuthCredential, "${it.email};${it.password}")
-                    apply()
-                }
-            }
-        })
         AuthViewModel.userToken.observe(this, Observer {
             if (!it.token.isNullOrEmpty()) {
                 val mainKeyValueString = R.string.real_market_place_key_value.toString()
@@ -252,31 +240,6 @@ class MainActivity : AppCompatActivity() {
             navView.selectedItemId = navView.selectedItemId
 
         })
-    }
-    //guest user feature
-    fun guestLogin(){
-        val mainKeyValueString = getString(R.string.real_market_place_key_value)
-        val userAuthCredential = getString(R.string.user_auth_credential)
-        val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
-        val userCredential = mainKeyValue.getString(userAuthCredential,";")?.split(';')
-        var email = userCredential?.get(0)
-        var password = userCredential?.get(1)
-        if(email==""||password==""){
-            email = "${UUID.randomUUID()}@gmail.com"
-            password = "Pas-${UUID.randomUUID()}-!"
-            val newUser= UserModel(
-                createdIn= "",
-                email= "",
-                firstName= "First",
-                lastName= "Last",
-                password= "",
-                phone= "123456789",
-                validated= Validated(false,false,false)
-            )
-            AuthViewModel.register(email,password,newUser,this,true,userViewModel)
-        }else{
-            AuthViewModel.login(UserModelLogin(email.toString(),password.toString()),this,true)
-        }
     }
     /**
      * A group of *activity_functions*.

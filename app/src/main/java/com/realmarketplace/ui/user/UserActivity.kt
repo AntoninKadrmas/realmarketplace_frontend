@@ -47,11 +47,9 @@ class UserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        loadGuestCredentials()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadGuestCredentials()
         LoadingBar.mutableHideLoadingUserActivity.observe(this, Observer {
             if(!it)binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
@@ -93,11 +91,6 @@ class UserActivity : AppCompatActivity() {
         permissionModel.setPermissionStorage(intent.getBooleanExtra("permissionStorage",false))
         permissionModel.permissionStorageAsk.observe(this, Observer {
             requestPermissionStorage()
-        })
-        userViewModel.guestUser.observe(this, Observer {
-            if (it.email.isNullOrEmpty() || it.password.isNullOrEmpty()) {
-                deleteUserCredential()
-            }
         })
     }
     /**
@@ -152,16 +145,6 @@ class UserActivity : AppCompatActivity() {
             }
             else -> {
             }
-        }
-    }
-    //guest function
-    fun loadGuestCredentials(){
-        val mainKeyValueString = getString(R.string.real_market_place_key_value)
-        val userAuthCredential = getString(R.string.user_auth_credential)
-        val mainKeyValue = getSharedPreferences(mainKeyValueString, Context.MODE_PRIVATE)
-        val userPas = mainKeyValue.getString(userAuthCredential, ";")?.split(";")
-        if(!userPas?.get(0)?.isNullOrEmpty()!! && !userPas?.get(1)?.isNullOrEmpty()!!){
-            userViewModel.updateUserCredentials(UserModelLogin(userPas[0], userPas[1]))
         }
     }
 }

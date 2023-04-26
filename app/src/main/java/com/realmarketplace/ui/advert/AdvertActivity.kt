@@ -184,7 +184,7 @@ class AdvertActivity : AppCompatActivity() {
             binding.firstNameText.text= advert.user?.firstName ?: ""
         }
         Picasso.get()
-            .load("${TextModelGlobal.REAL_MARKET_URL}/user${advert.user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${advert.user?.mainImageUrl}"+"?Admin=b326b5062b2f0e69046810717534cb09")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.imageUserAdvert)
     }

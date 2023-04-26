@@ -107,7 +107,7 @@ class PublicUserFragment : Fragment() {
      */
     private fun loadUser(){
         Picasso.get()
-            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}"+"?Admin=b326b5062b2f0e69046810717534cb09")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.publicImageUser)
         binding.publicUserFirstName.text = user.firstName

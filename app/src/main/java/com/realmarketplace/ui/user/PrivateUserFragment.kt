@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.google.android.material.textfield.TextInputLayout
 import com.realmarketplace.R
 import com.realmarketplace.databinding.FragmentPrivateUserBinding
 import com.realmarketplace.model.LightUser
@@ -23,10 +22,8 @@ import com.realmarketplace.model.text.TextModelAuth
 import com.realmarketplace.model.text.TextModelGlobal
 import com.realmarketplace.ui.auth.AuthViewModel
 import com.realmarketplace.ui.auth.LogOutAuth
-import com.realmarketplace.ui.create.crud.CrudShared
 import com.realmarketplace.ui.search.advert.AdvertAdapter
 import com.realmarketplace.ui.user.settings.UserSettings
-import com.realmarketplace.viewModel.Guest
 import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.PermissionViewModel
 import com.realmarketplace.viewModel.ToastObject
@@ -85,10 +82,6 @@ class PrivateUserFragment : Fragment() {
             val dialogLayout = layoutInflater.inflate(R.layout.adapter_edit_text,null)
             val editText = dialogLayout.findViewById<EditText>(R.id.edit_text_alert)
             editText.setError(TextModelAuth.INCORRECT_PASSWORD_TOOLTIP,null)
-            if(userViewModel.guestUser.value!=null){
-                if(!userViewModel.guestUser.value!!.password.isNullOrEmpty()&& Guest.loadAsGuest)
-                    editText.setText(userViewModel.guestUser.value!!.password)
-            }
             alertBuilder.setTitle("Are you sure you want to delete your account permanently?")
                 .setPositiveButton("YES"){_,_->
                     val password = editText.text.toString().trim()
@@ -126,7 +119,7 @@ class PrivateUserFragment : Fragment() {
      */
     private fun loadUserInformation(){
         Picasso.get()
-            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}")
+            .load("${TextModelGlobal.REAL_MARKET_URL}/user${user?.mainImageUrl}"+"?Admin=b326b5062b2f0e69046810717534cb09")
             .placeholder(R.drawable.baseline_account_circle)
             .into(binding.privateImageUserAdvert)
         binding.privateFirstNameText.text = user.firstName

@@ -2,9 +2,6 @@ package com.realmarketplace.ui.auth
 
 import android.content.Context
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.realmarketplace.model.UserModel
@@ -12,15 +9,10 @@ import com.realmarketplace.model.UserModelLogin
 import com.realmarketplace.model.UserTokenAuth
 import com.realmarketplace.rest.AuthService
 import com.realmarketplace.rest.RetrofitInstance
-import com.realmarketplace.rest.ReturnTypeError
 import com.google.gson.Gson
-import com.realmarketplace.model.GuestUserTokenAuth
 import com.realmarketplace.rest.ReturnTypeSuccess
 import com.realmarketplace.ui.create.crud.CrudAdvertTools
 import com.realmarketplace.ui.search.SearchViewModel
-import com.realmarketplace.ui.user.UserViewModel
-import com.realmarketplace.viewModel.Guest
-import com.realmarketplace.viewModel.LoadingBar
 import com.realmarketplace.viewModel.ToastObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +67,7 @@ object AuthViewModel {
      * @param userModel user information's needed to create new user account viz. UserModel
      * @param context context of activity or fragment where is function called
      */
-    fun register(email:String,password:String,userModel: UserModel, context: Context,guest:Boolean=false,userViewModel:UserViewModel?=null){
+    fun register(email:String,password:String,userModel: UserModel, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
                 retroServiceAuth.registerUser(
@@ -101,10 +93,6 @@ object AuthViewModel {
                         updateUserToken(body)
                         SearchViewModel.loadedSampleAdvert=false
                     }
-                    if(guest){
-                        userViewModel?.updateUserCredentials(UserModelLogin(email,password))
-                        Guest.loadAsGuest=true
-                    }else Guest.loadAsGuest=false
                     buttonsEnabled.value=true
                 }
             }else{
@@ -132,7 +120,7 @@ object AuthViewModel {
      * @param userModel user login information viz. UserModelLogin
      * @param context context of activity or fragment where is function called
      */
-    fun login(userModel: UserModelLogin, context: Context,guest:Boolean=false){
+    fun login(userModel: UserModelLogin, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val response = try{
                 retroServiceAuth.loginUser(okhttp3.Credentials.basic(userModel.email, userModel.password))
@@ -163,7 +151,6 @@ object AuthViewModel {
                     crudTools.errorResponse(response,context)
                     withContext(Dispatchers.Main) {
                         buttonsEnabled.value=true
-                        Guest.loadAsGuest = guest
                     }
                 }
                 catch (e:Exception){

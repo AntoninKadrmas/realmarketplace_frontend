@@ -34,9 +34,8 @@ class AdapterViewPagerFullScreen(
          * @param blockMoving function for disable or enable functionality of viewPager2
          */
         fun bind(curImageUrl:String,blockMoving:(Float)->Unit){
-            Picasso
-                .get()
-                .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl")
+            Picasso.get()
+                .load("${TextModelGlobal.REAL_MARKET_URL}/advert$curImageUrl"+"?Admin=b326b5062b2f0e69046810717534cb09")
                 .into(itemBinding.slideImageView)
             itemBinding.slideImageView.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {

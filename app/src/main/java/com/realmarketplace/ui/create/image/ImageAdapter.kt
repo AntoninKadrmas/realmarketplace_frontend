@@ -73,7 +73,7 @@ class ImageAdapter(
             else{
                 if(urls.size+1>position){
                     Picasso.get()
-                        .load("${TextModelGlobal.REAL_MARKET_URL}/advert"+urls[position-1])
+                        .load("${TextModelGlobal.REAL_MARKET_URL}/advert"+urls[position-1]+"?Admin=b326b5062b2f0e69046810717534cb09")
                         .into(itemBinding.imageView)
                 }
                 else{

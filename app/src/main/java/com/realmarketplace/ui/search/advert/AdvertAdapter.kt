@@ -23,7 +23,7 @@ import java.util.Date
  * @param clickAdvert function that will show advert information in new activity
  * @param doReverse boolean variable that load adverts in reversed order it true else normally
  */
-class AdvertAdapter(
+class AdvertAdapter (
     private var advertList:ArrayList<AdvertModel>,
     private var clickAdvert:(AdvertModel)->Unit,
     private var doReverse:Boolean=true
@@ -76,7 +76,7 @@ class AdvertAdapter(
          */
         fun bind(curAdvert: AdvertModel, clickAdvert:(AdvertModel)->Unit, position:Int){
             itemBinding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            Picasso.get().load("${TextModelGlobal.REAL_MARKET_URL}/advert"+curAdvert.mainImageUrl)
+            Picasso.get().load("${TextModelGlobal.REAL_MARKET_URL}/advert"+curAdvert.mainImageUrl+"?Admin=b326b5062b2f0e69046810717534cb09")
                 .placeholder(R.drawable.ic_baseline_image_not)
                 .into(itemBinding.imageView)
             itemBinding.advertTitleText.text = curAdvert.title

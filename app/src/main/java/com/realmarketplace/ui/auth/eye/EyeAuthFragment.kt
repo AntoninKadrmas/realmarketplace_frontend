@@ -33,10 +33,6 @@ class EyeAuthFragment : Fragment() {
         binding.loginButton.setOnClickListener(){
             startActivity(Intent(activity, AuthActivity::class.java))
         }
-        //guest user feature
-        binding.guestLoginButton.setOnClickListener(){
-            (activity as MainActivity).guestLogin()
-        }
         return root
     }
 
